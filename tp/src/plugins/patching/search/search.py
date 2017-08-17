@@ -110,7 +110,7 @@ class RetrieveApps(object):
             if pkg_status in CommonAppKeys.ValidPackageStatuses:
                 base = (
                     r
-                    .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                    .table(self.CurrentAppsPerAgentCollection, )
                     .get_all(
                         [pkg_status, self.customer_name],
                         index=self.CurrentAppsPerAgentIndexes.StatusAndCustomer)

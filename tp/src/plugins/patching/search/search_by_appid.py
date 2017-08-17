@@ -63,7 +63,7 @@ class RetrieveAppsByAppId(object):
         try:
             pkg = list(
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get_all(self.app_id, index=self.CurrentAppsIndexes.AppId)
                 .map(self.map_hash)
                 .run(conn)
@@ -142,7 +142,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -150,7 +150,7 @@ class RetrieveAgentsByAppId(object):
                 if pkg_status in CommonAppKeys.ValidPackageStatuses:
                     agents = list(
                         r
-                        .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                        .table(self.CurrentAppsPerAgentCollection, )
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
@@ -167,7 +167,7 @@ class RetrieveAgentsByAppId(object):
 
                     agent_count = (
                         r
-                        .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                        .table(self.CurrentAppsPerAgentCollection, )
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .count()
@@ -212,7 +212,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -240,7 +240,7 @@ class RetrieveAgentsByAppId(object):
 
                 agent_count = (
                     r
-                    .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                    .table(self.CurrentAppsPerAgentCollection, )
                     .get_all(self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId)
                     .eq_join(
                         self.CurrentAppsPerAgentKey.AgentId,
@@ -287,7 +287,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -295,7 +295,7 @@ class RetrieveAgentsByAppId(object):
                 if pkg_status in CommonAppKeys.ValidPackageStatuses:
                     agents = list(
                         r
-                        .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                        .table(self.CurrentAppsPerAgentCollection, )
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
@@ -317,7 +317,7 @@ class RetrieveAgentsByAppId(object):
 
                     agent_count = (
                         r
-                        .table(self.CurrentAppsPerAgentCollection, use_outdated=True)
+                        .table(self.CurrentAppsPerAgentCollection, )
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
@@ -374,7 +374,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -474,7 +474,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -554,7 +554,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
@@ -648,7 +648,7 @@ class RetrieveAgentsByAppId(object):
         try:
             pkg = (
                 r
-                .table(self.CurrentAppsCollection, use_outdated=True)
+                .table(self.CurrentAppsCollection, )
                 .get(self.app_id)
                 .run(conn)
             )
