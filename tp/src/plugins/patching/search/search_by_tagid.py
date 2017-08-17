@@ -96,7 +96,7 @@ class RetrieveAppsByTagId(object):
                 if pkg_status in CommonAppKeys.ValidPackageStatuses:
                     base = (
                         r
-                        .table(TagsPerAgentCollection, )
+                        .table(TagsPerAgentCollection)
                         .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                         .pluck(TagsPerAgentKey.AgentId)
                         .eq_join(
@@ -174,7 +174,7 @@ class RetrieveAppsByTagId(object):
                 if pkg_status in CommonAppKeys.ValidPackageStatuses:
                     base = (
                         r
-                        .table(TagsPerAgentCollection, )
+                        .table(TagsPerAgentCollection)
                         .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                         .pluck(TagsPerAgentKey.AgentId)
                         .eq_join(
@@ -249,7 +249,7 @@ class RetrieveAppsByTagId(object):
             if tag:
                 base = (
                     r
-                    .table(TagsPerAgentCollection, )
+                    .table(TagsPerAgentCollection)
                     .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                     .pluck(TagsPerAgentKey.AgentId)
                     .eq_join(
@@ -318,7 +318,7 @@ class RetrieveAppsByTagId(object):
                     if sev in CommonSeverityKeys.ValidRvSeverities:
                         base = (
                             r
-                            .table(TagsPerAgentCollection, )
+                            .table(TagsPerAgentCollection)
                             .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                             .pluck(TagsPerAgentKey.AgentId)
                             .eq_join(
@@ -409,7 +409,7 @@ class RetrieveAppsByTagId(object):
                 if sev in CommonSeverityKeys.ValidRvSeverities:
                     base = (
                         r
-                        .table(TagsPerAgentCollection, )
+                        .table(TagsPerAgentCollection)
                         .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                         .pluck(TagsPerAgentKey.AgentId)
                         .eq_join(
@@ -483,7 +483,7 @@ class RetrieveAppsByTagId(object):
                 if sev in CommonSeverityKeys.ValidRvSeverities:
                     base = (
                         r
-                        .table(TagsPerAgentCollection, )
+                        .table(TagsPerAgentCollection)
                         .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                         .pluck(TagsPerAgentKey.AgentId)
                         .eq_join(
@@ -567,7 +567,7 @@ class RetrieveAppsByTagId(object):
                     if sev in CommonSeverityKeys.ValidRvSeverities:
                         base = (
                             r
-                            .table(TagsPerAgentCollection, )
+                            .table(TagsPerAgentCollection)
                             .get_all(self.tag_id, index=TagsPerAgentIndexes.TagId)
                             .pluck(TagsPerAgentKey.AgentId)
                             .eq_join(

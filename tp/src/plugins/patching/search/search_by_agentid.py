@@ -100,7 +100,7 @@ class RetrieveAppsByAgentId(object):
                 if pkg_status in CommonAppKeys.ValidPackageStatuses:
                     base = (
                         r
-                        .table(self.CurrentAppsPerAgentCollection, )
+                        .table(self.CurrentAppsPerAgentCollection)
                         .get_all(
                             [pkg_status, self.agent_id],
                             index=self.CurrentAppsPerAgentIndexes.StatusAndAgentId)
