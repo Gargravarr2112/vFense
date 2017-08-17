@@ -696,7 +696,7 @@ def toggle_user_status(username, user_name=None, uri=None, method=None):
         user_status_toggle(username)
     )
     if status_code == DbCodes.Replaced:
-        user_exist = get_user(username)
+        user_exist = fetch_user(username)
         if user_exist[UserKeys.Enabled] == CommonKeys.YES:
             msg = 'user %s is enabled' % (username)
 
@@ -783,7 +783,7 @@ def create_user(
         }
     """
 
-    user_exist = get_user(username)
+    user_exist = fetch_user(username)
     pass_strength = check_password(password)
     status = create_user.func_name + ' - '
     generated_ids = []
@@ -940,7 +940,7 @@ def remove_user(username, user_name=None, uri=None, method=None):
         Dictionary of the status of the operation.
     """
 
-    user_exist = get_user(username)
+    user_exist = fetch_user(username)
     status = remove_user.func_name + ' - '
     usernames_not_to_delete = []
     usernames_to_delete = []
@@ -1036,7 +1036,7 @@ def remove_users(usernames, user_name=None, uri=None, method=None):
         if not isinstance(usernames, list):
             usernames = usernames.split(',')
         for username in usernames:
-            user_exist = get_user(username)
+            user_exist = fetch_user(username)
             status = remove_users.func_name + ' - '
             if user_exist and username != DefaultUsers.ADMIN:
                 remove_groups_from_user(username)
@@ -1144,7 +1144,7 @@ def change_password(
             'data': []
         }
     """
-    user_exist = get_user(username, without_fields=None)
+    user_exist = fetch_user(username, without_fields=None)
     status = change_password.func_name + ' - '
     try:
         generic_status_code = 0
@@ -1302,7 +1302,7 @@ def edit_user_properties(username, **kwargs):
     if kwargs.get(UserKeys.Password):
         kwargs.pop(UserKeys.Password)
 
-    user_exist = get_user(username, without_fields=None)
+    user_exist = fetch_user(username, without_fields=None)
     status = edit_user_properties.func_name + ' - '
     generic_status_code = 0
     vfense_status_code = 0

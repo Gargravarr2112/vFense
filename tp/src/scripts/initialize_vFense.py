@@ -100,14 +100,14 @@ args = parser.parse_args()
 
 if args.admin_password:
     password_validated = check_password(args.admin_password)
-    if not password_validated[0]:
-        print (
-            'Password failed to meet the minimum requirements.\n' +
-            'Uppercase, Lowercase, Numeric, Special ' +
-            'and a minimum of 8 characters.\nYour password: %s is %s' %
-            (args.admin_password, password_validated[1])
-        )
-        sys.exit(1)
+    #if not password_validated[0]:
+    #    print (
+    #        'Password failed to meet the minimum requirements.\n' +
+    #        'Uppercase, Lowercase, Numeric, Special ' +
+    #        'and a minimum of 8 characters.\nYour password: %s is %s' %
+    #        (args.admin_password, password_validated[1])
+    #    )
+    #    sys.exit(1)
 
 if args.queue_ttl:
     args.queue_ttl = int(args.queue_ttl)

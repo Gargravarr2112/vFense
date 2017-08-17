@@ -148,7 +148,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
     try:
         inventory = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -182,7 +182,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
         )
         os_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -207,7 +207,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
         )
         custom_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -232,7 +232,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
         )
         supported_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -257,7 +257,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
         )
         agent_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -306,7 +306,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
     try:
         os_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -340,7 +340,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
         )
         custom_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -365,7 +365,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
         )
         supported_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -390,7 +390,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
         )
         agent_apps_avail = (
             r
-            .table(TagCollections.TagsPerAgent, use_outdated=True)
+            .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
             .pluck(TagsPerAgentKey.AgentId)
             .eq_join(
@@ -439,7 +439,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
     try:
         os_apps_avail = (
             r
-            .table(AppCollections.AppsPerAgent, use_outdated=True)
+            .table(AppCollections.AppsPerAgent)
             .get_all(
                 [
                     CommonAppKeys.AVAILABLE, customer_name
@@ -469,7 +469,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
         )
         custom_apps_avail = (
             r
-            .table(AppCollections.CustomAppsPerAgent, use_outdated=True)
+            .table(AppCollections.CustomAppsPerAgent)
             .get_all(
                 [
                     CommonAppKeys.AVAILABLE, customer_name
@@ -490,7 +490,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
         )
         supported_apps_avail = (
             r
-            .table(AppCollections.SupportedAppsPerAgent, use_outdated=True)
+            .table(AppCollections.SupportedAppsPerAgent)
             .get_all(
                 [
                     CommonAppKeys.AVAILABLE, customer_name
@@ -511,7 +511,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
         )
         agent_apps_avail = (
             r
-            .table(AppCollections.vFenseAppsPerAgent, use_outdated=True)
+            .table(AppCollections.vFenseAppsPerAgent)
             .get_all(
                 [
                     CommonAppKeys.AVAILABLE, customer_name
@@ -533,7 +533,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
 
         all_pending_apps = (
             r
-            .table(AppCollections.AppsPerAgent, use_outdated=True)
+            .table(AppCollections.AppsPerAgent)
             .get_all(
                 [
                     CommonAppKeys.PENDING, customer_name

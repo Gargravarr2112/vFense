@@ -60,8 +60,8 @@ def fetch_user(username, without_fields=None, conn=None):
                 .without(without_fields)
                 .run(conn)
             )
-            if data:
-                data = data[0]
+            #if data:
+            #    data = data[0]
 
     except Exception as e:
         logger.exception(e)
@@ -175,8 +175,8 @@ def fetch_user_and_all_properties(username, conn=None):
             .map(map_hash)
             .run(conn)
         )
-        if data:
-            data = data[0]
+        #if data:
+        #    data = data[0]
 
     except Exception as e:
         logger.exception(e)
