@@ -49,10 +49,6 @@ logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
 
 
-if os.getuid() != 0:
-    print 'MUST BE ROOT IN ORDER TO RUN'
-    sys.exit(1)
-
 parser = argparse.ArgumentParser(description='Initialize vFense Options')
 parser.add_argument(
     '--dnsname', dest='dns_name', default=None,
@@ -97,6 +93,10 @@ parser.add_argument(
 parser.set_defaults(cve_data=True)
 
 args = parser.parse_args()
+
+if os.getuid() != 0:
+    print 'MUST BE ROOT IN ORDER TO RUN'
+    sys.exit(1)
 
 if args.admin_password:
     password_validated = check_password(args.admin_password)
@@ -230,11 +230,14 @@ def initialize_db():
     completed = True
     if completed:
         conn = db_connect()
+        print "Rethink is running, creating database"
         r.db_create('vFense').run(conn)
+        print "Database created successfully, beginning to populate (this takes a while, be patient!)"
         db = r.db('vFense')
         conn.close()
         ci.initialize_indexes_and_create_tables()
         conn = db_connect()
+        print "Database populated and indexed successfully"
 
         default_customer = Customer(
             DefaultCustomers.DEFAULT,
@@ -243,6 +246,7 @@ def initialize_db():
         )
 
         customers.create_customer(default_customer, init=True)
+        print "Default customer created"
 
         group_data = group.create_group(
             DefaultGroups.ADMIN,
