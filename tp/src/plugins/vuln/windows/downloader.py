@@ -78,6 +78,11 @@ def get_msft_bulletin_url(count=0):
             logger.warn(
                 'Microsoft Bulletin page download search returned more than one result, selecting first and crossing fingers...'
             )
+        elif len(scriptBlocks) == 0:
+            logger.error(
+                "Couldn't find any script tags containing 'downloadData='!"
+            )
+            return (False, False)
         
         block = scriptBlocks[0];
         urlObject = re.search('(\{.*\})', block.text) #JS object is everything between {}
