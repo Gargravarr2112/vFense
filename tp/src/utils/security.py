@@ -79,7 +79,7 @@ def check_password(password):
         score = score + 1
         mandatory += 1
 
-    if score >= 5 and mandatory >= 5:
+    if score >= 5 and mandatory >= 4:
         completed = True
 
     elif score >= 5 and mandatory < 5:
