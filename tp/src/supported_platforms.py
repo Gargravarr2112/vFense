@@ -8,7 +8,7 @@ REDHAT_DISTROS = [
     'scientific linux'
 ]
 
-DEBIAN_DISTROS = ['debian', 'ubuntu', 'linuxmint']
+DEBIAN_DISTROS = ['debian', 'ubuntu', 'linuxmint', 'devuan']
 
 SUPPORTED_DISTROS = REDHAT_DISTROS + DEBIAN_DISTROS
 
