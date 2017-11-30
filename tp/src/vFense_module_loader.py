@@ -83,7 +83,7 @@ class CoreLoader():
             (r"/?", RootHandler),
             (r"/login/?", LoginHandler),
             (r"/logout/?", LogoutHandler),
-            #(r"/ws/?", WebSocketHandler),
+            (r"/ws/?", WebSocketHandler),
             (r"/adminForm", AdminHandler),
 
             ##### New User API
