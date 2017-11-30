@@ -70,7 +70,7 @@ class UserHandler(BaseHandler):
                 results = (
                     GenericResults(
                         active_user, uri, method
-                    ).information_retrieved(user_data.next(), count)
+                    ).information_retrieved(user_data, count)
                 ) 
             self.set_status(results['http_status'])
             self.set_header('Content-Type', 'application/json')

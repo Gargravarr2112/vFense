@@ -254,7 +254,7 @@ def initialize_db():
             [Permissions.ADMINISTRATOR]
         )
         admin_group_id = group_data['generated_ids']
-        user.create_user(
+        create_admin_user = user.create_user(
             DefaultUsers.ADMIN,
             'vFense Admin Account',
             args.admin_password,
@@ -262,6 +262,10 @@ def initialize_db():
             DefaultCustomers.DEFAULT,
             '',
         )
+        if create_admin_user['http_status'] != 200:
+            msg = 'Admin user creation failed with code %d and message "%s"' % (create_admin_user['http_status'], create_admin_user['message'])
+            return False, msg
+        
         print 'Admin username = admin'
         print 'Admin password = %s' % (args.admin_password)
         agent_pass = generate_pass()
