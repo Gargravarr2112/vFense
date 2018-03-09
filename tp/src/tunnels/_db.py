@@ -21,17 +21,20 @@ class CollectionKeys():
 @db_create_close
 def tunnels_initialization(conn=None):
 
-    try:
+    if Collection.AuthorizedKeys not in r.db('vFense').table_list().run(conn):
+        try:
 
-        r.db('vFense').table_create(
-            Collection.AuthorizedKeys,
-            primary_key=CollectionKeys.AgentId,
-        ).run(conn)
+            r.db('vFense').table_create(
+                Collection.AuthorizedKeys,
+                primary_key=CollectionKeys.AgentId,
+            ).run(conn)
 
-    except Exception as e:
+        except Exception as e:
 
-        logger.error('Unable to create tunnel tables')
-        logger.error(str(e))
+            logger.error('Unable to create tunnel tables')
+            logger.error(str(e))
+    else:
+        logger.debug('Tunnel tables exist, skipping creation')
 
 
 @db_create_close
