@@ -8,7 +8,7 @@ _sshd_config_path = '/etc/ssh/sshd_config'
 db.tunnels_initialization()
 
 
-class TunnelKey:
+class TunnelKeys:
 
     HostPort = 'host_port'
     HostIp = 'host_ip'
@@ -111,8 +111,8 @@ def reverse_tunnel_params(preferred_ports=None):
                 "No port in range available. How did this happen...?"
             )
 
-        params[TunnelKey.HostPort] = str(port)
-        params[TunnelKey.SSHPort] = ssh_port()
+        params[TunnelKeys.HostPort] = str(port)
+        params[TunnelKeys.SSHPort] = ssh_port()
 
     except Exception as e:
 

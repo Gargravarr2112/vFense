@@ -4,7 +4,7 @@ import redis
 from rq import Connection, Queue
 
 from vFense import VFENSE_LOGGING_CONFIG
-from vFense.core.agent import AgentKey
+from vFense.core.agent import AgentKeys
 from vFense.core.agent.agents import get_agent_info
 from vFense.plugins.patching import AppCollections
 from vFense.plugins.patching.apps.incoming_apps import \
@@ -37,7 +37,7 @@ class RvHandOff():
 
     def _get_agent_data(self, agent_id):
         #if self.agent_data:
-        #    if self.agent_data.get(AgentKey.AgentId) == agent_id:
+        #    if self.agent_data.get(AgentKeys.AgentId) == agent_id:
         #        return self.agent_data
         #    else:
         #        logger.info(
@@ -81,9 +81,9 @@ class RvHandOff():
             args=(
                 username,
                 customer_name,
-                agent_data[AgentKey.AgentId],
-                agent_data[AgentKey.OsCode],
-                agent_data[AgentKey.OsString],
+                agent_data[AgentKeys.AgentId],
+                agent_data[AgentKeys.OsCode],
+                agent_data[AgentKeys.OsString],
                 apps,
                 delete_afterwards,
                 app_collection,

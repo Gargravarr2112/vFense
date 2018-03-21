@@ -55,7 +55,7 @@ class AgentIdOsAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', AppsKey.Name)
+        sort_by = self.get_argument('sort_by', AppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO
@@ -267,7 +267,7 @@ class TagIdOsAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', AppsKey.Name)
+        sort_by = self.get_argument('sort_by', AppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO
@@ -500,7 +500,7 @@ class AppIdOsAppsHandler(BaseHandler):
             if severity in CommonSeverityKeys.ValidRvSeverities:
                 sev_data = (
                     {
-                        AppsKey.RvSeverity: severity
+                        AppsKeys.RvSeverity: severity
                     }
                 )
                 update_app_data_by_app_id(
@@ -869,7 +869,7 @@ class OsAppsHandler(BaseHandler):
         status = self.get_argument('status', None)
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', AppsKey.Name)
+        sort_by = self.get_argument('sort_by', AppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO
@@ -878,7 +878,7 @@ class OsAppsHandler(BaseHandler):
         uri = self.request.uri
         method = self.request.method
         if sort_by == 'severity':
-            sort_by = AppsKey.RvSeverity
+            sort_by = AppsKeys.RvSeverity
 
         patches = (
             RetrieveApps(

@@ -5,7 +5,7 @@ from vFense.db.client import db_create_close, r
 from vFense.errorz.status_codes import AgentOperationCodes
 from vFense.operations import *
 from vFense.notifications import *
-from vFense.server.hierarchy import Collection, GroupKey, UserKey, CustomerKey
+from vFense.server.hierarchy import Collection, GroupKeys, UserKeys, CustomerKeys
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
@@ -131,11 +131,11 @@ class RvNotificationHandler():
                         r
                         .table(Collection.Users)
                         .get(notif[NotificationKeys.User])
-                        .pluck(UserKey.Email)
+                        .pluck(UserKeys.Email)
                         .run(conn)
                     )
                     if email:
-                        email_sender_list.append(email[UserKey.Email])
+                        email_sender_list.append(email[UserKeys.Email])
 
         except Exception as e:
             logger.exception(e)

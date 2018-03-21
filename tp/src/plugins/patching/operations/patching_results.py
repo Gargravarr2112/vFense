@@ -7,10 +7,10 @@ from json import loads
 
 from vFense.core._constants import CommonKeys
 from vFense.core.decorators import results_message
-from vFense.core.agent import AgentKey
+from vFense.core.agent import AgentKeys
 from vFense.core.agent.agents import update_agent_field
 from vFense.errorz._constants import ApiResultKeys
-from vFense.operations import AgentOperationKey
+from vFense.operations import AgentOperationKeys
 from vFense.operations._constants import AgentOperations
 from vFense.operations.results import OperationResults
 from vFense.operations.agent_operations import \
@@ -81,7 +81,7 @@ class PatchingOperationResults(OperationResults):
         self.apps_to_delete = apps_to_delete
         self.app_id = app_id
         self.reboot_required = reboot_required
-        self.operation_type = self.operation_data[AgentOperationKey.Operation]
+        self.operation_type = self.operation_data[AgentOperationKeys.Operation]
 
     def apps_refresh(self):
         operation_type = AgentOperations.REFRESH_APPS
@@ -147,8 +147,8 @@ class PatchingOperationResults(OperationResults):
             self.username,
             self.customer_name,
             self.agent_id,
-            self.agent_data[AgentKey.OsCode],
-            self.agent_data[AgentKey.OsString],
+            self.agent_data[AgentKeys.OsCode],
+            self.agent_data[AgentKeys.OsString],
             self.apps_to_add,
             delete_afterwards=False
         )
@@ -181,7 +181,7 @@ class PatchingOperationResults(OperationResults):
 
         if self.reboot_required:
             update_agent_field(
-                self.agent_id, AgentKey.NeedsReboot,
+                self.agent_id, AgentKeys.NeedsReboot,
                 CommonKeys.YES, self.username
             )
 

@@ -7,7 +7,7 @@ AgentsCollection = 'agents'
 HardwarePerAgentCollection = 'hardware_per_agent'
 
 
-class AgentKey():
+class AgentKeys():
     Id = 'id'
     AgentId = 'agent_id'
     ComputerName = 'computer_name'
@@ -35,7 +35,7 @@ class AgentIndexes():
     OsCode = 'os_code'
 
 
-class HardwarePerAgentKey():
+class HardwarePerAgentKeys():
     Id = 'id'
     AgentId = 'agent_id'
     Name = 'name'

@@ -17,7 +17,7 @@ class Collection():
     UsersPerCustomer = 'users_per_customer'
 
 
-class UserKey():
+class UserKeys():
 
     UserName = 'user_name'  # Primary key!
     FullName = 'full_name'
@@ -32,7 +32,7 @@ class UserKey():
     Permissions = 'permissions'
 
 
-class GroupKey():
+class GroupKeys():
 
     Id = 'id'
 
@@ -45,7 +45,7 @@ class GroupKey():
     Customer = 'customer'
 
 
-class CustomerKey():
+class CustomerKeys():
 
     CustomerName = 'customer_name'  # Primary key!!
     Properties = 'properties'
@@ -54,7 +54,7 @@ class CustomerKey():
     Users = 'users'
 
 
-class GroupsPerUserKey():
+class GroupsPerUserKeys():
 
     Id = 'id'
     GroupId = 'group_id'
@@ -65,7 +65,7 @@ class GroupsPerUserKey():
     GroupUserAndCustomerId = 'group_user_and_customer_id'
 
 
-class GroupsPerCustomerKey():
+class GroupsPerCustomerKeys():
 
     Id = 'id'
     GroupId = 'group_id'
@@ -73,7 +73,7 @@ class GroupsPerCustomerKey():
     GroupAndCustomerId = 'group_and_customer_id'
 
 
-class UsersPerCustomerKey():
+class UsersPerCustomerKeys():
 
     Id = 'id'
     UserId = 'user_id'

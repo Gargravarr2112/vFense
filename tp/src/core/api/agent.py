@@ -144,7 +144,7 @@ class AgentsHandler(BaseHandler):
             ip = self.get_argument('ip', None)
             mac = self.get_argument('mac', None)
             sort = self.get_argument('sort', 'asc')
-            sort_by = self.get_argument('sort_by', AgentKey.ComputerName)
+            sort_by = self.get_argument('sort_by', AgentKeys.ComputerName)
             search_agents = (
                 RetrieveAgents(
                     customer_name,

@@ -31,7 +31,7 @@ def tag_exists(tag_id, conn=None):
             r
             .table(TagsCollection)
             .get(tag_id)
-            .pluck(TagsKey.TagId, TagsKey.TagName)
+            .pluck(TagsKeys.TagId, TagsKeys.TagName)
             .run(conn)
         )
 
@@ -47,13 +47,13 @@ def get_tags_by_agent_id(agent_id=None, conn=None):
         tag_info = list(
             r
             .table(TagsPerAgentCollection)
-            .get_all(agent_id, index=TagsPerAgentKey.AgentId)
-            .eq_join(TagsPerAgentKey.TagId, r.table(TagsCollection))
+            .get_all(agent_id, index=TagsPerAgentKeys.AgentId)
+            .eq_join(TagsPerAgentKeys.TagId, r.table(TagsCollection))
             .zip()
             .map(
                 {
-                    TagsPerAgentKey.TagId: r.row[TagsPerAgentKey.TagId],
-                    TagsPerAgentKey.TagName: r.row[TagsKey.TagName]
+                    TagsPerAgentKeys.TagId: r.row[TagsPerAgentKeys.TagId],
+                    TagsPerAgentKeys.TagName: r.row[TagsKeys.TagName]
                 }
             )
             .distinct()
@@ -70,9 +70,9 @@ def get_tag_ids_by_agent_id(agent_id=None, conn=None):
             r
             .table(TagsPerAgentCollection)
             .get_all(agent_id, index=TagsPerAgentIndexes.AgentId)
-            .pluck(TagsPerAgentKey.TagId)
+            .pluck(TagsPerAgentKeys.TagId)
             .distinct()
-            .map(lambda x: x[TagsPerAgentKey.TagId])
+            .map(lambda x: x[TagsPerAgentKeys.TagId])
             .run(conn)
         )
 
@@ -87,7 +87,7 @@ def get_agent_ids_from_tag(tag_id=None, conn=None):
             r
             .table(TagsPerAgentCollection)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .map(lambda x: x[TagsPerAgentKey.AgentId])
+            .map(lambda x: x[TagsPerAgentKeys.AgentId])
             .distinct()
             .run(conn)
         )
@@ -185,7 +185,7 @@ def get_all_tag_ids(customer_name=None, conn=None):
             r
             .table(TagsCollection)
             .get_all(customer_name, index=TagsIndexes.CustomerName)
-            .map(lambda x: x[TagsKey.TagId])
+            .map(lambda x: x[TagsKeys.TagId])
             .run(conn)
         )
 
@@ -193,7 +193,7 @@ def get_all_tag_ids(customer_name=None, conn=None):
         tag_ids = list(
             r
             .table(TagsCollection)
-            .map(lambda x: x[TagKey.AgentId])
+            .map(lambda x: x[TagKeys.AgentId])
             .run(conn)
         )
 
@@ -210,7 +210,7 @@ def tag_lister(customer_name='default', query=None, conn=None):
             r
             .table(TagsCollection)
             .get_all(customer_name, index=TagsIndexes.CustomerName)
-            .filter(lambda x: x[TagsKey.TagName].match(query))
+            .filter(lambda x: x[TagsKeys.TagName].match(query))
             .run(conn)
         )
 
@@ -219,7 +219,7 @@ def tag_lister(customer_name='default', query=None, conn=None):
             r
             .table(TagsCollection)
             .get_all(customer_name, index=TagsIndexes.CustomerName)
-            .order_by(TagsKey.TagName)
+            .order_by(TagsKeys.TagName)
             .run(conn)
         )
 
@@ -229,11 +229,11 @@ def tag_lister(customer_name='default', query=None, conn=None):
                 r
                 .table(TagsPerAgentCollection)
                 .get_all(tags[tag]['id'], index=TagsPerAgentIndexes.TagId)
-                .eq_join(TagsPerAgentKey.AgentId, r.table(TagsCollection))
+                .eq_join(TagsPerAgentKeys.AgentId, r.table(TagsCollection))
                 .zip()
                 .pluck(
-                    TagsPerAgentKey.AgentId, AgentKey.ComputerName,
-                    AgentKey.DisplayName
+                    TagsPerAgentKeys.AgentId, AgentKeys.ComputerName,
+                    AgentKeys.DisplayName
                 )
                 .run(conn)
             )
@@ -259,9 +259,9 @@ class TagsManager(object):
     def create_tag(self, tag_name, prod_level='Production', conn=None):
         tag_id = None
         ninsert = {
-            TagsKey.TagName: tag_name,
-            TagsKey.CustomerName: self.customer_name,
-            TagsKey.ProductionLevel: prod_level,
+            TagsKeys.TagName: tag_name,
+            TagsKeys.CustomerName: self.customer_name,
+            TagsKeys.ProductionLevel: prod_level,
         }
         try:
             tag_exists = list(
@@ -269,7 +269,7 @@ class TagsManager(object):
                 .table(TagsCollection)
                 .get_all([self.customer_name, tag_name],
                          index=TagsIndexes.TagNameAndCustomer)
-                .pluck(TagsKey.TagId)
+                .pluck(TagsKeys.TagId)
                 .run(conn)
             )
             if len(tag_exists) == 0:
@@ -282,8 +282,8 @@ class TagsManager(object):
                 if 'inserted' in inserted:
                     tag_id = inserted['generated_keys'][0]
                     data = {
-                        TagsKey.TagId: tag_id,
-                        TagsKey.TagName: tag_name,
+                        TagsKeys.TagId: tag_id,
+                        TagsKeys.TagName: tag_name,
                     }
 
                     status = (
@@ -332,7 +332,7 @@ class TagsManager(object):
             )
 
             tag_info = r.table(TagsCollection).get(tag_id).run(conn)
-            tag_name = tag_info[TagsKey.TagName]
+            tag_name = tag_info[TagsKeys.TagName]
 
             if not tag_for_agent_exists:
                 agent_info = (
@@ -345,8 +345,8 @@ class TagsManager(object):
                 if agent_info:
                     tag_agent_info = (
                         {
-                            TagsPerAgentKey.AgentId: agent_id,
-                            TagsPerAgentKey.TagId: tag_id,
+                            TagsPerAgentKeys.AgentId: agent_id,
+                            TagsPerAgentKeys.TagId: tag_id,
                         }
                     )
 
@@ -431,8 +431,8 @@ class TagsManager(object):
             agent_ids = list(
                 r
                 .table(TagsPerAgentCollection)
-                .get_all(tag_id, index=TagsPerAgentKey.TagId)
-                .map(lambda x: x[TagsPerAgentKey.AgentId])
+                .get_all(tag_id, index=TagsPerAgentKeys.TagId)
+                .map(lambda x: x[TagsPerAgentKeys.AgentId])
                 .run(conn)
             )
             total_agents = len(agent_ids)

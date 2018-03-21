@@ -4,7 +4,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 from copy import deepcopy
 from vFense.operations._constants import vFenseObjects
 from vFense.operations.agent_operations import AgentOperation
-from vFense.operations import OperationPerAgentKey, AgentOperationKey
+from vFense.operations import OperationPerAgentKeys, AgentOperationKeys
 from vFense.core.decorators import results_message
 from vFense.core.queue.queue import AgentQueue
 from vFense.core.tag.tagManager import get_agent_ids_from_tag
@@ -66,7 +66,7 @@ class StoreAgentOperation(object):
         """
         agent_queue = (
             AgentQueue(
-                operation[OperationPerAgentKey.AgentId],
+                operation[OperationPerAgentKeys.AgentId],
                 self.customer_name
             )
         )
@@ -166,10 +166,10 @@ class StoreAgentOperation(object):
 
             for agent_id in agentids:
                 operation_data = {
-                    AgentOperationKey.Operation: action,
-                    AgentOperationKey.OperationId: operation_id,
-                    AgentOperationKey.Plugin: plugin,
-                    OperationPerAgentKey.AgentId: agent_id,
+                    AgentOperationKeys.Operation: action,
+                    AgentOperationKeys.OperationId: operation_id,
+                    AgentOperationKeys.Plugin: plugin,
+                    OperationPerAgentKeys.AgentId: agent_id,
                 }
                 agent_data = deepcopy(operation_data)
                 data.append(agent_data)

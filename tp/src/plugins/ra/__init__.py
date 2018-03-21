@@ -22,7 +22,7 @@ def session_exist(agent_id):
     conn, session = db.connection_exist(agent_id=agent_id)
     if conn:
 
-        return True, (session[RaKey.Status], session[RaKey.WebPort])
+        return True, (session[RaKeys.Status], session[RaKeys.WebPort])
 
     else:
 
@@ -47,12 +47,12 @@ def add_feedback(
     redis_client = redis.Redis()
 
     fb = {
-        RaKey.AgentId: agent_id,
-        RaKey.Status: status,
-        RaKey.Message: message,
-        RaKey.WebPort: web_port,
-        RaKey.Uri: uri,
-        RaKey.Hostname: hostname
+        RaKeys.AgentId: agent_id,
+        RaKeys.Status: status,
+        RaKeys.Message: message,
+        RaKeys.WebPort: web_port,
+        RaKeys.Uri: uri,
+        RaKeys.Hostname: hostname
     }
 
     redis_client.publish(
@@ -86,7 +86,7 @@ class Status():
     Timeout = 'timeout'
 
 
-class RaKey():
+class RaKeys():
 
     ReverseTunnel = 'reverse_tunnel'
     AgentId = 'agent_id'

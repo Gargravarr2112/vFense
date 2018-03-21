@@ -105,35 +105,35 @@ def store_package_info_in_db(
                 )
 
         data_to_store = {
-            CustomAppsKey.Name: name,
-            CustomAppsPerAgentKey.Dependencies: [],
-            CustomAppsKey.RvSeverity: severity,
-            CustomAppsKey.VendorSeverity: severity,
-            CustomAppsKey.ReleaseDate: release_date,
-            CustomAppsKey.VendorName: vendor_name,
-            CustomAppsKey.Description: description,
-            CustomAppsKey.MajorVersion: major_version,
-            CustomAppsKey.MinorVersion: minor_version,
-            CustomAppsKey.Version: major_version + '.' + minor_version,
-            CustomAppsKey.OsCode: operating_system,
-            CustomAppsKey.Kb: kb,
-            CustomAppsKey.Hidden: 'no',
-            CustomAppsKey.CliOptions: cli_options,
-            CustomAppsKey.Arch: arch,
-            CustomAppsKey.RebootRequired: 'possible',
-            CustomAppsKey.SupportUrl: support_url,
-            CustomAppsKey.Customers: [customer_name],
-            CustomAppsPerAgentKey.Update: PackageCodes.ThisIsNotAnUpdate,
-            CustomAppsKey.FilesDownloadStatus: PackageCodes.FileCompletedDownload,
-            CustomAppsKey.AppId: uuid
+            CustomAppsKeys.Name: name,
+            CustomAppsPerAgentKeys.Dependencies: [],
+            CustomAppsKeys.RvSeverity: severity,
+            CustomAppsKeys.VendorSeverity: severity,
+            CustomAppsKeys.ReleaseDate: release_date,
+            CustomAppsKeys.VendorName: vendor_name,
+            CustomAppsKeys.Description: description,
+            CustomAppsKeys.MajorVersion: major_version,
+            CustomAppsKeys.MinorVersion: minor_version,
+            CustomAppsKeys.Version: major_version + '.' + minor_version,
+            CustomAppsKeys.OsCode: operating_system,
+            CustomAppsKeys.Kb: kb,
+            CustomAppsKeys.Hidden: 'no',
+            CustomAppsKeys.CliOptions: cli_options,
+            CustomAppsKeys.Arch: arch,
+            CustomAppsKeys.RebootRequired: 'possible',
+            CustomAppsKeys.SupportUrl: support_url,
+            CustomAppsKeys.Customers: [customer_name],
+            CustomAppsPerAgentKeys.Update: PackageCodes.ThisIsNotAnUpdate,
+            CustomAppsKeys.FilesDownloadStatus: PackageCodes.FileCompletedDownload,
+            CustomAppsKeys.AppId: uuid
         }
         file_data = (
             [
                 {
-                    FilesKey.FileUri: url,
-                    FilesKey.FileSize: int(size),
-                    FilesKey.FileHash: md5,
-                    FilesKey.FileName: name
+                    FilesKeys.FileUri: url,
+                    FilesKeys.FileSize: int(size),
+                    FilesKeys.FileHash: md5,
+                    FilesKeys.FileName: name
                 }
             ]
         )

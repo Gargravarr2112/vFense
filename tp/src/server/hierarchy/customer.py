@@ -1,4 +1,4 @@
-from vFense.server.hierarchy import CustomerKey
+from vFense.server.hierarchy import CustomerKeys
 
 
 class Customer():
@@ -11,8 +11,8 @@ class Customer():
     def dict(self):
 
         return {
-            CustomerKey.CustomerName: self.customer_name,
-            CustomerKey.Properties: self.properties
+            CustomerKeys.CustomerName: self.customer_name,
+            CustomerKeys.Properties: self.properties
         }
 
     def __repr__(self):

@@ -5,7 +5,7 @@ import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
 
 from vFense.settings import Default
-from vFense.tunnels import TunnelKey, reverse_tunnel_params
+from vFense.tunnels import TunnelKeys, reverse_tunnel_params
 
 from vFense.plugins import ra
 from vFense.plugins.ra.raoperation import store_in_agent_queue, save_operation
@@ -40,7 +40,7 @@ def new_rd_session(
                 'message': (
                     'Session exist for this agent. Waiting for response.'
                 ),
-                ra.RaKey.Status: status
+                ra.RaKeys.Status: status
             }
 
         host = ra.get_hostname()
@@ -52,10 +52,10 @@ def new_rd_session(
                 'message': (
                     'Session exist for this agent. Using session.'
                 ),
-                ra.RaKey.Status: status,
-                ra.RaKey.WebPort: web_port,
-                ra.RaKey.Hostname: host,
-                ra.RaKey.Uri: uri
+                ra.RaKeys.Status: status,
+                ra.RaKeys.WebPort: web_port,
+                ra.RaKeys.Hostname: host,
+                ra.RaKeys.Uri: uri
             }
 
         if status == ra.Status.Timeout:
@@ -70,10 +70,10 @@ def new_rd_session(
                 'message': (
                     'Session exist for this agent. Reusing.'
                 ),
-                ra.RaKey.Status: status,
-                ra.RaKey.WebPort: web_port,
-                ra.RaKey.Hostname: host,
-                ra.RaKey.Uri: uri
+                ra.RaKeys.Status: status,
+                ra.RaKeys.WebPort: web_port,
+                ra.RaKeys.Hostname: host,
+                ra.RaKeys.Uri: uri
             }
 
         if status == ra.Status.Closing:
@@ -84,7 +84,7 @@ def new_rd_session(
                     'Session exist but is being closed.'
                     'Please try again in a few seconds.'
                 ),
-                ra.RaKey.Status: status,
+                ra.RaKeys.Status: status,
             }
 
     operation = RaOperation(
@@ -107,7 +107,7 @@ def new_rd_session(
 
             params = reverse_tunnel_params(port_range)
             if ra.db.port_available(
-                port=params[TunnelKey.HostPort]
+                port=params[TunnelKeys.HostPort]
             ):
                 break
 
@@ -116,8 +116,8 @@ def new_rd_session(
 
         if params:
 
-            port = params[TunnelKey.HostPort]
-            ssh_port = params[TunnelKey.SSHPort]
+            port = params[TunnelKeys.HostPort]
+            ssh_port = params[TunnelKeys.SSHPort]
             operation.set_tunnel(host_port=port, ssh_port=ssh_port)
 
         else:
@@ -185,7 +185,7 @@ def terminate_rd_session(
                 'message': (
                     'Session still waiting for agent to respond.'
                 ),
-                ra.RaKey.Status: status
+                ra.RaKeys.Status: status
             }
 
         if status == ra.Status.Timeout:
@@ -194,7 +194,7 @@ def terminate_rd_session(
                 'message': (
                     'Session already in the process to be closed.'
                 ),
-                ra.RaKey.Status: status,
+                ra.RaKeys.Status: status,
             }
 
         return set_session_to_timeout(agent_id, user)

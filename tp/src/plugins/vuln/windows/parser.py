@@ -12,7 +12,7 @@ from datetime import datetime
 from xlrd import open_workbook, xldate_as_tuple
 
 from vFense.plugins.vuln.common import build_bulletin_id
-from vFense.plugins.vuln.windows import WindowsSecurityBulletinKey
+from vFense.plugins.vuln.windows import WindowsSecurityBulletinKeys
 from vFense.plugins.vuln.windows._constants import WindowsDataDir, \
     WindowsBulletinStrings
 from vFense.plugins.vuln.windows._db import insert_bulletin_data
@@ -52,25 +52,25 @@ def parse_spread_sheet(bulletin_file):
         rows_to_use = \
             unicode(rows_to_use).encode(sys.stdout.encoding, 'replace')
         built_id = build_bulletin_id(rows_to_use)
-        bulletin_dict[WindowsSecurityBulletinKey.Id] = built_id
+        bulletin_dict[WindowsSecurityBulletinKeys.Id] = built_id
         date = xldate_as_tuple(row[0], workbook.datemode)
         epoch_time = mktime(datetime(*date).timetuple())
-        bulletin_dict[WindowsSecurityBulletinKey.DatePosted] = (
+        bulletin_dict[WindowsSecurityBulletinKeys.DatePosted] = (
             r.epoch_time(epoch_time)
         )
 
         # Need to see if I can pull the column names and use that instead
         # of using the row number
-        bulletin_dict[WindowsSecurityBulletinKey.BulletinId] = row[1]
-        bulletin_dict[WindowsSecurityBulletinKey.BulletinKb] = row[2]
-        bulletin_dict[WindowsSecurityBulletinKey.BulletinSeverity] = row[3]
-        bulletin_dict[WindowsSecurityBulletinKey.BulletinImpact] = row[4]
-        bulletin_dict[WindowsSecurityBulletinKey.Details] = row[5]
-        bulletin_dict[WindowsSecurityBulletinKey.AffectedProduct] = row[6]
-        bulletin_dict[WindowsSecurityBulletinKey.ComponentKb] = row[7]
-        bulletin_dict[WindowsSecurityBulletinKey.AffectedComponent] = row[8]
-        bulletin_dict[WindowsSecurityBulletinKey.ComponentImpact] = row[9]
-        bulletin_dict[WindowsSecurityBulletinKey.ComponentSeverity] = row[10]
+        bulletin_dict[WindowsSecurityBulletinKeys.BulletinId] = row[1]
+        bulletin_dict[WindowsSecurityBulletinKeys.BulletinKb] = row[2]
+        bulletin_dict[WindowsSecurityBulletinKeys.BulletinSeverity] = row[3]
+        bulletin_dict[WindowsSecurityBulletinKeys.BulletinImpact] = row[4]
+        bulletin_dict[WindowsSecurityBulletinKeys.Details] = row[5]
+        bulletin_dict[WindowsSecurityBulletinKeys.AffectedProduct] = row[6]
+        bulletin_dict[WindowsSecurityBulletinKeys.ComponentKb] = row[7]
+        bulletin_dict[WindowsSecurityBulletinKeys.AffectedComponent] = row[8]
+        bulletin_dict[WindowsSecurityBulletinKeys.ComponentImpact] = row[9]
+        bulletin_dict[WindowsSecurityBulletinKeys.ComponentSeverity] = row[10]
 
         if len(row) == 15:
             supercedes = row[12]
@@ -93,15 +93,15 @@ def parse_spread_sheet(bulletin_file):
 
             supercede_list.append(
                 {
-                    WindowsSecurityBulletinKey.SupersedesBulletinId:
+                    WindowsSecurityBulletinKeys.SupersedesBulletinId:
                         bulletin_id,
-                    WindowsSecurityBulletinKey.SupersedesBulletinKb:
+                    WindowsSecurityBulletinKeys.SupersedesBulletinKb:
                         bulletin_kb
                 }
             )
-        bulletin_dict[WindowsSecurityBulletinKey.Supersedes] = supercede_list
-        bulletin_dict[WindowsSecurityBulletinKey.Reboot] = reboot
-        bulletin_dict[WindowsSecurityBulletinKey.CveIds] = cve_ids.split(',')
+        bulletin_dict[WindowsSecurityBulletinKeys.Supersedes] = supercede_list
+        bulletin_dict[WindowsSecurityBulletinKeys.Reboot] = reboot
+        bulletin_dict[WindowsSecurityBulletinKeys.CveIds] = cve_ids.split(',')
         bulletin_list.append(bulletin_dict)
 
     return(bulletin_list)

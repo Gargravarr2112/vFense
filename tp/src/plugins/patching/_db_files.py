@@ -4,7 +4,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 
 from vFense.db.client import db_create_close, r
 from vFense.core.decorators import time_it, return_status_tuple
-from vFense.plugins.patching import FileCollections, FilesKey
+from vFense.plugins.patching import FileCollections, FilesKeys
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
@@ -74,12 +74,12 @@ def fetch_file_data(app_id, agent_id=None, conn=None):
                 .table(FileCollections.Files)
                 .filter(
                     lambda x: (
-                        x[FilesKey.AppIds].contains(app_id)
+                        x[FilesKeys.AppIds].contains(app_id)
                         &
-                        x[FilesKey.AgentIds].contains(agent_id)
+                        x[FilesKeys.AgentIds].contains(agent_id)
                     )
                 )
-                .without(FilesKey.AppIds, FilesKey.AgentIds,)
+                .without(FilesKeys.AppIds, FilesKeys.AgentIds,)
                 .run(conn)
             )
 
@@ -89,10 +89,10 @@ def fetch_file_data(app_id, agent_id=None, conn=None):
                 .table(FileCollections.Files)
                 .filter(
                     lambda x: (
-                        x[FilesKey.AppIds].contains(app_id)
+                        x[FilesKeys.AppIds].contains(app_id)
                     )
                 )
-                .without(FilesKey.AppIds, FilesKey.AgentIds,)
+                .without(FilesKeys.AppIds, FilesKeys.AgentIds,)
                 .run(conn)
             )
 
@@ -130,8 +130,8 @@ def fetch_all_file_data(conn=None):
             r
             .table(FileCollections.Files)
             .pluck(
-                FilesKey.FileHash, FilesKey.FileSize,
-                FilesKey.FileUri, FilesKey.FileName
+                FilesKeys.FileHash, FilesKeys.FileSize,
+                FilesKeys.FileUri, FilesKeys.FileName
             )
             .run(conn)
         )
@@ -183,12 +183,12 @@ def insert_file_data(app_id, file_data, agent_id=None, conn=None):
                     .table(FileCollections.Files)
                     .insert(
                         {
-                            FilesKey.AppIds: [app_id],
-                            FilesKey.AgentIds: [agent_id],
-                            FilesKey.FileName: file_info[FilesKey.FileName],
-                            FilesKey.FileSize: file_info[FilesKey.FileSize],
-                            FilesKey.FileUri: file_info[FilesKey.FileUri],
-                            FilesKey.FileHash: file_info[FilesKey.FileHash],
+                            FilesKeys.AppIds: [app_id],
+                            FilesKeys.AgentIds: [agent_id],
+                            FilesKeys.FileName: file_info[FilesKeys.FileName],
+                            FilesKeys.FileSize: file_info[FilesKeys.FileSize],
+                            FilesKeys.FileUri: file_info[FilesKeys.FileUri],
+                            FilesKeys.FileHash: file_info[FilesKeys.FileHash],
                         }
                     )
                 )
@@ -205,12 +205,12 @@ def insert_file_data(app_id, file_data, agent_id=None, conn=None):
                     .table(FileCollections.Files)
                     .insert(
                         {
-                            FilesKey.AppIds: [app_id],
-                            FilesKey.AgentIds: [],
-                            FilesKey.FileName: file_info[FilesKey.FileName],
-                            FilesKey.FileSize: file_info[FilesKey.FileSize],
-                            FilesKey.FileUri: file_info[FilesKey.FileUri],
-                            FilesKey.FileHash: file_info[FilesKey.FileHash],
+                            FilesKeys.AppIds: [app_id],
+                            FilesKeys.AgentIds: [],
+                            FilesKeys.FileName: file_info[FilesKeys.FileName],
+                            FilesKeys.FileSize: file_info[FilesKeys.FileSize],
+                            FilesKeys.FileUri: file_info[FilesKeys.FileUri],
+                            FilesKeys.FileHash: file_info[FilesKeys.FileHash],
                         }
                     )
                 )
@@ -260,16 +260,16 @@ def update_file_data(app_id, file_data, agent_id=None, conn=None):
                     lambda file_info:
                     r
                     .table(FileCollections.Files)
-                    .get(file_info[FilesKey.FileName])
+                    .get(file_info[FilesKeys.FileName])
                     .update(
                         lambda fd:
                         {
-                            FilesKey.AppIds: (
-                                fd[FilesKey.AppIds]
+                            FilesKeys.AppIds: (
+                                fd[FilesKeys.AppIds]
                                 .set_insert(app_id)
                             ),
-                            FilesKey.AgentIds: (
-                                fd[FilesKey.AgentIds]
+                            FilesKeys.AgentIds: (
+                                fd[FilesKeys.AgentIds]
                                 .set_insert(agent_id)
                             )
                         }
@@ -286,14 +286,14 @@ def update_file_data(app_id, file_data, agent_id=None, conn=None):
                     lambda file_info:
                     r
                     .table(FileCollections.Files)
-                    .get(file_info[FilesKey.FileName])
+                    .get(file_info[FilesKeys.FileName])
                     .update(
                         {
-                            FilesKey.AppIds: (
-                                file_info[FilesKey.AppIds]
+                            FilesKeys.AppIds: (
+                                file_info[FilesKeys.AppIds]
                                 .set_insert(app_id)
                             ),
-                            FilesKey.AgentIds: []
+                            FilesKeys.AgentIds: []
                         }
                     )
                 )

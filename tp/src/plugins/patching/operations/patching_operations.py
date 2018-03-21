@@ -1,5 +1,5 @@
-from vFense.operations import OperationPerAgentKey, \
-    OperationPerAppKey
+from vFense.operations import OperationPerAgentKeys, \
+    OperationPerAppKeys
 from vFense.operations.agent_operations import AgentOperation
 from vFense.core._db_constants import DbTime
 from vFense.operations._db_agent import update_operation_per_agent, \
@@ -46,18 +46,18 @@ class PatchingOperation(AgentOperation):
         """
         completed = False
         operation_data = {
-            OperationPerAgentKey.AgentId: agent_id,
-            OperationPerAgentKey.OperationId: operation_id,
-            OperationPerAgentKey.CustomerName: self.customer_name,
-            OperationPerAgentKey.Status: OperationPerAgentCodes.PendingPickUp,
-            OperationPerAgentKey.PickedUpTime: DbTime.begining_of_time(),
-            OperationPerAgentKey.ExpiredTime: DbTime.begining_of_time(),
-            OperationPerAgentKey.CompletedTime: DbTime.begining_of_time(),
-            OperationPerAgentKey.AppsTotalCount: len(applications),
-            OperationPerAgentKey.AppsPendingCount: len(applications),
-            OperationPerAgentKey.AppsFailedCount: self.INIT_COUNT,
-            OperationPerAgentKey.AppsCompletedCount: self.INIT_COUNT,
-            OperationPerAgentKey.Errors: None
+            OperationPerAgentKeys.AgentId: agent_id,
+            OperationPerAgentKeys.OperationId: operation_id,
+            OperationPerAgentKeys.CustomerName: self.customer_name,
+            OperationPerAgentKeys.Status: OperationPerAgentCodes.PendingPickUp,
+            OperationPerAgentKeys.PickedUpTime: DbTime.begining_of_time(),
+            OperationPerAgentKeys.ExpiredTime: DbTime.begining_of_time(),
+            OperationPerAgentKeys.CompletedTime: DbTime.begining_of_time(),
+            OperationPerAgentKeys.AppsTotalCount: len(applications),
+            OperationPerAgentKeys.AppsPendingCount: len(applications),
+            OperationPerAgentKeys.AppsFailedCount: self.INIT_COUNT,
+            OperationPerAgentKeys.AppsCompletedCount: self.INIT_COUNT,
+            OperationPerAgentKeys.Errors: None
         }
 
         status_code, count, errors, generated_ids = (
@@ -68,24 +68,24 @@ class PatchingOperation(AgentOperation):
             for app in applications:
                 apps.append(
                     {
-                        OperationPerAppKey.AgentId: agent_id,
-                        OperationPerAppKey.OperationId: operation_id,
-                        OperationPerAppKey.CustomerName: self.customer_name,
-                        OperationPerAppKey.Results: (
+                        OperationPerAppKeys.AgentId: agent_id,
+                        OperationPerAppKeys.OperationId: operation_id,
+                        OperationPerAppKeys.CustomerName: self.customer_name,
+                        OperationPerAppKeys.Results: (
                             AgentOperationCodes.ResultsPending
                         ),
-                        OperationPerAppKey.ResultsReceivedTime: (
+                        OperationPerAppKeys.ResultsReceivedTime: (
                             DbTime.begining_of_time()
                         ),
-                        OperationPerAppKey.AppId: app[OperationPerAppKey.AppId],
-                        OperationPerAppKey.AppName: (
-                            app[OperationPerAppKey.AppName]
+                        OperationPerAppKeys.AppId: app[OperationPerAppKeys.AppId],
+                        OperationPerAppKeys.AppName: (
+                            app[OperationPerAppKeys.AppName]
                         ),
-                        OperationPerAppKey.AppVersion: (
-                            app[OperationPerAppKey.AppVersion]
+                        OperationPerAppKeys.AppVersion: (
+                            app[OperationPerAppKeys.AppVersion]
                         ),
-                        OperationPerAppKey.AppsRemoved: [],
-                        OperationPerAppKey.Errors: None
+                        OperationPerAppKeys.AppsRemoved: [],
+                        OperationPerAppKeys.Errors: None
                     }
                 )
 
@@ -139,10 +139,10 @@ class PatchingOperation(AgentOperation):
 
         operation_data = (
             {
-                OperationPerAppKey.Results: status,
-                OperationPerAppKey.ResultsReceivedTime: self.db_time,
-                OperationPerAppKey.AppsRemoved: apps_removed,
-                OperationPerAppKey.Errors: errors
+                OperationPerAppKeys.Results: status,
+                OperationPerAppKeys.ResultsReceivedTime: self.db_time,
+                OperationPerAppKeys.AppsRemoved: apps_removed,
+                OperationPerAppKeys.Errors: errors
             }
         )
         status_code, count, errors, generated_ids = (
@@ -188,9 +188,9 @@ class PatchingOperation(AgentOperation):
             )
         )
         operation_data = {
-            OperationPerAgentKey.AppsCompletedCount: completed_count,
-            OperationPerAgentKey.AppsFailedCount: failed_count,
-            OperationPerAgentKey.AppsPendingCount: pending_count,
+            OperationPerAgentKeys.AppsCompletedCount: completed_count,
+            OperationPerAgentKeys.AppsFailedCount: failed_count,
+            OperationPerAgentKeys.AppsPendingCount: pending_count,
         }
 
         status_code, count, errors, generated_ids = (

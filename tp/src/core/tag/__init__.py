@@ -6,13 +6,13 @@ class TagCollections():
     TagsPerAgent = 'tag_per_agent'
 
 
-class TagsKey():
+class TagsKeys():
     TagId = 'tag_id'
     TagName = 'tag_name'
     CustomerName = 'customer_name'
     ProductionLevel = 'production_level'
 
-class TagsPerAgentKey():
+class TagsPerAgentKeys():
     Id = 'id'
     TagId = 'tag_id'
     TagName = 'tag_name'

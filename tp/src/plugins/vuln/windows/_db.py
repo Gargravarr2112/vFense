@@ -6,7 +6,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 from vFense.core.decorators import return_status_tuple, time_it
 from vFense.db.client import db_create_close, r
 from vFense.plugins.vuln.windows import WindowsSecurityCollection, \
-    WindowsSecurityBulletinKey, WindowsSecurityBulletinIndexes
+    WindowsSecurityBulletinKeys, WindowsSecurityBulletinIndexes
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('cve')
@@ -41,8 +41,8 @@ def fetch_vuln_ids(kb, conn=None):
             .table(WindowsSecurityCollection.Bulletin)
             .get_all(kb, index=WindowsSecurityBulletinIndexes.ComponentKb)
             .pluck(
-                WindowsSecurityBulletinKey.BulletinId,
-                WindowsSecurityBulletinKey.CveIds
+                WindowsSecurityBulletinKeys.BulletinId,
+                WindowsSecurityBulletinKeys.CveIds
             )
             .run(conn)
         )
@@ -85,18 +85,18 @@ def fetch_vuln_data(vuln_id, conn=None):
     data = []
     map_hash = (
         {
-            WindowsSecurityBulletinKey.Id:
-                r.row[WindowsSecurityBulletinKey.Id],
-            WindowsSecurityBulletinKey.BulletinId:
-                r.row[WindowsSecurityBulletinKey.BulletinId],
-            WindowsSecurityBulletinKey.DatePosted:
-                r.row[WindowsSecurityBulletinKey.DatePosted].to_epoch_time(),
-            WindowsSecurityBulletinKey.Details:
-                r.row[WindowsSecurityBulletinKey.Details],
-            WindowsSecurityBulletinKey.CveIds:
-                r.row[WindowsSecurityBulletinKey.CveIds],
-            WindowsSecurityBulletinKey.Supersedes:
-                r.row[WindowsSecurityBulletinKey.Supersedes],
+            WindowsSecurityBulletinKeys.Id:
+                r.row[WindowsSecurityBulletinKeys.Id],
+            WindowsSecurityBulletinKeys.BulletinId:
+                r.row[WindowsSecurityBulletinKeys.BulletinId],
+            WindowsSecurityBulletinKeys.DatePosted:
+                r.row[WindowsSecurityBulletinKeys.DatePosted].to_epoch_time(),
+            WindowsSecurityBulletinKeys.Details:
+                r.row[WindowsSecurityBulletinKeys.Details],
+            WindowsSecurityBulletinKeys.CveIds:
+                r.row[WindowsSecurityBulletinKeys.CveIds],
+            WindowsSecurityBulletinKeys.Supersedes:
+                r.row[WindowsSecurityBulletinKeys.Supersedes],
         }
     )
     try:

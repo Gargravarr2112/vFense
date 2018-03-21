@@ -47,7 +47,7 @@ class GetTransactionsHandler(BaseHandler):
             sort_by = (
                 self.get_argument(
                     ApiArguments.SORT_BY,
-                    AgentOperationKey.CreatedTime
+                    AgentOperationKeys.CreatedTime
                 )
             )
             operation = self.get_argument(ApiArguments.OPERATION, None)
@@ -110,7 +110,7 @@ class AgentOperationsHandler(BaseHandler):
             sort_by = (
                 self.get_argument(
                     ApiArguments.SORT_BY,
-                    AgentOperationKey.CreatedTime
+                    AgentOperationKeys.CreatedTime
                 )
             )
 
@@ -169,7 +169,7 @@ class TagOperationsHandler(BaseHandler):
             sort_by = (
                 self.get_argument(
                     ApiArguments.SORT_BY,
-                    AgentOperationKey.CreatedTime
+                    AgentOperationKeys.CreatedTime
                 )
             )
 
@@ -227,7 +227,7 @@ class OperationHandler(BaseHandler):
             sort_by = (
                 self.get_argument(
                     ApiArguments.SORT_BY,
-                    AgentOperationKey.CreatedTime
+                    AgentOperationKeys.CreatedTime
                 )
             )
 
@@ -241,7 +241,7 @@ class OperationHandler(BaseHandler):
 
             operation_data = get_agent_operation(operation_id)
             if operation_data:
-                if re.search('install', operation_data[AgentOperationKey.Operation]):
+                if re.search('install', operation_data[AgentOperationKeys.Operation]):
                     results = operations.get_install_operation_by_id(operation_id)
                 else:
                     results = operations.get_operation_by_id(operation_id)

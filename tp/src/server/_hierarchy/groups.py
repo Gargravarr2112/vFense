@@ -41,7 +41,7 @@ class Group():
             True if group was added successfully, False otherwise.
         """
 
-        u = {GroupKey.Name: user.name}
+        u = {GroupKeys.Name: user.name}
         ui = UserInfo(user.name)
 
         self._raw_users.append(u)
@@ -62,7 +62,7 @@ class Group():
             True if group was added successfully, False otherwise.
         """
 
-        u = {GroupKey.Name: user.name}
+        u = {GroupKeys.Name: user.name}
         ui = UserInfo(user.name)
 
         self._raw_users.remove(u)
@@ -80,7 +80,7 @@ class Group():
             True if user was added successfully, False otherwise.
         """
 
-        c = {GroupKey.Name: customer.name}
+        c = {GroupKeys.Name: customer.name}
         ci = CustomerInfo(customer.name)
 
         self._raw_customer = c
@@ -160,11 +160,11 @@ class Group():
 
         _group = {}
 
-        _group[GroupKey.Name] = self.name
-        _group[GroupKey.Id] = self.id
-        _group[GroupKey.Users] = self.get_users(raw=True)
-        _group[GroupKey.Customer] = self.get_customer(raw=True)
-        _group[GroupKey.Permissions] = self.get_permissions()
+        _group[GroupKeys.Name] = self.name
+        _group[GroupKeys.Id] = self.id
+        _group[GroupKeys.Users] = self.get_users(raw=True)
+        _group[GroupKeys.Customer] = self.get_customer(raw=True)
+        _group[GroupKeys.Permissions] = self.get_permissions()
 
         return _group
 

@@ -25,7 +25,7 @@ def get_all_agentids(username, customer_name, count=30, offset=0,
         count = (
                 r
                 .table(AgentsCollection)
-                .get_all(customer_name, index=AgentKey.CustomerName)
+                .get_all(customer_name, index=AgentKeys.CustomerName)
                 .count()
                 .run(conn)
                 )
@@ -33,9 +33,9 @@ def get_all_agentids(username, customer_name, count=30, offset=0,
         data = list(
                 r
                 .table(AgentsCollection)
-                .get_all(customer_name, index=AgentKey.CustomerName)
-                .pluck(AgentKey.AgentId)
-                .order_by(AgentKey.ComputerName)
+                .get_all(customer_name, index=AgentKeys.CustomerName)
+                .pluck(AgentKeys.AgentId)
+                .order_by(AgentKeys.ComputerName)
                 .skip(offset)
                 .limit(count)
                 .run(conn)
@@ -44,7 +44,7 @@ def get_all_agentids(username, customer_name, count=30, offset=0,
         if data:
             for agent in data:
                 agent[BASIC_RV_STATS] = (
-                    get_all_app_stats_by_agentid(agent[AgentKey.AgentId])
+                    get_all_app_stats_by_agentid(agent[AgentKeys.AgentId])
                 )
         status = (
                 GenericResults(
@@ -63,16 +63,16 @@ def get_all_agentids(username, customer_name, count=30, offset=0,
 
 
 @db_create_close
-def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKey.ComputerName,
+def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKeys.ComputerName,
         count=30, offset=0, query=None, uri=None, method=None, conn=None):
     
     if query:
         count = (
                 r
                .table(AgentsCollection)
-               .get_all(customer_name, index=AgentKey.CustomerName)
+               .get_all(customer_name, index=AgentKeys.CustomerName)
                .filter(
-                   (r.row[AgentKey.ComputerName].match("(?i)"+query))
+                   (r.row[AgentKeys.ComputerName].match("(?i)"+query))
                    )
                .count()
                .run(conn)
@@ -81,7 +81,7 @@ def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKey.C
         data = list(
                 r
                 .table(AgentsCollection)
-                .get_all(customer_name, index=AgentKey.CustomerName)
+                .get_all(customer_name, index=AgentKeys.CustomerName)
                 .filter(
                     (r.row[key].match("(?i)"+query))
                     )
@@ -95,7 +95,7 @@ def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKey.C
         count = (
                 r
                 .table(AgentsCollection)
-                .get_all(customer_name, index=AgentKey.CustomerName)
+                .get_all(customer_name, index=AgentKeys.CustomerName)
                 .count()
                 .run(conn)
                 )
@@ -103,7 +103,7 @@ def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKey.C
         data = list(
                 r
                 .table(AgentsCollection)
-                .get_all(customer_name, index=AgentKey.CustomerName)
+                .get_all(customer_name, index=AgentKeys.CustomerName)
                 .pluck(keys_to_pluck)
                 .skip(offset)
                 .limit(count)
@@ -115,8 +115,8 @@ def filter_by_and_query(username, customer_name, keys_to_pluck, key = AgentKey.C
 
 def systems_os_details(username, customer_name, key, query, uri=None, method=None):
    
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.OsCode, 
-            AgentKey.OsString, AgentKey.MachineType, AgentKey.SysArch]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.OsCode, 
+            AgentKeys.OsString, AgentKeys.MachineType, AgentKeys.SysArch]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query,keys_to_pluck=keys_to_pluck)
@@ -140,9 +140,9 @@ def systems_os_details(username, customer_name, key, query, uri=None, method=Non
 
 def system_hardware_details(agent_info):
     if agent_info:
-        hardware_info=agent_info.get(AgentKey.Hardware)
+        hardware_info=agent_info.get(AgentKeys.Hardware)
         data={
-                "computer-name":agent_info.get(AgentKey.ComputerName),  
+                "computer-name":agent_info.get(AgentKeys.ComputerName),  
                 "cpu":hardware_info.get('cpu'), 
                 "disk":hardware_info.get('storage'), 
                 "display":hardware_info.get('display'), 
@@ -152,7 +152,7 @@ def system_hardware_details(agent_info):
 
 def systems_hardware_details (username, customer_name, key, query,  uri=None, method=None):
 
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.Hardware]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.Hardware]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query,keys_to_pluck=keys_to_pluck)
@@ -179,14 +179,14 @@ def systems_network_details(username, customer_name, key, query,
         uri=None, method=None):
 
     network_stats=[]
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.Hardware]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.Hardware]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query,keys_to_pluck=keys_to_pluck)
 
     for d in data:
         network_data= {
-                "computer_name" : d[AgentKey.ComputerName],
+                "computer_name" : d[AgentKeys.ComputerName],
                 "network" : d['hardware']['nic']
                 }
         network_stats.append(network_data)
@@ -216,17 +216,17 @@ def systems_cpu_details (username, customer_name, key, query,
     
     cpu_stats=[]
 
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.MonitStats,]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.MonitStats,]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query,keys_to_pluck=keys_to_pluck)
     for d in data:
         cpu_data = {
-                "computer-name" : d[AgentKey.ComputerName],
-                "last-updated-at": time.ctime(d[AgentKey.MonitStats]['timestamp']),
-                "idle": d[AgentKey.MonitStats]['cpu']['idle'],
-                "user":d[AgentKey.MonitStats]['cpu']['user'],
-                "system":d[AgentKey.MonitStats]['cpu']['system']
+                "computer-name" : d[AgentKeys.ComputerName],
+                "last-updated-at": time.ctime(d[AgentKeys.MonitStats]['timestamp']),
+                "idle": d[AgentKeys.MonitStats]['cpu']['idle'],
+                "user":d[AgentKeys.MonitStats]['cpu']['user'],
+                "system":d[AgentKeys.MonitStats]['cpu']['system']
                 }
         cpu_stats.append(cpu_data)
 
@@ -253,19 +253,19 @@ def systems_memory_stats(username, customer_name, key, query,
 
     memory_stats = []
 
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.MonitStats,]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.MonitStats,]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query, keys_to_pluck=keys_to_pluck)
     for d in data:
         memory_data = {
-                "computer-name": d[AgentKey.ComputerName],
-                "last-updated-at": time.ctime(d[AgentKey.MonitStats]['timestamp']),
-                "total" : d[AgentKey.MonitStats]['memory']['total'],
-                "used" : d[AgentKey.MonitStats]['memory']['used'],
-                "used-percentage": d[AgentKey.MonitStats]['memory']['used_percent'],
-                "free":d[AgentKey.MonitStats]['memory']['free'],
-                "free-percent": d[AgentKey.MonitStats]['memory']['free_percent'],
+                "computer-name": d[AgentKeys.ComputerName],
+                "last-updated-at": time.ctime(d[AgentKeys.MonitStats]['timestamp']),
+                "total" : d[AgentKeys.MonitStats]['memory']['total'],
+                "used" : d[AgentKeys.MonitStats]['memory']['used'],
+                "used-percentage": d[AgentKeys.MonitStats]['memory']['used_percent'],
+                "free":d[AgentKeys.MonitStats]['memory']['free'],
+                "free-percent": d[AgentKeys.MonitStats]['memory']['free_percent'],
                 }
         memory_stats.append(memory_data)
 
@@ -294,7 +294,7 @@ def system_disk_stats(agent_info):
             file_system=monit_stats.get('file_system')
             if file_system:
                 data ={
-                        "computer-name": agent_info.get(AgentKey.ComputerName),
+                        "computer-name": agent_info.get(AgentKeys.ComputerName),
                         "disk-usage":file_system,
                         }
                 return(data)
@@ -304,15 +304,15 @@ def systems_disk_stats(username, customer_name, key, query,
         uri=None, method=None):
     fs_stats =[]
 
-    keys_to_pluck = [AgentKey.ComputerName, AgentKey.MonitStats,]
+    keys_to_pluck = [AgentKeys.ComputerName, AgentKeys.MonitStats,]
     
     data = filter_by_and_query(username=username, customer_name=customer_name,
             key=key, query=query,keys_to_pluck=keys_to_pluck)
 
     for d in data:
         fs_data = {
-                "computer-name": d[AgentKey.ComputerName],
-                "disk-usage": d[AgentKey.MonitStats]['file_system'],
+                "computer-name": d[AgentKeys.ComputerName],
+                "disk-usage": d[AgentKeys.MonitStats]['file_system'],
                 }
         fs_stats.append(fs_data)
     
@@ -338,7 +338,7 @@ def agent_last_updated(agent_info):
     if agent_info:
         last_updated= agent_info.get('last_agent_update')
         data = {
-                "computer-name": agent_info.get(AgentKey.ComputerName),
+                "computer-name": agent_info.get(AgentKeys.ComputerName),
                 "last_agent_update": last_updated.strftime("%b %d %Y %H:%M:%S"),
                 }
         return (data)

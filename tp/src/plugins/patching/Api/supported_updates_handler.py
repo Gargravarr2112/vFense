@@ -52,7 +52,7 @@ class AgentIdSupportedAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', SupportedAppsKey.Name)
+        sort_by = self.get_argument('sort_by', SupportedAppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO
@@ -263,7 +263,7 @@ class TagIdSupportedAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', SupportedAppsKey.Name)
+        sort_by = self.get_argument('sort_by', SupportedAppsKeys.Name)
         uri = self.request.uri
         method = self.request.method
         patches = (
@@ -490,7 +490,7 @@ class AppIdSupportedAppsHandler(BaseHandler):
             severity = self.arguments.get('severity').capitalize()
 
             if severity in CommonSeverityKeys.ValidRvSeverities:
-                sev_data = {AppsKey.RvSeverity: severity}
+                sev_data = {AppsKeys.RvSeverity: severity}
 
                 update_app_data_by_app_id(
                     app_id, sev_data, AppCollections.SupportedApps
@@ -862,7 +862,7 @@ class SupportedAppsHandler(BaseHandler):
         status = self.get_argument('status', None)
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', SupportedAppsKey.Name)
+        sort_by = self.get_argument('sort_by', SupportedAppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO

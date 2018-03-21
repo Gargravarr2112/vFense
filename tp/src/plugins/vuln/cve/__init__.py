@@ -1,7 +1,7 @@
 class CVECollections():
     CVE = 'cve'
 
-class CveKey():
+class CveKeys():
     CveId = 'cve_id'
     CveCategories = 'vulnerability_categories'
     CveDescriptions = 'cve_descriptions'

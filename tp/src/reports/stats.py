@@ -12,21 +12,21 @@ from vFense.errorz.error_messages import *
 
 def system_os_details(agent_info):
     data={
-        "computer-name": agent_info.get(AgentKey.ComputerName),
-        "os-type": agent_info.get(AgentKey.OsCode), 
-        "os-name": agent_info.get(AgentKey.OsString),
+        "computer-name": agent_info.get(AgentKeys.ComputerName),
+        "os-type": agent_info.get(AgentKeys.OsCode), 
+        "os-name": agent_info.get(AgentKeys.OsString),
         "system-arch": agent_info.get('bit_type'),
-        "machine-type": agent_info.get(AgentKey.MachineType),
+        "machine-type": agent_info.get(AgentKeys.MachineType),
     }
 
     return data
 
 
 def system_hardware_details(agent_info):
-    hardware_info=agent_info.get(AgentKey.Hardware, {})
+    hardware_info=agent_info.get(AgentKeys.Hardware, {})
 
     data = {
-        "computer-name": agent_info.get(AgentKey.ComputerName),  
+        "computer-name": agent_info.get(AgentKeys.ComputerName),  
         "cpu": hardware_info.get('cpu'), 
         "disk": hardware_info.get('storage'), 
         "display": hardware_info.get('display'), 
@@ -36,14 +36,14 @@ def system_hardware_details(agent_info):
     return data
 
 def system_network_details(agent_info):
-    hardware_info=agent_info.get(AgentKey.Hardware)
+    hardware_info=agent_info.get(AgentKeys.Hardware)
     # Windows agent writes network information into 'network' and linux agent writes it into 'nic'
     ntw = hardware_info.get('nic')
     if ntw is None:
         ntw = hardware_info.get('network')
 
     data = {
-        "computer-name":agent_info.get(AgentKey.ComputerName),
+        "computer-name":agent_info.get(AgentKeys.ComputerName),
         "network":ntw,
     }
 
@@ -55,7 +55,7 @@ def system_cpu_stats(agent_info):
     cpu_stats = monit_stats.get('cpu', {})
 
     data = {
-        "computer-name": agent_info.get(AgentKey.ComputerName),
+        "computer-name": agent_info.get(AgentKeys.ComputerName),
         "last-updated-at": monit_stats.get('timestamp'),
         "idle": cpu_stats.get('idle'),
         "user": cpu_stats.get('user'),
@@ -70,7 +70,7 @@ def system_memory_stats(agent_info):
     memory_stats=monit_stats.get('memory', {})
 
     data = {
-        "computer-name": agent_info.get(AgentKey.ComputerName),
+        "computer-name": agent_info.get(AgentKeys.ComputerName),
         "last-updated-at": monit_stats.get('timestamp'),
         "total": memory_stats.get('total'),
         "used": memory_stats.get('used'),
@@ -87,7 +87,7 @@ def system_disk_stats(agent_info):
     file_system = monit_stats.get('file_system', {})
 
     data ={
-        "computer-name": agent_info.get(AgentKey.ComputerName),
+        "computer-name": agent_info.get(AgentKeys.ComputerName),
         "disk-usage":file_system
     }
 

@@ -8,7 +8,7 @@ from vFense.db.client import r
 from vFense.errorz.status_codes import PackageCodes
 from vFense.core._db_constants import DbTime
 
-from vFense.plugins.patching import AppsKey, AppsPerAgentKey, AppCollections
+from vFense.plugins.patching import AppsKeys, AppsPerAgentKeys, AppCollections
 from vFense.plugins.patching._constants import CommonAppKeys
 from vFense.plugins.patching.utils import build_app_id, build_agent_app_id, \
     get_proper_severity
@@ -42,35 +42,35 @@ class IncomingApplications():
         self.modified_time = DbTime.time_now()
 
     def _set_app_per_node_parameters(self, app):
-        app[AppsPerAgentKey.AgentId] = self.agent_id
-        app[AppsKey.OsCode] = self.os_code
-        app[AppsKey.RvSeverity] = get_proper_severity(
-            app[AppsKey.VendorSeverity]
+        app[AppsPerAgentKeys.AgentId] = self.agent_id
+        app[AppsKeys.OsCode] = self.os_code
+        app[AppsKeys.RvSeverity] = get_proper_severity(
+            app[AppsKeys.VendorSeverity]
         )
 
-        app[AppsKey.ReleaseDate] = (
-            r.epoch_time(app[AppsKey.ReleaseDate])
+        app[AppsKeys.ReleaseDate] = (
+            r.epoch_time(app[AppsKeys.ReleaseDate])
         )
 
-        app[AppsPerAgentKey.InstallDate] = (
-            r.epoch_time(app[AppsPerAgentKey.InstallDate])
+        app[AppsPerAgentKeys.InstallDate] = (
+            r.epoch_time(app[AppsPerAgentKeys.InstallDate])
         )
 
         return app
 
     def _set_specific_keys_for_agent_app(self, app_dict):
         necessary_keys = {
-            AppsPerAgentKey.AppId: app_dict[AppsPerAgentKey.AppId],
-            AppsPerAgentKey.InstallDate: app_dict[AppsPerAgentKey.InstallDate],
-            AppsPerAgentKey.AgentId: self.agent_id,
-            AppsPerAgentKey.CustomerName: self.customer_name,
-            AppsPerAgentKey.Status: app_dict[AppsPerAgentKey.Status],
-            AppsPerAgentKey.Dependencies:
-                app_dict.pop(AppsPerAgentKey.Dependencies),
-            AppsPerAgentKey.Update: PackageCodes.ThisIsAnUpdate,
-            AppsPerAgentKey.LastModifiedTime: self.modified_time,
-            AppsPerAgentKey.Id: build_agent_app_id(
-                self.agent_id, app_dict[AppsPerAgentKey.AppId]
+            AppsPerAgentKeys.AppId: app_dict[AppsPerAgentKeys.AppId],
+            AppsPerAgentKeys.InstallDate: app_dict[AppsPerAgentKeys.InstallDate],
+            AppsPerAgentKeys.AgentId: self.agent_id,
+            AppsPerAgentKeys.CustomerName: self.customer_name,
+            AppsPerAgentKeys.Status: app_dict[AppsPerAgentKeys.Status],
+            AppsPerAgentKeys.Dependencies:
+                app_dict.pop(AppsPerAgentKeys.Dependencies),
+            AppsPerAgentKeys.Update: PackageCodes.ThisIsAnUpdate,
+            AppsPerAgentKeys.LastModifiedTime: self.modified_time,
+            AppsPerAgentKeys.Id: build_agent_app_id(
+                self.agent_id, app_dict[AppsPerAgentKeys.AppId]
             )
         }
 
@@ -100,17 +100,17 @@ class IncomingApplications():
 
         for app_dict in app_list:
             try:
-                if not app_dict.get(AppsKey.Name):
+                if not app_dict.get(AppsKeys.Name):
                     continue
 
                 app_dict = self._set_app_per_node_parameters(app_dict)
 
                 app_id = build_app_id(
-                    app_dict[AppsKey.Name], app_dict[AppsKey.Version]
+                    app_dict[AppsKeys.Name], app_dict[AppsKeys.Version]
                 )
-                file_data = app_dict.get(AppsKey.FileData)
+                file_data = app_dict.get(AppsKeys.FileData)
 
-                app_dict[AppsKey.AppId] = app_id
+                app_dict[AppsKeys.AppId] = app_id
                 agent_app = self._set_specific_keys_for_agent_app(app_dict)
 
                 # Mutates app_dict
@@ -120,7 +120,7 @@ class IncomingApplications():
                 self.inserted_count += counts[0]
                 self.updated_count += counts[1]
 
-                if agent_app[AppsPerAgentKey.Status] == CommonAppKeys.AVAILABLE:
+                if agent_app[AppsPerAgentKeys.Status] == CommonAppKeys.AVAILABLE:
                     self._download_app_files(app_id, file_data, app_collection)
 
                 good_app_list.append(agent_app)

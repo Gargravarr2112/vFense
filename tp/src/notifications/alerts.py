@@ -13,7 +13,7 @@ from vFense.operations import *
 from vFense.notifications import *
 from vFense.rv_exceptions.broken import *
 
-from vFense.server.hierarchy import Collection, GroupKey, UserKey, CustomerKey
+from vFense.server.hierarchy import Collection, GroupKeys, UserKeys, CustomerKeys
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
@@ -97,34 +97,34 @@ def get_valid_fields(username, customer_name,
         agents = list(
             r
             .table(AgentsCollection)
-            .get_all(customer_name, index=AgentKey.CustomerName)
-            .pluck(AgentKey.AgentId, AgentKey.ComputerName)
+            .get_all(customer_name, index=AgentKeys.CustomerName)
+            .pluck(AgentKeys.AgentId, AgentKeys.ComputerName)
             .run(conn)
         )
         tags = list(
             r
             .table(TagsCollection)
             .get_all(customer_name, index=TagsIndexes.CustomerName)
-            .pluck(TagsKey.TagId, TagsKey.TagName)
+            .pluck(TagsKeys.TagId, TagsKeys.TagName)
             .run(conn)
         )
         users = list(
             r
             .table(Collection.Users)
-            .pluck(UserKey.UserName)
+            .pluck(UserKeys.UserName)
             .run(conn)
         )
         groups = list(
             r
             .table(Collection.Groups)
-            .get_all(customer_name, index=GroupKey.CustomerId)
-            .pluck(GroupKey.GroupName)
+            .get_all(customer_name, index=GroupKeys.CustomerId)
+            .pluck(GroupKeys.GroupName)
             .run(conn)
         )
         customers = list(
             r
             .table(Collection.Customers)
-            .pluck(CustomerKey.CustomerName)
+            .pluck(CustomerKeys.CustomerName)
             .run(conn)
         )
         data = {
@@ -448,7 +448,7 @@ class Notifier():
                     r
                     .table(AgentsCollection)
                     .get(x)
-                    .pluck(AgentKey.AgentId)
+                    .pluck(AgentKeys.AgentId)
                     .run(conn)
                 )
                 if not valid:
@@ -468,7 +468,7 @@ class Notifier():
                     r
                     .table(TagsCollection)
                     .get(x)
-                    .pluck(TagsKey.TagId)
+                    .pluck(TagsKeys.TagId)
                     .run(conn)
                 )
                 if not valid:

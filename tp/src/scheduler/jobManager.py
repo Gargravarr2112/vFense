@@ -45,18 +45,18 @@ def start_scheduler(redis_db=10, conn=None):
         customers = (
             r
             .table(Collection.Customers)
-            .pluck(CustomerKey.CustomerName)
+            .pluck(CustomerKeys.CustomerName)
             .run(conn)
         )
 
         if customers:
             for customer in customers:
                 sched.add_jobstore(
-                    RedisJobStore(db=10, key_prefix=customer[CustomerKey.CustomerName]+'.'), customer[CustomerKey.CustomerName]
+                    RedisJobStore(db=10, key_prefix=customer[CustomerKeys.CustomerName]+'.'), customer[CustomerKeys.CustomerName]
                 )
                 list_of_customers.append(
                     {
-                        'name': customer[CustomerKey.CustomerName]
+                        'name': customer[CustomerKeys.CustomerName]
                     }
                 )
 
@@ -243,7 +243,7 @@ def get_agentids_per_job(job_info, customer_name, username,  conn=None):
 def get_tags_per_job(job_info, username, customer_name, conn=None):
 
     tags = []
-    keys_to_pluck = [TagsKey.TagId, TagsKey.TagName]
+    keys_to_pluck = [TagsKeys.TagId, TagsKeys.TagName]
 
     if job_info['all_tags']:
         tags = get_tags_info(customer_name, keys_to_pluck)
@@ -310,7 +310,7 @@ def get_appid_list(agent_id, severity=None,
 
 
 def get_app_for_appids(collection, app_id, conn=None):
-    fields_to_pluck = [AppsKey.AppId, AppsKey.Name, AppsKey.RvSeverity]
+    fields_to_pluck = [AppsKeys.AppId, AppsKeys.Name, AppsKeys.RvSeverity]
     app = fetch_app_data(
         app_id, collection=collection, fields_to_pluck=fields_to_pluck
     )
@@ -323,9 +323,9 @@ def get_agent_apps_details(job, agent_id, details=True, conn=None):
     app_ids_needed = []
     apps = []
     app_keys_to_pluck = [
-        AppsKey.AppId,
-        AppsKey.Name,
-        AppsKey.RvSeverity
+        AppsKeys.AppId,
+        AppsKeys.Name,
+        AppsKeys.RvSeverity
     ]
 
     if job['pkg_type'] == 'system_apps':
@@ -354,14 +354,14 @@ def get_agent_apps_details(job, agent_id, details=True, conn=None):
             .table(CurrentAppsCollection)
             .filter(
                 {
-                    AppsKey.AppId:app_id
+                    AppsKeys.AppId:app_id
                 }
             )
-            .pluck(AppsKey.Hidden)
+            .pluck(AppsKeys.Hidden)
             .run(conn)
         )
 
-        if app_info[0][AppsKey.Hidden] == 'no':
+        if app_info[0][AppsKeys.Hidden] == 'no':
             app_ids_needed.append(app_id)
 
     if app_ids_needed and details:
@@ -386,9 +386,9 @@ def get_schedule_details(sched, job_name, username, customer_name,
 
     jobs = sched.get_jobs(name=customer_name)
     agent_keys_to_pluck = [
-        AgentKey.ComputerName,
-        AgentKey.DisplayName,
-        AgentKey.AgentId
+        AgentKeys.ComputerName,
+        AgentKeys.DisplayName,
+        AgentKeys.AgentId
     ]
 
     try:

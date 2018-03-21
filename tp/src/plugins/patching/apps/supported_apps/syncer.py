@@ -22,7 +22,7 @@ from vFense.plugins.patching.downloader.downloader import \
     download_all_files_in_app
 
 from vFense.db.client import db_connect, r, db_create_close
-from vFense.server.hierarchy import Collection, CustomerKey
+from vFense.server.hierarchy import Collection, CustomerKeys
 
 import redis
 from rq import Queue
@@ -93,21 +93,21 @@ class IncomingSupportedApps(object):
             conn = db_connect()
             for agent in agents:
                 self._delete_old_supported_apps_from_agent(
-                    agent[SupportedAppsPerAgentKey.AgentId], conn
+                    agent[SupportedAppsPerAgentKeys.AgentId], conn
                 )
 
             for app in apps:
                 if not agents:
                     agents = self._get_list_of_agents_by_os_code(
-                        app[AgentKey.OsCode]
+                        app[AgentKeys.OsCode]
                     )
 
-                app_id = app.get(SupportedAppsKey.AppId)
-                file_data = app.get(SupportedAppsKey.FileData)
+                app_id = app.get(SupportedAppsKeys.AppId)
+                file_data = app.get(SupportedAppsKeys.FileData)
 
                 for agent in agents:
-                    if agent[AgentKey.OsCode] == app[SupportedAppsKey.OsCode]:
-                        agent_id = agent[SupportedAppsPerAgentKey.AgentId]
+                    if agent[AgentKeys.OsCode] == app[SupportedAppsKeys.OsCode]:
+                        agent_id = agent[SupportedAppsPerAgentKeys.AgentId]
 
                         add_file_data(app_id, file_data, agent_id)
 
@@ -123,7 +123,7 @@ class IncomingSupportedApps(object):
 
                         elif agent_has_app:
                             app_per_agent_props[
-                                SupportedAppsPerAgentKey.Status
+                                SupportedAppsPerAgentKeys.Status
                             ] = CommonAppKeys.INSTALLED
 
                             self.insert_app(app_per_agent_props)
@@ -159,7 +159,7 @@ class IncomingSupportedApps(object):
                 (
                     r
                     .table(AppCollections.AppsPerAgent)
-                    .get(lower_app[AppsPerAgentKey.Id])
+                    .get(lower_app[AppsPerAgentKeys.Id])
                     .delete()
                     .run(conn)
                 )
@@ -168,23 +168,23 @@ class IncomingSupportedApps(object):
 
     def _set_app_per_agent_properties(self, agent, app_id):
         return {
-            SupportedAppsPerAgentKey.AgentId:
-                agent[AgentKey.AgentId],
-            SupportedAppsPerAgentKey.CustomerName:
-                agent[AgentKey.CustomerName],
-            SupportedAppsPerAgentKey.Status:
+            SupportedAppsPerAgentKeys.AgentId:
+                agent[AgentKeys.AgentId],
+            SupportedAppsPerAgentKeys.CustomerName:
+                agent[AgentKeys.CustomerName],
+            SupportedAppsPerAgentKeys.Status:
                 CommonAppKeys.AVAILABLE,
-            SupportedAppsPerAgentKey.LastModifiedTime:
+            SupportedAppsPerAgentKeys.LastModifiedTime:
                 self.last_modified_time,
-            SupportedAppsPerAgentKey.Update:
+            SupportedAppsPerAgentKeys.Update:
                 PackageCodes.ThisIsAnUpdate,
-            SupportedAppsPerAgentKey.InstallDate:
+            SupportedAppsPerAgentKeys.InstallDate:
                 r.epoch_time(0.0),
-            SupportedAppsPerAgentKey.AppId:
+            SupportedAppsPerAgentKeys.AppId:
                 app_id,
-            SupportedAppsPerAgentKey.Id:
+            SupportedAppsPerAgentKeys.Id:
                 build_agent_app_id(
-                    agent[SupportedAppsPerAgentKey.AgentId],
+                    agent[SupportedAppsPerAgentKeys.AgentId],
                     app_id
                 )
         }
@@ -196,15 +196,15 @@ class IncomingSupportedApps(object):
                 r
                 .table(AppCollections.UniqueApplications)
                 .get_all(
-                    app_info[AppsKey.Name],
+                    app_info[AppsKeys.Name],
                     index=AppsIndexes.Name
                 )
                 .run(conn)
                 .pluck(
-                    SupportedAppsKey.AppId,
-                    SupportedAppsKey.Name,
-                    SupportedAppsKey.Version,
-                    SupportedAppsPerAgentKey.AgentId
+                    SupportedAppsKeys.AppId,
+                    SupportedAppsKeys.Name,
+                    SupportedAppsKeys.Version,
+                    SupportedAppsPerAgentKeys.AgentId
                 )
                 .run(conn)
             )
@@ -222,17 +222,17 @@ class IncomingSupportedApps(object):
                 r
                 .table(AppCollections.UniqueApplications)
                 .get_all(
-                    app_info[AppsKey.Name],
+                    app_info[AppsKeys.Name],
                     index=AppsIndexes.Name
                 )
                 .filter(
-                    lambda x: x[AppsKey.Version] < app_info[AppsKey.Version]
+                    lambda x: x[AppsKeys.Version] < app_info[AppsKeys.Version]
                 )
                 .eq_join(
                     lambda y:
                     [
-                        app[AgentKey.AgentId],
-                        app[AppsPerAgentKey.AppId],
+                        app[AgentKeys.AgentId],
+                        app[AppsPerAgentKeys.AppId],
                     ],
                     r.table(AppCollections.AppsPerAgent),
                     index=AppsPerAgentIndexes.AgentId
@@ -240,14 +240,14 @@ class IncomingSupportedApps(object):
                 .zip()
                 .filter(
                     {
-                        AppsPerAgentKey.Status: status
+                        AppsPerAgentKeys.Status: status
                     }
                 )
                 .pluck(
-                    AppsKey.AppId,
-                    AppsPerAgentKey.Id,
-                    AppsKey.Name,
-                    AppsPerAgentKey.AgentId
+                    AppsKeys.AppId,
+                    AppsPerAgentKeys.Id,
+                    AppsKeys.Name,
+                    AppsPerAgentKeys.AgentId
                 )
                 .run(conn)
             )
@@ -289,31 +289,31 @@ def update_supported_apps(json_data):
         all_customers = list(
             r
             .table(Collection.Customers)
-            .map(lambda x: x[CustomerKey.CustomerName])
+            .map(lambda x: x[CustomerKeys.CustomerName])
             .run(conn)
         )
 
         for i in range(len(json_data)):
-            json_data[i][SupportedAppsKey.Customers] = all_customers
-            json_data[i][SupportedAppsKey.ReleaseDate] = \
-                r.epoch_time(json_data[i][SupportedAppsKey.ReleaseDate])
-            json_data[i][SupportedAppsKey.FilesDownloadStatus] = \
+            json_data[i][SupportedAppsKeys.Customers] = all_customers
+            json_data[i][SupportedAppsKeys.ReleaseDate] = \
+                r.epoch_time(json_data[i][SupportedAppsKeys.ReleaseDate])
+            json_data[i][SupportedAppsKeys.FilesDownloadStatus] = \
                 PackageCodes.FilePendingDownload
-            json_data[i][SupportedAppsKey.Hidden] = 'no'
-            json_data[i][SupportedAppsKey.VulnerabilityId] = ''
+            json_data[i][SupportedAppsKeys.Hidden] = 'no'
+            json_data[i][SupportedAppsKeys.VulnerabilityId] = ''
 
             insert_app_data(
                 json_data[i], DownloadCollections.LatestDownloadedSupported
             )
-            file_data = json_data[i].get(SupportedAppsKey.FileData)
-            add_file_data(json_data[i][SupportedAppsKey.AppId], file_data)
+            file_data = json_data[i].get(SupportedAppsKeys.FileData)
+            add_file_data(json_data[i][SupportedAppsKeys.AppId], file_data)
             data_to_update = {
-                SupportedAppsKey.Customers: all_customers
+                SupportedAppsKeys.Customers: all_customers
             }
             exists = (
                 r
                 .table(AppCollections.SupportedApps)
-                .get(json_data[i][SupportedAppsKey.AppId])
+                .get(json_data[i][SupportedAppsKeys.AppId])
                 .run(conn)
             )
 
@@ -321,7 +321,7 @@ def update_supported_apps(json_data):
                 updated = (
                     r
                     .table(AppCollections.SupportedApps)
-                    .get(json_data[i][SupportedAppsKey.AppId])
+                    .get(json_data[i][SupportedAppsKeys.AppId])
                     .update(data_to_update)
                     .run(conn)
                 )
@@ -337,8 +337,8 @@ def update_supported_apps(json_data):
             rv_q.enqueue_call(
                 func=download_all_files_in_app,
                 args=(
-                    json_data[i][SupportedAppsKey.AppId],
-                    json_data[i][SupportedAppsKey.OsCode],
+                    json_data[i][SupportedAppsKeys.AppId],
+                    json_data[i][SupportedAppsKeys.OsCode],
                     None,
                     file_data,
                     0,
@@ -379,7 +379,7 @@ def get_supported_apps():
 def get_all_supported_apps_for_agent(agent_id):
     agent = get_agent_info(agent_id)
     apps = fetch_apps_data_by_os_code(
-        agent[AgentKey.OsCode],
+        agent[AgentKeys.OsCode],
         collection=DownloadCollections.LatestDownloadedSupported
     )
 

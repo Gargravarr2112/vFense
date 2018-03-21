@@ -42,13 +42,13 @@ class Hierarchy():
             if u:
 
                 user = User(
-                    u[UserKey.UserName],
-                    u[UserKey.Password],
-                    u[UserKey.FullName],
-                    u[UserKey.Email],
-                    u[UserKey.CurrentCustomer],
-                    u[UserKey.DefaultCustomer],
-                    u[UserKey.Enabled]
+                    u[UserKeys.UserName],
+                    u[UserKeys.Password],
+                    u[UserKeys.FullName],
+                    u[UserKeys.Email],
+                    u[UserKeys.CurrentCustomer],
+                    u[UserKeys.DefaultCustomer],
+                    u[UserKeys.Enabled]
                 )
 
         except Exception as e:
@@ -82,8 +82,8 @@ class Hierarchy():
             for c in all_customers:
                 try:
                     customer = Customer(
-                        c[CustomerKey.CustomerName],
-                        c[CustomerKey.Properties],
+                        c[CustomerKeys.CustomerName],
+                        c[CustomerKeys.Properties],
                     )
 
                     customers.append(customer)
@@ -129,13 +129,13 @@ class Hierarchy():
             for u in group_users:
                 try:
                     user = User(
-                        u[UserKey.UserName],
-                        u[UserKey.Password],
-                        u[UserKey.FullName],
-                        u[UserKey.Email],
-                        u[UserKey.CurrentCustomer],
-                        u[UserKey.DefaultCustomer],
-                        u[UserKey.Enabled]
+                        u[UserKeys.UserName],
+                        u[UserKeys.Password],
+                        u[UserKeys.FullName],
+                        u[UserKeys.Email],
+                        u[UserKeys.CurrentCustomer],
+                        u[UserKeys.DefaultCustomer],
+                        u[UserKeys.Enabled]
                     )
 
                     users.append(user)
@@ -181,13 +181,13 @@ class Hierarchy():
             for u in customer_users:
                 try:
                     user = User(
-                        u[UserKey.UserName],
-                        u[UserKey.Password],
-                        u[UserKey.FullName],
-                        u[UserKey.Email],
-                        u[UserKey.CurrentCustomer],
-                        u[UserKey.DefaultCustomer],
-                        u[UserKey.Enabled]
+                        u[UserKeys.UserName],
+                        u[UserKeys.Password],
+                        u[UserKeys.FullName],
+                        u[UserKeys.Email],
+                        u[UserKeys.CurrentCustomer],
+                        u[UserKeys.DefaultCustomer],
+                        u[UserKeys.Enabled]
                     )
 
                     users.append(user)
@@ -229,12 +229,12 @@ class Hierarchy():
                 group_name,
                 customer_name
             ],
-            index=GroupKey.GroupNameAndCustomerId
+            index=GroupKeys.GroupNameAndCustomerId
         )
 
         if len(group) >= 1:
             for gp in group:
-                if gp[GroupKey.CustomerId] == customer_name:
+                if gp[GroupKeys.CustomerId] == customer_name:
                     g = gp
                     break
 
@@ -246,10 +246,10 @@ class Hierarchy():
         if g:
 
             group = Group(
-                g[GroupKey.GroupName],
-                g[GroupKey.CustomerId],
-                g[GroupKey.Permissions],
-                g[GroupKey.Id]
+                g[GroupKeys.GroupName],
+                g[GroupKeys.CustomerId],
+                g[GroupKeys.Permissions],
+                g[GroupKeys.Id]
             )
 
             return group
@@ -280,10 +280,10 @@ class Hierarchy():
             if g:
 
                 group = Group(
-                    g[GroupKey.GroupName],
-                    g[GroupKey.CustomerId],
-                    g[GroupKey.Permissions],
-                    g[GroupKey.Id]
+                    g[GroupKeys.GroupName],
+                    g[GroupKeys.CustomerId],
+                    g[GroupKeys.Permissions],
+                    g[GroupKeys.Id]
                 )
 
                 return group
@@ -338,10 +338,10 @@ class Hierarchy():
                     try:
 
                         tmp = Group(
-                            group[GroupKey.GroupName],
-                            group[GroupKey.CustomerId],
-                            group[GroupKey.Permissions],
-                            group[GroupKey.Id]
+                            group[GroupKeys.GroupName],
+                            group[GroupKeys.CustomerId],
+                            group[GroupKeys.Permissions],
+                            group[GroupKeys.Id]
                         )
                         g.append(tmp)
 
@@ -387,10 +387,10 @@ class Hierarchy():
                 try:
 
                     tmp = Group(
-                        group[GroupKey.GroupName],
-                        group[GroupKey.CustomerId],
-                        group[GroupKey.Permissions],
-                        group[GroupKey.Id]
+                        group[GroupKeys.GroupName],
+                        group[GroupKeys.CustomerId],
+                        group[GroupKeys.Permissions],
+                        group[GroupKeys.Id]
                     )
                     g.append(tmp)
 
@@ -431,8 +431,8 @@ class Hierarchy():
         if c:
 
             customer = Customer(
-                c[CustomerKey.CustomerName],
-                c[CustomerKey.Properties]
+                c[CustomerKeys.CustomerName],
+                c[CustomerKeys.Properties]
             )
 
         return customer
@@ -765,22 +765,22 @@ class Hierarchy():
         if not user:
             return False
 
-        password = mod_data.get(UserKey.Password)
+        password = mod_data.get(UserKeys.Password)
         if password:
             password = password.encode('utf-8')
             user.password = Crypto.hash_bcrypt(password)
 
-        full_name = mod_data.get(UserKey.FullName)
+        full_name = mod_data.get(UserKeys.FullName)
         if full_name:
 
             user.full_name = full_name
 
-        email = mod_data.get(UserKey.Email)
+        email = mod_data.get(UserKeys.Email)
         if email:
 
             user.email = email
 
-        current_customer = mod_data.get(UserKey.CurrentCustomer)
+        current_customer = mod_data.get(UserKeys.CurrentCustomer)
         if current_customer:
 
             customer = Hierarchy.get_customer(current_customer)
@@ -788,7 +788,7 @@ class Hierarchy():
             if customer:
                 user.current_customer = current_customer
 
-        default_customer = mod_data.get(UserKey.DefaultCustomer)
+        default_customer = mod_data.get(UserKeys.DefaultCustomer)
         if default_customer:
 
             customer = Hierarchy.get_customer(default_customer)
@@ -796,7 +796,7 @@ class Hierarchy():
             if customer:
                 user.default_customer = default_customer
 
-        customers = mod_data.get(UserKey.Customers)
+        customers = mod_data.get(UserKeys.Customers)
         if customers:
 
             for customer in customers:
@@ -810,7 +810,7 @@ class Hierarchy():
                         c,
                     )
 
-        groups = mod_data.get(UserKey.Groups)
+        groups = mod_data.get(UserKeys.Groups)
         if groups:
 
             customer_context = mod_data.get('customer_context')
@@ -869,7 +869,7 @@ class Hierarchy():
             if not customer:
                 return False
 
-            groups = mod_data.get(CustomerKey.Groups)
+            groups = mod_data.get(CustomerKeys.Groups)
             if groups:
 
                 for group_names in groups:
@@ -887,7 +887,7 @@ class Hierarchy():
                         )
                         groups_changed = True
 
-            users = mod_data.get(CustomerKey.Users)
+            users = mod_data.get(CustomerKeys.Users)
             if users:
 
                 for user in users:
@@ -953,7 +953,7 @@ class Hierarchy():
 
         # Change group from one customer to another!?
         c = None
-        customer = mod_data.get(GroupKey.CustomerId)
+        customer = mod_data.get(GroupKeys.CustomerId)
         if customer:
 
             c = Hierarchy.get_customer(customer)
@@ -963,7 +963,7 @@ class Hierarchy():
                 group.set_customer(c.customer_name)
                 customer_changed = True
 
-        permissions = mod_data.get(GroupKey.Permissions)
+        permissions = mod_data.get(GroupKeys.Permissions)
         group_permissions = group.permissions
         if permissions:
 
@@ -979,7 +979,7 @@ class Hierarchy():
                     group.add_permission(perm)
                     perm_changed = True
 
-        users = mod_data.get(GroupKey.Users)
+        users = mod_data.get(GroupKeys.Users)
         if users:
 
             new_users = []
@@ -1054,7 +1054,7 @@ class Hierarchy():
                     user.user_name,
                     customer.customer_name
                 ],
-                index=GroupsPerUserKey.GroupUserAndCustomerId
+                index=GroupsPerUserKeys.GroupUserAndCustomerId
             )
 
             if len(result) >= 1:
@@ -1066,7 +1066,7 @@ class Hierarchy():
                         user.user_name,
                         customer.customer_name
                     ],
-                    index=GroupsPerUserKey.GroupUserAndCustomerId
+                    index=GroupsPerUserKeys.GroupUserAndCustomerId
                 )
 
             else:
@@ -1120,7 +1120,7 @@ class Hierarchy():
                     user.user_name,
                     customer.customer_name
                 ],
-                index=UsersPerCustomerKey.UserAndCustomerId
+                index=UsersPerCustomerKeys.UserAndCustomerId
             )
 
             if len(result) >= 1:
@@ -1131,7 +1131,7 @@ class Hierarchy():
                         user.user_name,
                         customer.customer_name
                     ],
-                    index=UsersPerCustomerKey.UserAndCustomerId
+                    index=UsersPerCustomerKeys.UserAndCustomerId
                 )
 
                 ### SAFETY HACK
@@ -1139,7 +1139,7 @@ class Hierarchy():
                 customer_count = actions.db_get_by_secondary(
                     collection=Collection.UsersPerCustomer,
                     values=user.user_name,
-                    index=UsersPerCustomerKey.UserId
+                    index=UsersPerCustomerKeys.UserId
                 )
 
                 if len(customer_count) <= 0:
@@ -1199,7 +1199,7 @@ class Hierarchy():
                     group.group_name,
                     customer.customer_name
                 ],
-                index=GroupKey.GroupNameAndCustomerId
+                index=GroupKeys.GroupNameAndCustomerId
             )
 
             if len(result) >= 1:
@@ -1210,7 +1210,7 @@ class Hierarchy():
                         group.group_name,
                         customer.customer_name
                     ],
-                    index=GroupKey.GroupNameAndCustomerId
+                    index=GroupKeys.GroupNameAndCustomerId
                 )
 
             else:
@@ -1259,7 +1259,7 @@ class Hierarchy():
             deleted = actions.db_delete_by_secondary(
                 collection=Collection.UsersPerCustomer,
                 values=name,
-                index=UsersPerCustomerKey.UserId
+                index=UsersPerCustomerKeys.UserId
             )
             if not deleted:
                 msg = 'Unable to delete users per customer.'
@@ -1268,7 +1268,7 @@ class Hierarchy():
             deleted = actions.db_delete_by_secondary(
                 collection=Collection.GroupsPerUser,
                 values=name,
-                index=GroupsPerUserKey.UserId
+                index=GroupsPerUserKeys.UserId
             )
 
             if not deleted:
@@ -1331,7 +1331,7 @@ class Hierarchy():
                     group_name,
                     customer_name
                 ],
-                index=GroupsPerUserKey.GroupUserAndCustomerId
+                index=GroupsPerUserKeys.GroupUserAndCustomerId
             )
 
             if not deleted:
@@ -1344,7 +1344,7 @@ class Hierarchy():
                     group_name,
                     customer_name
                 ],
-                index=GroupKey.GroupNameAndCustomerId
+                index=GroupKeys.GroupNameAndCustomerId
             )
 
             if not deleted:
@@ -1397,7 +1397,7 @@ class Hierarchy():
             deleted = actions.db_delete_by_secondary(
                 collection=Collection.Groups,
                 values=name,
-                index=GroupKey.CustomerId
+                index=GroupKeys.CustomerId
             )
 
             if not deleted:
@@ -1407,7 +1407,7 @@ class Hierarchy():
             deleted = actions.db_delete_by_secondary(
                 collection=Collection.UsersPerCustomer,
                 values=name,
-                index=UsersPerCustomerKey.CustomerId
+                index=UsersPerCustomerKeys.CustomerId
             )
 
             if not deleted:
@@ -1445,14 +1445,14 @@ class Hierarchy():
             users = actions.filter(
                 collection=Collection.Users,
                 filter_value={
-                    UserKey.CurrentCustomer: customer_name
+                    UserKeys.CurrentCustomer: customer_name
                 }
             )
 
             u2 = actions.filter(
                 collection=Collection.Users,
                 filter_value={
-                    UserKey.DefaultCustomer: customer_name
+                    UserKeys.DefaultCustomer: customer_name
                 }
             )
 
@@ -1486,14 +1486,14 @@ class Hierarchy():
             if user:
                 _user = {}
 
-                _user[UserKey.UserName] = user.user_name
-                _user[UserKey.FullName] = user.full_name
-                _user[UserKey.Email] = user.email
-                _user[UserKey.Enabled] = user.enabled
-                _user[UserKey.Password] = user.password
+                _user[UserKeys.UserName] = user.user_name
+                _user[UserKeys.FullName] = user.full_name
+                _user[UserKeys.Email] = user.email
+                _user[UserKeys.Enabled] = user.enabled
+                _user[UserKeys.Password] = user.password
 
-                _user[UserKey.CurrentCustomer] = user.current_customer
-                _user[UserKey.DefaultCustomer] = user.default_customer
+                _user[UserKeys.CurrentCustomer] = user.current_customer
+                _user[UserKeys.DefaultCustomer] = user.default_customer
 
                 return actions.save_user(_user)
 
@@ -1514,8 +1514,8 @@ class Hierarchy():
                 and customer
             ):
                 data = {
-                    UsersPerCustomerKey.UserId: user.user_name,
-                    UsersPerCustomerKey.CustomerId: customer.customer_name
+                    UsersPerCustomerKeys.UserId: user.user_name,
+                    UsersPerCustomerKeys.CustomerId: customer.customer_name
                 }
 
                 return actions.save_user_per_customer(data)
@@ -1539,8 +1539,8 @@ class Hierarchy():
 
                 _customer = {}
 
-                _customer[CustomerKey.CustomerName] = customer.customer_name
-                _customer[CustomerKey.Properties] = customer.properties
+                _customer[CustomerKeys.CustomerName] = customer.customer_name
+                _customer[CustomerKeys.Properties] = customer.properties
 
                 return actions.save_customer(_customer)
 
@@ -1561,11 +1561,11 @@ class Hierarchy():
                 _group = {}
 
                 if group.id:
-                    _group[GroupKey.Id] = group.id
+                    _group[GroupKeys.Id] = group.id
 
-                _group[GroupKey.GroupName] = group.group_name
-                _group[GroupKey.Permissions] = group.permissions
-                _group[GroupKey.CustomerId] = group.customer
+                _group[GroupKeys.GroupName] = group.group_name
+                _group[GroupKeys.Permissions] = group.permissions
+                _group[GroupKeys.CustomerId] = group.customer
 
                 return actions.save_group(_group)
 
@@ -1588,9 +1588,9 @@ class Hierarchy():
             ):
 
                 data = {
-                    GroupsPerUserKey.GroupId: group.group_name,
-                    GroupsPerUserKey.CustomerId: customer.customer_name,
-                    GroupsPerUserKey.UserId: user.user_name
+                    GroupsPerUserKeys.GroupId: group.group_name,
+                    GroupsPerUserKeys.CustomerId: customer.customer_name,
+                    GroupsPerUserKeys.UserId: user.user_name
                 }
 
                 return actions.save_group_per_user(data)
@@ -1615,8 +1615,8 @@ class Hierarchy():
                 and customer
             ):
                 data = {
-                    GroupKey.GroupName: group.group_name,
-                    GroupKey.CustomerId: customer.customer_name
+                    GroupKeys.GroupName: group.group_name,
+                    GroupKeys.CustomerId: customer.customer_name
                 }
 
                 return actions.save_group_per_customer(data)
@@ -1663,10 +1663,10 @@ class Hierarchy():
             properties = actions.db_get(
                 collection=Collection.Customers,
                 primary_id=customer_name,
-                pluck=CustomerKey.Properties
+                pluck=CustomerKeys.Properties
             )
 
-            properties = properties[CustomerKey.Properties]
+            properties = properties[CustomerKeys.Properties]
 
             return properties.get(property_name)
 
@@ -1700,7 +1700,7 @@ class Hierarchy():
             admin_perm = False
             for group in groups:
 
-                if Permission.Admin in group[GroupKey.Permissions]:
+                if Permission.Admin in group[GroupKeys.Permissions]:
                     admin_perm = True
                     break
 
@@ -1755,8 +1755,8 @@ def get_all_customers():
 
             customers.append(
                 Customer(
-                    c[CustomerKey.CustomerName],
-                    c[CustomerKey.Properties]
+                    c[CustomerKeys.CustomerName],
+                    c[CustomerKeys.Properties]
                 )
             )
 

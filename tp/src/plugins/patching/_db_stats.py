@@ -5,7 +5,7 @@ from vFense.db.client import db_create_close, r
 from vFense.core.decorators import time_it
 from vFense.core._constants import CommonKeys
 from vFense.core.tag import (
-    TagCollections, TagsPerAgentKey, TagsPerAgentIndexes
+    TagCollections, TagsPerAgentKeys, TagsPerAgentIndexes
 )
 from vFense.plugins.patching import (
     AppCollections, DbCommonAppPerAgentIndexes,
@@ -150,7 +150,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.INSTALLED,
@@ -184,7 +184,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -209,7 +209,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -234,7 +234,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -259,7 +259,7 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -308,7 +308,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -342,7 +342,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -367,7 +367,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
@@ -392,7 +392,7 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             r
             .table(TagCollections.TagsPerAgent)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,

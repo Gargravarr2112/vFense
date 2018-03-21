@@ -6,7 +6,7 @@ CustomerCollection = 'customers'
 DefaultCustomer = 'default'
 
 
-class UserKey():
+class UserKeys():
 
     Name = 'name'  # Primary key!
     Id = 'id'
@@ -19,10 +19,10 @@ class UserKey():
     CurrentCustomer = 'current_customer'
     DefaultCustomer = 'default_customer'
 
-UserInfo = namedtuple('UserInfo', [UserKey.Name])
+UserInfo = namedtuple('UserInfo', [UserKeys.Name])
 
 
-class GroupKey():
+class GroupKeys():
 
     Id = 'id'
     Name = 'name'
@@ -30,10 +30,10 @@ class GroupKey():
     Users = 'users'
     Permissions = 'permissions'
 
-GroupInfo = namedtuple('GroupInfo', [GroupKey.Id, GroupKey.Name])
+GroupInfo = namedtuple('GroupInfo', [GroupKeys.Id, GroupKeys.Name])
 
 
-class CustomerKey():
+class CustomerKeys():
 
     Name = 'name'  # Primary key!!
     Id = 'id'
@@ -44,4 +44,4 @@ class CustomerKey():
     NetThrottle = 'net_throttle'
     CpuThrottle = 'cpu_throttle'
 
-CustomerInfo = namedtuple('CustomerInfo', [CustomerKey.Name])
+CustomerInfo = namedtuple('CustomerInfo', [CustomerKeys.Name])

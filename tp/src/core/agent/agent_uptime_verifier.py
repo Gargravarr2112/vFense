@@ -18,9 +18,9 @@ def all_agent_status():
             .table(AgentsCollection)
             .filter(
                 lambda x:
-                x[AgentKey.LastAgentUpdate].to_epoch_time() < seconds
+                x[AgentKeys.LastAgentUpdate].to_epoch_time() < seconds
             )
-            .update({AgentKey.AgentStatus: 'down'})
+            .update({AgentKeys.AgentStatus: 'down'})
             .run(conn)
         )
         logger.info('agent uptime verifier completed')

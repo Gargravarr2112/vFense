@@ -19,7 +19,7 @@ class RetrieveApps(object):
     """
     def __init__(self, username, customer_name,
                  uri=None, method=None, count=30,
-                 offset=0, sort='asc', sort_key=AppsKey.Name,
+                 offset=0, sort='asc', sort_key=AppsKeys.Name,
                  show_hidden=CommonKeys.NO):
         """
         """
@@ -33,7 +33,7 @@ class RetrieveApps(object):
         self.set_global_properties(
             AppCollections.UniqueApplications,
             AppsIndexes, 
-            AppCollections.AppsPerAgent, AppsKey, AppsPerAgentKey,
+            AppCollections.AppsPerAgent, AppsKeys, AppsPerAgentKeys,
             AppsPerAgentIndexes
         )
 
@@ -45,7 +45,7 @@ class RetrieveApps(object):
         if sort_key in self.pluck_list:
             self.sort_key = sort_key
         else:
-            self.sort_key = self.CurrentAppsKey.Name
+            self.sort_key = self.CurrentAppsKeys.Name
 
         if sort == 'asc':
             self.sort = r.asc
@@ -60,47 +60,47 @@ class RetrieveApps(object):
         self.CurrentAppsCollection = apps_collection
         self.CurrentAppsIndexes = apps_indexes
         self.CurrentAppsPerAgentCollection = apps_per_agent_collection
-        self.CurrentAppsKey = apps_key
-        self.CurrentAppsPerAgentKey = apps_per_agent_key
+        self.CurrentAppsKeys = apps_key
+        self.CurrentAppsPerAgentKeys = apps_per_agent_key
         self.CurrentAppsPerAgentIndexes = apps_per_agent_indexes
 
         self.joined_map_hash = (
             {                                                                                                                                                      
-                self.CurrentAppsKey.AppId:
-                    r.row['right'][self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version:
-                    r.row['right'][self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name:
-                    r.row['right'][self.CurrentAppsKey.Name],
-                self.CurrentAppsKey.ReleaseDate:
-                    r.row['right'][self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity:
-                    r.row['right'][self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VulnerabilityId:
-                    r.row['right'][self.CurrentAppsKey.VulnerabilityId],
-                self.CurrentAppsKey.Hidden:
-                    r.row['right'][self.CurrentAppsKey.Hidden],
+                self.CurrentAppsKeys.AppId:
+                    r.row['right'][self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version:
+                    r.row['right'][self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name:
+                    r.row['right'][self.CurrentAppsKeys.Name],
+                self.CurrentAppsKeys.ReleaseDate:
+                    r.row['right'][self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity:
+                    r.row['right'][self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VulnerabilityId:
+                    r.row['right'][self.CurrentAppsKeys.VulnerabilityId],
+                self.CurrentAppsKeys.Hidden:
+                    r.row['right'][self.CurrentAppsKeys.Hidden],
             }
         )
 
         self.map_hash = (
             {
-                self.CurrentAppsKey.AppId: r.row[self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version: r.row[self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name: r.row[self.CurrentAppsKey.Name],
-                self.CurrentAppsKey.ReleaseDate: r.row[self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity: r.row[self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VulnerabilityId: r.row[self.CurrentAppsKey.VulnerabilityId],
+                self.CurrentAppsKeys.AppId: r.row[self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version: r.row[self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name: r.row[self.CurrentAppsKeys.Name],
+                self.CurrentAppsKeys.ReleaseDate: r.row[self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity: r.row[self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VulnerabilityId: r.row[self.CurrentAppsKeys.VulnerabilityId],
             }
         )
         self.pluck_list = (
             [
-                self.CurrentAppsKey.AppId,
-                self.CurrentAppsKey.Version,
-                self.CurrentAppsKey.Name,
-                self.CurrentAppsKey.ReleaseDate,
-                self.CurrentAppsKey.RvSeverity,
-                self.CurrentAppsKey.VulnerabilityId,
+                self.CurrentAppsKeys.AppId,
+                self.CurrentAppsKeys.Version,
+                self.CurrentAppsKeys.Name,
+                self.CurrentAppsKeys.ReleaseDate,
+                self.CurrentAppsKeys.RvSeverity,
+                self.CurrentAppsKeys.VulnerabilityId,
             ]
         )
 
@@ -114,13 +114,13 @@ class RetrieveApps(object):
                     .get_all(
                         [pkg_status, self.customer_name],
                         index=self.CurrentAppsPerAgentIndexes.StatusAndCustomer)
-                    .eq_join(self.CurrentAppsKey.AppId, r.table(self.CurrentAppsCollection))
+                    .eq_join(self.CurrentAppsKeys.AppId, r.table(self.CurrentAppsCollection))
                     .map(self.joined_map_hash)
                 )
 
                 if self.show_hidden == CommonKeys.NO:
                     base = base.filter(
-                        {self.CurrentAppsKey.Hidden: CommonKeys.NO}
+                        {self.CurrentAppsKeys.Hidden: CommonKeys.NO}
                     )
 
                 packages = list(
@@ -134,7 +134,7 @@ class RetrieveApps(object):
 
                 pkg_count = (
                     base
-                    .pluck(self.CurrentAppsKey.AppId)
+                    .pluck(self.CurrentAppsKeys.AppId)
                     .distinct()
                     .count()
                     .run(conn)
@@ -177,7 +177,7 @@ class RetrieveApps(object):
                 )
 
                 if self.show_hidden == CommonKeys.NO:
-                    base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                    base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
                 packages = list(
                     base
@@ -234,18 +234,18 @@ class RetrieveApps(object):
                             index=self.CurrentAppsPerAgentIndexes.StatusAndCustomer
                         )
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AppId,
+                            self.CurrentAppsPerAgentKeys.AppId,
                             r.table(self.CurrentAppsCollection)
                         )
                         .map(self.joined_map_hash)
                     )
 
                     if self.show_hidden == CommonKeys.NO:
-                        base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                        base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
                     packages = list(
                         base
-                        .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                        .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                         .distinct()
                         .order_by(self.sort(self.sort_key))
                         .skip(self.offset)
@@ -255,7 +255,7 @@ class RetrieveApps(object):
 
                     pkg_count = (
                         base
-                        .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                        .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                         .pluck(self.pluck_list)
                         .distinct()
                         .count()
@@ -305,7 +305,7 @@ class RetrieveApps(object):
             )
 
             if self.show_hidden == CommonKeys.NO:
-                base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
             packages = list(
                 base
@@ -351,11 +351,11 @@ class RetrieveApps(object):
             )
 
             if self.show_hidden == CommonKeys.NO:
-                base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
             packages = list(
                 base
-                .filter(lambda x: x[self.CurrentAppsKey.Name].match("(?i)"+name))
+                .filter(lambda x: x[self.CurrentAppsKeys.Name].match("(?i)"+name))
                 .map(self.map_hash)
                 .order_by(self.sort(self.sort_key))
                 .skip(self.offset)
@@ -365,8 +365,8 @@ class RetrieveApps(object):
 
             pkg_count = (
                 base
-                .filter(lambda x: x[self.CurrentAppsKey.Name].match("(?i)"+name))
-                .pluck(self.CurrentAppsKey.AppId)
+                .filter(lambda x: x[self.CurrentAppsKeys.Name].match("(?i)"+name))
+                .pluck(self.CurrentAppsKeys.AppId)
                 .count()
                 .run(conn)
             )
@@ -400,16 +400,16 @@ class RetrieveApps(object):
                     .get_all(
                         pkg_status, index=self.CurrentAppsPerAgentIndexes.Status
                     )
-                    .eq_join(self.CurrentAppsPerAgentKey.AppId, r.table(self.CurrentAppsCollection))
+                    .eq_join(self.CurrentAppsPerAgentKeys.AppId, r.table(self.CurrentAppsCollection))
                     .map(self.joined_map_hash)
                 )
 
                 if self.show_hidden == CommonKeys.NO:
-                    base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                    base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
                 packages = list(
                     base
-                    .filter(lambda x: x[self.CurrentAppsKey.Name].match("(?i)"+name))
+                    .filter(lambda x: x[self.CurrentAppsKeys.Name].match("(?i)"+name))
                     .distinct()
                     .order_by(self.sort(self.sort_key))
                     .skip(self.offset)
@@ -419,8 +419,8 @@ class RetrieveApps(object):
 
                 pkg_count = (
                     base
-                    .filter(lambda x: x[self.CurrentAppsKey.Name].match("(?i)"+name))
-                    .pluck(self.CurrentAppsKey.AppId)
+                    .filter(lambda x: x[self.CurrentAppsKeys.Name].match("(?i)"+name))
+                    .pluck(self.CurrentAppsKeys.AppId)
                     .count()
                     .run(conn)
                 )
@@ -465,21 +465,21 @@ class RetrieveApps(object):
                             index=self.CurrentAppsPerAgentIndexes.StatusAndCustomer
                         )
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AppId,
+                            self.CurrentAppsPerAgentKeys.AppId,
                             r.table(self.CurrentAppsCollection)
                         )
                         .map(self.joined_map_hash)
                     )
 
                     if self.show_hidden == CommonKeys.NO:
-                        base = base.filter({self.CurrentAppsKey.Hidden: CommonKeys.NO})
+                        base = base.filter({self.CurrentAppsKeys.Hidden: CommonKeys.NO})
 
                     packages = list(
                         base
                         .filter(
-                            (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                            (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                             &
-                            (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                            (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                         )
                         .distinct()
                         .order_by(self.sort(self.sort_key))
@@ -490,12 +490,12 @@ class RetrieveApps(object):
 
                     pkg_count = (
                         base
-                        .pluck(self.CurrentAppsKey.RvSeverity, self.CurrentAppsKey.Name)
+                        .pluck(self.CurrentAppsKeys.RvSeverity, self.CurrentAppsKeys.Name)
                         .distinct()
                         .filter(
-                            (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                            (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                             &
-                            (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                            (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                         )
                         .count()
                         .run(conn)
@@ -541,7 +541,7 @@ class RetrieveCustomApps(RetrieveApps):
     """
     def __init__(self, username, customer_name,
                  uri=None, method=None, count=30,
-                 offset=0, sort='asc', sort_key=CustomAppsKey.Name,
+                 offset=0, sort='asc', sort_key=CustomAppsKeys.Name,
                  show_hidden=CommonKeys.NO):
 
         self.count = count
@@ -554,7 +554,7 @@ class RetrieveCustomApps(RetrieveApps):
         self.set_global_properties(
             AppCollections.CustomApps, CustomAppsIndexes, 
             AppCollections.CustomAppsPerAgent,
-            CustomAppsKey, CustomAppsPerAgentKey,
+            CustomAppsKeys, CustomAppsPerAgentKeys,
             CustomAppsPerAgentIndexes
         )
 
@@ -566,7 +566,7 @@ class RetrieveCustomApps(RetrieveApps):
         if sort_key in self.pluck_list:
             self.sort_key = sort_key
         else:
-            self.sort_key = self.CurrentAppsKey.Name
+            self.sort_key = self.CurrentAppsKeys.Name
 
         if sort == 'asc':
             self.sort = r.asc
@@ -580,7 +580,7 @@ class RetrieveSupportedApps(RetrieveApps):
     def __init__(self, username, customer_name,
                  uri=None, method=None, count=30,
                  offset=0, sort='asc',
-                 sort_key=SupportedAppsKey.Name,
+                 sort_key=SupportedAppsKeys.Name,
                  show_hidden=CommonKeys.NO):
 
         self.count = count
@@ -593,7 +593,7 @@ class RetrieveSupportedApps(RetrieveApps):
         self.set_global_properties(
             AppCollections.SupportedApps, SupportedAppsIndexes, 
             AppCollections.SupportedAppsPerAgent,
-            SupportedAppsKey, SupportedAppsPerAgentKey,
+            SupportedAppsKeys, SupportedAppsPerAgentKeys,
             SupportedAppsPerAgentIndexes
         )
 
@@ -605,7 +605,7 @@ class RetrieveSupportedApps(RetrieveApps):
         if sort_key in self.pluck_list:
             self.sort_key = sort_key
         else:
-            self.sort_key = self.CurrentAppsKey.Name
+            self.sort_key = self.CurrentAppsKeys.Name
 
         if sort == 'asc':
             self.sort = r.asc
@@ -619,7 +619,7 @@ class RetrieveAgentApps(RetrieveApps):
     def __init__(self, username, customer_name,
                  uri=None, method=None, count=30,
                  offset=0, sort='asc',
-                 sort_key=AgentAppsKey.Name,
+                 sort_key=AgentAppsKeys.Name,
                  show_hidden=CommonKeys.NO):
 
         self.count = count
@@ -632,7 +632,7 @@ class RetrieveAgentApps(RetrieveApps):
         self.set_global_properties(
             AppCollections.vFenseApps, AgentAppsIndexes, 
             AppCollections.vFenseAppsPerAgent, 
-            AgentAppsKey, AgentAppsPerAgentKey,
+            AgentAppsKeys, AgentAppsPerAgentKeys,
             AgentAppsPerAgentIndexes
         )
 
@@ -644,7 +644,7 @@ class RetrieveAgentApps(RetrieveApps):
         if sort_key in self.pluck_list:
             self.sort_key = sort_key
         else:
-            self.sort_key = self.CurrentAppsKey.Name
+            self.sort_key = self.CurrentAppsKeys.Name
 
         if sort == 'asc':
             self.sort = r.asc

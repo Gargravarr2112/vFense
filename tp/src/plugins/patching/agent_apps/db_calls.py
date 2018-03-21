@@ -24,7 +24,7 @@ def get_all_stats_by_appid(username, customer_name,
                 [app_id, customer_name],
                 index=AgentAppsPerAgentIndexes.AppIdAndCustomer
             )
-            .group(AgentAppsPerAgentKey.Status)
+            .group(AgentAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -34,9 +34,9 @@ def get_all_stats_by_appid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        AgentAppsPerAgentKey.Status: i['group'][AgentAppsPerAgentKey.Status],
+                        AgentAppsPerAgentKeys.Status: i['group'][AgentAppsPerAgentKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][AgentAppsPerAgentKey.Status].capitalize()
+                        NAME: i['group'][AgentAppsPerAgentKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)
@@ -80,11 +80,11 @@ def get_all_agents_per_appid(username, customer_name,
         agents = (
             r
             .table(AppCollections.vFenseAppsPerAgent)
-            .get_all(app_id, index=AgentAppsPerAgentKey.AppId)
-            .eq_join(AgentAppsPerAgentKey.AgentId, r.table(AgentsCollection))
+            .get_all(app_id, index=AgentAppsPerAgentKeys.AppId)
+            .eq_join(AgentAppsPerAgentKeys.AgentId, r.table(AgentsCollection))
             .zip()
             .group(
-                lambda x: x[AgentAppsPerAgentKey.Status]
+                lambda x: x[AgentAppsPerAgentKeys.Status]
             )
             .map(
                 lambda x:
@@ -92,9 +92,9 @@ def get_all_agents_per_appid(username, customer_name,
                     AGENTS:
                     [
                         {
-                            AgentKey.ComputerName: x[AgentKey.ComputerName],
-                            AgentKey.DisplayName: x[AgentKey.DisplayName],
-                            AgentAppsPerAgentKey.AgentId: x[AgentAppsPerAgentKey.AgentId]
+                            AgentKeys.ComputerName: x[AgentKeys.ComputerName],
+                            AgentKeys.DisplayName: x[AgentKeys.DisplayName],
+                            AgentAppsPerAgentKeys.AgentId: x[AgentAppsPerAgentKeys.AgentId]
                         }
                     ],
                     COUNT: 1
@@ -113,7 +113,7 @@ def get_all_agents_per_appid(username, customer_name,
         if agents:
             for i in agents:
                 new_data = i['reduction']
-                new_data[AgentAppsPerAgentKey.Status] = i['group']
+                new_data[AgentAppsPerAgentKeys.Status] = i['group']
                 data.append(new_data)
 
         statuses = map(lambda x: x['status'], data)
@@ -155,8 +155,8 @@ def get_all_stats_by_agentid(username, customer_name,
         apps = (
             r
             .table(AppCollections.vFenseAppsPerAgent)
-            .get_all(agent_id, index=AgentAppsPerAgentKey.AgentId)
-            .group(AgentAppsPerAgentKey.Status)
+            .get_all(agent_id, index=AgentAppsPerAgentKeys.AgentId)
+            .group(AgentAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -166,9 +166,9 @@ def get_all_stats_by_agentid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        AgentAppsPerAgentKey.Status: i['group'][AgentAppsPerAgentKey.Status],
+                        AgentAppsPerAgentKeys.Status: i['group'][AgentAppsPerAgentKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][AgentAppsPerAgentKey.Status].capitalize()
+                        NAME: i['group'][AgentAppsPerAgentKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)
@@ -210,8 +210,8 @@ def get_all_stats_by_tagid(username, customer_name,
         apps = (
             r
             .table(AgentAppsPerTagCollection)
-            .get_all(tag_id, index=AgentAppsPerTagKey.TagId)
-            .group(AgentAppsPerTagKey.Status)
+            .get_all(tag_id, index=AgentAppsPerTagKeys.TagId)
+            .group(AgentAppsPerTagKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -221,9 +221,9 @@ def get_all_stats_by_tagid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        AgentAppsPerTagKey.Status: i['group'][AgentAppsPerTagKey.Status],
+                        AgentAppsPerTagKeys.Status: i['group'][AgentAppsPerTagKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][AgentAppsPerTagKey.Status].capitalize()
+                        NAME: i['group'][AgentAppsPerTagKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)
@@ -267,30 +267,30 @@ def insert_into_agent_apps(customer_name, app, conn=None):
         exists = (
             r
             .table(collection)
-            .get(app[AgentAppsKey.AppId])
+            .get(app[vFenseAppsKeys.AppId])
             .run(conn)
         )
 
     except Exception as e:
         msg = (
             'Failed to get unique app_id %s, error: %s' %
-            (app[AppsKey.AppId], e)
+            (app[AppsKeys.AppId], e)
         )
         logger.error(e)
 
-    status = app.pop(AppsPerAgentKey.Status)
+    status = app.pop(AppsPerAgentKeys.Status)
 
     if not exists:
 
-        if (len(app[AppsKey.FileData]) > 0 and status == CommonAppKeys.AVAILABLE or
-                len(app[AppsKey.FileData]) > 0 and status == CommonAppKeys.INSTALLED):
-            app[AppsKey.FilesDownloadStatus] = PackageCodes.FilePendingDownload
+        if (len(app[AppsKeys.FileData]) > 0 and status == CommonAppKeys.AVAILABLE or
+                len(app[AppsKeys.FileData]) > 0 and status == CommonAppKeys.INSTALLED):
+            app[AppsKeys.FilesDownloadStatus] = PackageCodes.FilePendingDownload
 
-        elif len(app[AppsKey.FileData]) == 0 and status == CommonAppKeys.AVAILABLE:
-            app[AppsKey.FilesDownloadStatus] = PackageCodes.MissingUri
+        elif len(app[AppsKeys.FileData]) == 0 and status == CommonAppKeys.AVAILABLE:
+            app[AppsKeys.FilesDownloadStatus] = PackageCodes.MissingUri
 
-        elif len(app[AppsKey.FileData]) == 0 and status == CommonAppKeys.INSTALLED:
-            app[AppsKey.FilesDownloadStatus] = PackageCodes.FileNotRequired
+        elif len(app[AppsKeys.FileData]) == 0 and status == CommonAppKeys.INSTALLED:
+            app[AppsKeys.FilesDownloadStatus] = PackageCodes.FileNotRequired
 
         try:
             (
@@ -303,7 +303,7 @@ def insert_into_agent_apps(customer_name, app, conn=None):
         except Exception as e:
             msg = (
                 'Failed to insert %s into unique_applications, error: %s' %
-                (app[AppsKey.AppId], e)
+                (app[AppsKeys.AppId], e)
             )
             logger.exception(msg)
 
@@ -345,7 +345,7 @@ def add_or_update_applications(collection=AppCollections.AppsPerAgent,
                     r
                     .table(collection)
                     .get_all(
-                        pkg[AppsPerAgentKey.AgentId],
+                        pkg[AppsPerAgentKeys.AgentId],
                         index=AppsPerAgentIndexes.AgentId
                     )
                     .filter(

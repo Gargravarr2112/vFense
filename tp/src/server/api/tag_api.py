@@ -33,7 +33,7 @@ class TagsHandler(BaseHandler):
         uri = self.request.uri
         method = self.request.method
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', TagsKey.TagName)
+        sort_by = self.get_argument('sort_by', TagsKeys.TagName)
         tag = (
             TagSearcher(
                 username, customer_name, uri, method,

@@ -6,7 +6,7 @@ from vFense.plugins.patching.operations.patching_operations import \
 from vFense.operations._constants import AgentOperations, vFensePlugins, \
     vFenseObjects
 from vFense.operations.store_agent_operation import StoreAgentOperation
-from vFense.operations import AgentOperationKey, OperationPerAgentKey
+from vFense.operations import AgentOperationKeys, OperationPerAgentKeys
 from vFense.core.decorators import results_message
 from vFense.core._constants import CPUThrottleValues, RebootValues
 from vFense.plugins.patching import AppCollections, DbCommonAppKeys, \
@@ -63,9 +63,9 @@ class StorePatchingOperation(StoreAgentOperation):
 
     def uninstall_agent(self, agent_id):
         operation_data = {
-            AgentOperationKey.Operation: AgentOperations.UNINSTALL_AGENT,
-            AgentOperationKey.Plugin: vFensePlugins.RV_PLUGIN,
-            OperationPerAgentKey.AgentId: agent_id,
+            AgentOperationKeys.Operation: AgentOperations.UNINSTALL_AGENT,
+            AgentOperationKeys.Plugin: vFensePlugins.RV_PLUGIN,
+            OperationPerAgentKeys.AgentId: agent_id,
         }
         self._store_in_agent_queue(operation_data)
 
@@ -118,9 +118,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_OS_APPS
 
         self.CurrentAppsCollection = AppCollections.UniqueApplications
-        self.CurrentAppsKey = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppKeys
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsPerAgentKey = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
 
         return(
             self.install_apps(
@@ -178,9 +178,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_CUSTOM_APPS
 
         self.CurrentAppsCollection = AppCollections.CustomApps
-        self.CurrentAppsKey = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppKeys
         self.CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        self.CurrentAppsPerAgentKey = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
 
         return(
             self.install_apps(
@@ -238,9 +238,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_SUPPORTED_APPS
 
         self.CurrentAppsCollection = AppCollections.SupportedApps
-        self.CurrentAppsKey = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppKeys
         self.CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        self.CurrentAppsPerAgentKey = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
 
         return(
             self.install_apps(
@@ -298,9 +298,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_AGENT_UPDATE
 
         self.CurrentAppsCollection = AppCollections.vFenseApps
-        self.CurrentAppsKey = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppKeys
         self.CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        self.CurrentAppsPerAgentKey = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
 
         return self.install_apps(
             oper_type,
@@ -360,9 +360,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.UNINSTALL
 
         self.CurrentAppsCollection = AppCollections.UniqueApplications
-        self.CurrentAppsKey = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppKeys
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsPerAgentKey = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
 
         return(
             self.install_apps(
@@ -464,14 +464,14 @@ class StorePatchingOperation(StoreAgentOperation):
                     )
 
                 operation_data = {
-                    AgentOperationKey.Operation: oper_type,
-                    AgentOperationKey.OperationId: operation_id,
-                    AgentOperationKey.Plugin: oper_plugin,
-                    AgentOperationKey.Restart: restart,
+                    AgentOperationKeys.Operation: oper_type,
+                    AgentOperationKeys.OperationId: operation_id,
+                    AgentOperationKeys.Plugin: oper_plugin,
+                    AgentOperationKeys.Restart: restart,
                     CommonFileKeys.PKG_FILEDATA: pkg_data,
-                    OperationPerAgentKey.AgentId: agent_id,
-                    AgentOperationKey.CpuThrottle: cpu_throttle,
-                    AgentOperationKey.NetThrottle: net_throttle,
+                    OperationPerAgentKeys.AgentId: agent_id,
+                    AgentOperationKeys.CpuThrottle: cpu_throttle,
+                    AgentOperationKeys.NetThrottle: net_throttle,
                 }
                 self._store_in_agent_queue(operation_data)
                 operation.add_agent_to_install_operation(

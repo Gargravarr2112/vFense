@@ -16,7 +16,7 @@ from vFense.errorz.status_codes import DbCodes, GenericCodes, \
 
 from vFense.plugins.patching.file_data import add_file_data
 from vFense.plugins.patching.utils import build_agent_app_id
-from vFense.plugins.patching import AppsKey, AppCollections, \
+from vFense.plugins.patching import AppsKeys, AppCollections, \
         DbCommonAppKeys, DbCommonAppPerAgentKeys, FileServerKeys
 from vFense.plugins.patching._constants import CommonAppKeys, \
     FileLocationUris, CommonFileKeys
@@ -32,7 +32,7 @@ from vFense.plugins.patching._db import (fetch_file_servers_addresses,
 from vFense.core.decorators import time_it, results_message
 from vFense.core.customer import CustomerKeys
 from vFense.core.customer.customers import get_customer_property
-from vFense.plugins.vuln import SecurityBulletinKey
+from vFense.plugins.vuln import SecurityBulletinKeys
 import vFense.plugins.vuln.windows.ms as ms
 import vFense.plugins.vuln.ubuntu.usn as usn
 import vFense.plugins.vuln.cve.cve as cve
@@ -719,9 +719,9 @@ def get_vulnerability_info_for_app(
 
     vuln_data = {}
     vuln_info = {}
-    vuln_data[AppsKey.CveIds] = []
-    vuln_data[AppsKey.VulnerabilityId] = ""
-    vuln_data[AppsKey.VulnerabilityCategories] = []
+    vuln_data[AppsKeys.CveIds] = []
+    vuln_data[AppsKeys.VulnerabilityId] = ""
+    vuln_data[AppsKeys.VulnerabilityCategories] = []
 
     if kb != "" and re.search(r'Windows', os_string, re.IGNORECASE):
         vuln_info = ms.get_vuln_ids(kb)
@@ -737,17 +737,17 @@ def get_vulnerability_info_for_app(
         )
 
     if vuln_info:
-        vuln_data[AppsKey.CveIds] = vuln_info[SecurityBulletinKey.CveIds]
-        vuln_data[AppsKey.VulnerabilityId] = (
-            vuln_info[SecurityBulletinKey.BulletinId]
+        vuln_data[AppsKeys.CveIds] = vuln_info[SecurityBulletinKeys.CveIds]
+        vuln_data[AppsKeys.VulnerabilityId] = (
+            vuln_info[SecurityBulletinKeys.BulletinId]
         )
-        for cve_id in vuln_data[AppsKey.CveIds]:
-            vuln_data[AppsKey.VulnerabilityCategories] += (
+        for cve_id in vuln_data[AppsKeys.CveIds]:
+            vuln_data[AppsKeys.VulnerabilityCategories] += (
                 cve.get_vulnerability_categories(cve_id)
             )
 
-        vuln_data[AppsKey.VulnerabilityCategories] = (
-            list(set(vuln_data[AppsKey.VulnerabilityCategories]))
+        vuln_data[AppsKeys.VulnerabilityCategories] = (
+            list(set(vuln_data[AppsKeys.VulnerabilityCategories]))
         )
 
     return vuln_data
@@ -821,20 +821,20 @@ def application_updater(customer_name, app_data, os_string,
 
     else:
         add_file_data(app_id, file_data, agent_id)
-        app_data[AppsKey.Customers] = [customer_name]
-        app_data[AppsKey.Hidden] = CommonKeys.NO
+        app_data[AppsKeys.Customers] = [customer_name]
+        app_data[AppsKeys.Hidden] = CommonKeys.NO
 
         if (len(file_data) > 0 and status == CommonAppKeys.AVAILABLE or
                 len(file_data) > 0 and status == CommonAppKeys.INSTALLED):
-            app_data[AppsKey.FilesDownloadStatus] = (
+            app_data[AppsKeys.FilesDownloadStatus] = (
                 PackageCodes.FilePendingDownload
             )
 
         elif len(file_data) == 0 and status == CommonAppKeys.AVAILABLE:
-            app_data[AppsKey.FilesDownloadStatus] = PackageCodes.MissingUri
+            app_data[AppsKeys.FilesDownloadStatus] = PackageCodes.MissingUri
 
         elif len(file_data) == 0 and status == CommonAppKeys.INSTALLED:
-            app_data[AppsKey.FilesDownloadStatus] = PackageCodes.FileNotRequired
+            app_data[AppsKeys.FilesDownloadStatus] = PackageCodes.FileNotRequired
 
         vuln_data = get_vulnerability_info_for_app(
             os_string, app_name, app_version, app_kb

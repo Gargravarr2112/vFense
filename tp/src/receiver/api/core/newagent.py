@@ -30,11 +30,11 @@ class NewAgentV1(BaseHandler):
     @convert_json_to_arguments
     def post(self):
         username = self.get_current_user()
-        customer_name = self.arguments.get(AgentKey.CustomerName)
-        plugins = self.arguments.get(AgentKey.Plugins)
-        rebooted = self.arguments.get(AgentKey.Rebooted)
-        system_info = self.arguments.get(AgentKey.SystemInfo)
-        hardware = self.arguments.get(AgentKey.Hardware)
+        customer_name = self.arguments.get(AgentKeys.CustomerName)
+        plugins = self.arguments.get(AgentKeys.Plugins)
+        rebooted = self.arguments.get(AgentKeys.Rebooted)
+        system_info = self.arguments.get(AgentKeys.SystemInfo)
+        hardware = self.arguments.get(AgentKeys.Hardware)
         uri = self.request.uri
         method = self.request.method
         logger.info('data received on newagent: %s' % (self.request.body))
@@ -60,13 +60,13 @@ class NewAgentV1(BaseHandler):
                     new_agent_results[ApiResultKeys.GENERATED_IDS].pop()
                 )
                 uris = get_result_uris(agent_id, username, uri, method)
-                uris[AgentOperationKey.Operation] = (
+                uris[AgentOperationKeys.Operation] = (
                     AgentOperations.REFRESH_RESPONSE_URIS
                 )
                 json_msg = {
-                    AgentOperationKey.Operation: "new_agent_id",
-                    AgentOperationKey.OperationId: "",
-                    OperationPerAgentKey.AgentId: agent_id
+                    AgentOperationKeys.Operation: "new_agent_id",
+                    AgentOperationKeys.OperationId: "",
+                    OperationPerAgentKeys.AgentId: agent_id
                 }
                 new_agent_results[ApiResultKeys.DATA] = [json_msg, uris]
                 try:

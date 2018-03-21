@@ -41,26 +41,26 @@ def customer_stats_by_os(username, customer_name,
                 [CommonAppKeys.AVAILABLE, customer_name],
                 index=AppsPerAgentIndexes.StatusAndCustomer
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    AppsPerAgentKey.AppId: r.row['left'][AppsPerAgentKey.AppId],
-                    AppsPerAgentKey.AgentId: r.row['left'][AppsPerAgentKey.AgentId],
+                    AppsPerAgentKeys.AppId: r.row['left'][AppsPerAgentKeys.AppId],
+                    AppsPerAgentKeys.AgentId: r.row['left'][AppsPerAgentKeys.AgentId],
                 }
             )
-            .eq_join(AgentKey.AgentId, r.table(AgentCollections.Agents))
+            .eq_join(AgentKeys.AgentId, r.table(AgentCollections.Agents))
             .map(
                 {
-                    AppsKey.AppId: r.row['left'][AppsKey.AppId],
-                    AgentKey.OsString: r.row['right'][AgentKey.OsString]
+                    AppsKeys.AppId: r.row['left'][AppsKeys.AppId],
+                    AgentKeys.OsString: r.row['right'][AgentKeys.OsString]
                 }
             )
-            .pluck(AppsKey.AppId, AgentKey.OsString)
+            .pluck(AppsKeys.AppId, AgentKeys.OsString)
             .distinct()
-            .group(AgentKey.OsString)
+            .group(AgentKeys.OsString)
             .count()
             .ungroup()
             .map(
@@ -104,26 +104,26 @@ def tag_stats_by_os(username, customer_name,
             r
             .table(TagsPerAgentCollection)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[AppsPerAgentKey.AgentId]
+                    x[AppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
                 index=AppsPerAgentIndexes.StatusAndAgentId
             )
             .zip()
-            .eq_join(AgentKey.AgentId, r.table(AgentCollections.Agents))
+            .eq_join(AgentKeys.AgentId, r.table(AgentCollections.Agents))
             .zip()
-            .eq_join(AppsPerAgentKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsPerAgentKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .zip()
-            .pluck(CommonAppKeys.APP_ID, AgentKey.OsString)
+            .pluck(CommonAppKeys.APP_ID, AgentKeys.OsString)
             .distinct()
-            .group(AgentKey.OsString)
+            .group(AgentKeys.OsString)
             .count()
             .ungroup()
             .map(
@@ -246,19 +246,19 @@ def get_severity_bar_chart_stats_for_customer(username, customer_name,
                 [CommonAppKeys.AVAILABLE, customer_name],
                 index=AppsPerAgentIndexes.StatusAndCustomer
             )
-            .pluck(AppsKey.AppId)
+            .pluck(AppsKeys.AppId)
             .distinct()
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    AppsKey.AppId: r.row['right'][AppsKey.AppId],
-                    AppsKey.RvSeverity: r.row['right'][AppsKey.RvSeverity]
+                    AppsKeys.AppId: r.row['right'][AppsKeys.AppId],
+                    AppsKeys.RvSeverity: r.row['right'][AppsKeys.RvSeverity]
                 }
             )
-            .group(AppsKey.RvSeverity)
+            .group(AppsKeys.RvSeverity)
             .count()
             .ungroup()
             .order_by(r.asc('group'))
@@ -294,17 +294,17 @@ def get_severity_bar_chart_stats_for_agent(username, customer_name,
                 [CommonAppKeys.AVAILABLE, agent_id],
                 index=AppsPerAgentIndexes.StatusAndAgentId
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    AppsKey.AppId: r.row['right'][AppsKey.AppId],
-                    AppsKey.RvSeverity: r.row['right'][AppsKey.RvSeverity]
+                    AppsKeys.AppId: r.row['right'][AppsKeys.AppId],
+                    AppsKeys.RvSeverity: r.row['right'][AppsKeys.RvSeverity]
                 }
             )
-            .group(AppsKey.RvSeverity)
+            .group(AppsKeys.RvSeverity)
             .count()
             .ungroup()
             .order_by(r.desc('reduction'))
@@ -337,31 +337,31 @@ def get_severity_bar_chart_stats_for_tag(username, customer_name,
             r
             .table(TagsPerAgentCollection)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[AppsPerAgentKey.AgentId]
+                    x[AppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
                 index=AppsPerAgentIndexes.StatusAndAgentId
             )
             .map(
                 {
-                    AppsKey.AppId: r.row['right'][AppsKey.AppId],
+                    AppsKeys.AppId: r.row['right'][AppsKeys.AppId],
                 }
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    AppsKey.AppId: r.row['right'][AppsKey.AppId],
-                    AppsKey.RvSeverity: r.row['right'][AppsKey.RvSeverity]
+                    AppsKeys.AppId: r.row['right'][AppsKeys.AppId],
+                    AppsKeys.RvSeverity: r.row['right'][AppsKeys.RvSeverity]
                 }
             )
-            .group(AppsKey.RvSeverity)
+            .group(AppsKeys.RvSeverity)
             .count()
             .ungroup()
             .order_by(r.desc('reduction'))
@@ -400,33 +400,33 @@ def top_packages_needed(username, customer_name,
                 [CommonAppKeys.AVAILABLE, customer_name],
                 index=AppsPerAgentIndexes.StatusAndCustomer
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][AppsKey.Hidden] == CommonKeys.NO
+                lambda x: x['right'][AppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 lambda x:
                 {
-                    AppsKey.Name: x['right'][AppsKey.Name],
-                    AppsKey.AppId: x['right'][AppsKey.AppId],
-                    AppsKey.RvSeverity: x['right'][AppsKey.RvSeverity],
-                    AppsKey.ReleaseDate: x['right'][AppsKey.ReleaseDate].to_epoch_time(),
+                    AppsKeys.Name: x['right'][AppsKeys.Name],
+                    AppsKeys.AppId: x['right'][AppsKeys.AppId],
+                    AppsKeys.RvSeverity: x['right'][AppsKeys.RvSeverity],
+                    AppsKeys.ReleaseDate: x['right'][AppsKeys.ReleaseDate].to_epoch_time(),
                 }
             )
-            .group(AppsKey.Name, AppsKey.AppId, AppsKey.RvSeverity, AppsKey.ReleaseDate)
+            .group(AppsKeys.Name, AppsKeys.AppId, AppsKeys.RvSeverity, AppsKeys.ReleaseDate)
             .count()
             .ungroup()
             .map(
                 lambda x:
                 {
-                    AppsKey.Name: x['group'][0],
-                    AppsKey.AppId: x['group'][1],
-                    AppsKey.RvSeverity: x['group'][2],
-                    AppsKey.ReleaseDate: x['group'][3],
+                    AppsKeys.Name: x['group'][0],
+                    AppsKeys.AppId: x['group'][1],
+                    AppsKeys.RvSeverity: x['group'][2],
+                    AppsKeys.ReleaseDate: x['group'][3],
                     'count': x['reduction'],
                 }
             )
-            .order_by(r.desc('count'), r.desc(AppsKey.ReleaseDate))
+            .order_by(r.desc('count'), r.desc(AppsKeys.ReleaseDate))
             .limit(count)
             .run(conn)
         )
@@ -464,35 +464,35 @@ def recently_released_packages(username, customer_name,
                 ],
                 index=AppsPerAgentIndexes.StatusAndCustomer
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .map(
                 lambda x:
                 {
-                    AppsKey.Name: x['right'][AppsKey.Name],
-                    AppsKey.AppId: x['right'][AppsKey.AppId],
-                    AppsKey.RvSeverity: x['right'][AppsKey.RvSeverity],
-                    AppsKey.Hidden: x['right'][AppsKey.Hidden],
-                    AppsKey.ReleaseDate: x['right'][AppsKey.ReleaseDate].to_epoch_time(),
+                    AppsKeys.Name: x['right'][AppsKeys.Name],
+                    AppsKeys.AppId: x['right'][AppsKeys.AppId],
+                    AppsKeys.RvSeverity: x['right'][AppsKeys.RvSeverity],
+                    AppsKeys.Hidden: x['right'][AppsKeys.Hidden],
+                    AppsKeys.ReleaseDate: x['right'][AppsKeys.ReleaseDate].to_epoch_time(),
                     'count': (
                         r
                         .table(AppCollections.AppsPerAgent)
                         .get_all(
-                            [x['right'][AppsKey.AppId], CommonAppKeys.AVAILABLE],
+                            [x['right'][AppsKeys.AppId], CommonAppKeys.AVAILABLE],
                             index=AppsPerAgentIndexes.AppIdAndStatus
                         )
-                        .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+                        .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
                         .filter(
-                            lambda y: y['right'][AppsKey.Hidden] == CommonKeys.NO
+                            lambda y: y['right'][AppsKeys.Hidden] == CommonKeys.NO
                         )
                         .count()
                     )
                 }
             )
             .pluck(
-                AppsKey.Name, AppsKey.AppId,AppsKey.Hidden,
-                AppsKey.RvSeverity, AppsKey.ReleaseDate, 'count'
+                AppsKeys.Name, AppsKeys.AppId,AppsKeys.Hidden,
+                AppsKeys.RvSeverity, AppsKeys.ReleaseDate, 'count'
             )
-            .order_by(r.desc(AppsKey.ReleaseDate))
+            .order_by(r.desc(AppsKeys.ReleaseDate))
             .limit(count)
             .run(conn)
         )
@@ -535,19 +535,19 @@ def get_os_apps_history(username, customer_name, uri, method, status,
                 [CommonAppKeys.AVAILABLE, customer_name],
                 index=AppsPerAgentIndexes.StatusAndCustomer
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .zip()
             .filter(
-                r.row[AppsKey.ReleaseDate].during(
+                r.row[AppsKeys.ReleaseDate].during(
                     r.epoch_time(start_date), r.epoch_time(end_date)
                 )
             )
             .pluck(
-                AppsKey.AppId, AppsKey.Name, AppsKey.Version,
-                AppsKey.RvSeverity, AppsKey.ReleaseDate
+                AppsKeys.AppId, AppsKeys.Name, AppsKeys.Version,
+                AppsKeys.RvSeverity, AppsKeys.ReleaseDate
             )
             .group(
-                lambda x: x[AppsKey.ReleaseDate].to_epoch_time()
+                lambda x: x[AppsKeys.ReleaseDate].to_epoch_time()
             )
             .map(
                 lambda x:
@@ -555,10 +555,10 @@ def get_os_apps_history(username, customer_name, uri, method, status,
                     'details':
                         [
                             {
-                                AppsKey.AppId: x[AppsKey.AppId],
-                                AppsKey.Name: x[AppsKey.Name],
-                                AppsKey.Version: x[AppsKey.Version],
-                                AppsKey.RvSeverity: x[AppsKey.RvSeverity]
+                                AppsKeys.AppId: x[AppsKeys.AppId],
+                                AppsKeys.Name: x[AppsKeys.Name],
+                                AppsKeys.Version: x[AppsKeys.Version],
+                                AppsKeys.RvSeverity: x[AppsKeys.RvSeverity]
                             }
                         ],
                     CommonAppKeys.COUNT: 1,
@@ -587,9 +587,9 @@ def get_os_apps_history(username, customer_name, uri, method, status,
                                 'apps':
                                     [
                                         {
-                                            AppsKey.AppId: a[AppsKey.AppId],
-                                            AppsKey.Name: a[AppsKey.Name],
-                                            AppsKey.Version: a[AppsKey.Version],
+                                            AppsKeys.AppId: a[AppsKeys.AppId],
+                                            AppsKeys.Name: a[AppsKeys.Name],
+                                            AppsKeys.Version: a[AppsKeys.Version],
                                         }
                                     ],
                                 CommonAppKeys.COUNT: 1
@@ -647,19 +647,19 @@ def get_os_apps_history_for_agent(username, customer_name, uri, method,
                 [status, agent_id],
                 index=AppsPerAgentIndexes.StatusAndAgentId
             )
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .zip()
             .filter(
-                r.row[AppsKey.ReleaseDate].during(
+                r.row[AppsKeys.ReleaseDate].during(
                     r.epoch_time(start_date), r.epoch_time(end_date)
                 )
             )
             .pluck(
-                AppsKey.AppId, AppsKey.Name, AppsKey.Version,
-                AppsKey.RvSeverity, AppsKey.ReleaseDate
+                AppsKeys.AppId, AppsKeys.Name, AppsKeys.Version,
+                AppsKeys.RvSeverity, AppsKeys.ReleaseDate
             )
              .group(
-                lambda x: x[AppsKey.ReleaseDate].to_epoch_time()
+                lambda x: x[AppsKeys.ReleaseDate].to_epoch_time()
             )
             .map(
                 lambda x:
@@ -667,10 +667,10 @@ def get_os_apps_history_for_agent(username, customer_name, uri, method,
                     'details':
                         [
                             {
-                                AppsKey.AppId: x[AppsKey.AppId],
-                                AppsKey.Name: x[AppsKey.Name],
-                                AppsKey.Version: x[AppsKey.Version],
-                                AppsKey.RvSeverity: x[AppsKey.RvSeverity]
+                                AppsKeys.AppId: x[AppsKeys.AppId],
+                                AppsKeys.Name: x[AppsKeys.Name],
+                                AppsKeys.Version: x[AppsKeys.Version],
+                                AppsKeys.RvSeverity: x[AppsKeys.RvSeverity]
                             }
                         ],
                     CommonAppKeys.COUNT: 1,
@@ -699,9 +699,9 @@ def get_os_apps_history_for_agent(username, customer_name, uri, method,
                                 'apps':
                                     [
                                         {
-                                            AppsKey.AppId: a[AppsKey.AppId],
-                                            AppsKey.Name: a[AppsKey.Name],
-                                            AppsKey.Version: a[AppsKey.Version],
+                                            AppsKeys.AppId: a[AppsKeys.AppId],
+                                            AppsKeys.Name: a[AppsKeys.Name],
+                                            AppsKeys.Version: a[AppsKeys.Version],
                                         }
                                     ],
                                 CommonAppKeys.COUNT: 1
@@ -756,29 +756,29 @@ def get_os_apps_history_for_tag(username, customer_name, uri, method,
             r
             .table(TagsPerAgentCollection)
             .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-            .pluck(TagsPerAgentKey.AgentId)
+            .pluck(TagsPerAgentKeys.AgentId)
             .eq_join(
                 lambda x: [
                     status,
-                    x[AppsPerAgentKey.AgentId]
+                    x[AppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
                 index=AppsPerAgentIndexes.StatusAndAgentId
             )
             .zip()
-            .eq_join(AppsKey.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(AppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .zip()
             .filter(
-                r.row[AppsKey.ReleaseDate].during(
+                r.row[AppsKeys.ReleaseDate].during(
                     r.epoch_time(start_date), r.epoch_time(end_date)
                 )
             )
             .pluck(
-                AppsKey.AppId, AppsKey.Name, AppsKey.Version,
-                AppsKey.RvSeverity, AppsKey.ReleaseDate
+                AppsKeys.AppId, AppsKeys.Name, AppsKeys.Version,
+                AppsKeys.RvSeverity, AppsKeys.ReleaseDate
             )
              .group(
-                lambda x: x[AppsKey.ReleaseDate].to_epoch_time()
+                lambda x: x[AppsKeys.ReleaseDate].to_epoch_time()
             )
             .map(
                 lambda x:
@@ -786,10 +786,10 @@ def get_os_apps_history_for_tag(username, customer_name, uri, method,
                     'details':
                         [
                             {
-                                AppsKey.AppId: x[AppsKey.AppId],
-                                AppsKey.Name: x[AppsKey.Name],
-                                AppsKey.Version: x[AppsKey.Version],
-                                AppsKey.RvSeverity: x[AppsKey.RvSeverity]
+                                AppsKeys.AppId: x[AppsKeys.AppId],
+                                AppsKeys.Name: x[AppsKeys.Name],
+                                AppsKeys.Version: x[AppsKeys.Version],
+                                AppsKeys.RvSeverity: x[AppsKeys.RvSeverity]
                             }
                         ],
                     CommonAppKeys.COUNT: 1,
@@ -818,9 +818,9 @@ def get_os_apps_history_for_tag(username, customer_name, uri, method,
                                 'apps':
                                     [
                                         {
-                                            AppsKey.AppId: a[AppsKey.AppId],
-                                            AppsKey.Name: a[AppsKey.Name],
-                                            AppsKey.Version: a[AppsKey.Version],
+                                            AppsKeys.AppId: a[AppsKeys.AppId],
+                                            AppsKeys.Name: a[AppsKeys.Name],
+                                            AppsKeys.Version: a[AppsKeys.Version],
                                         }
                                     ],
                                 CommonAppKeys.COUNT: 1

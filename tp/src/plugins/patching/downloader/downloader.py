@@ -12,7 +12,7 @@ from urlgrabber import urlgrab
 from vFense.errorz.status_codes import PackageCodes
 from vFense.utils.common import hash_verify
 
-from vFense.plugins.patching import AppsKey, AppCollections
+from vFense.plugins.patching import AppsKeys, AppCollections
 from vFense.plugins.patching._constants import CommonFileKeys
 from vFense.plugins.patching._db import update_app_data_by_app_id
 
@@ -53,7 +53,7 @@ def download_all_files_in_app(app_id, os_code, os_string=None, file_data=None,
 
     if not file_data and check_if_redhat(os_string):
         download_status = {
-            AppsKey.FilesDownloadStatus: \
+            AppsKeys.FilesDownloadStatus: \
                 PackageCodes.AgentWillDownloadFromVendor
         }
         update_app_data_by_app_id(app_id, download_status, collection)
@@ -70,7 +70,7 @@ def download_all_files_in_app(app_id, os_code, os_string=None, file_data=None,
         num_of_files_invalid_uri = 0
 
         new_status = {
-            AppsKey.FilesDownloadStatus: PackageCodes.FileIsDownloading
+            AppsKeys.FilesDownloadStatus: PackageCodes.FileIsDownloading
         }
 
         for file_info in file_data:
@@ -131,22 +131,22 @@ def download_all_files_in_app(app_id, os_code, os_string=None, file_data=None,
                 logger.exception(e)
 
         if num_of_files_downloaded == num_of_files_to_download:
-            new_status[AppsKey.FilesDownloadStatus] = (
+            new_status[AppsKeys.FilesDownloadStatus] = (
                 PackageCodes.FileCompletedDownload
             )
 
         elif num_of_files_mismatch > 0:
-            new_status[AppsKey.FilesDownloadStatus] = (
+            new_status[AppsKeys.FilesDownloadStatus] = (
                 PackageCodes.FileSizeMisMatch
             )
 
         elif num_of_files_failed > 0:
-            new_status[AppsKey.FilesDownloadStatus] = (
+            new_status[AppsKeys.FilesDownloadStatus] = (
                 PackageCodes.FileFailedDownload
             )
 
         elif num_of_files_invalid_uri > 0:
-            new_status[AppsKey.FilesDownloadStatus] = (
+            new_status[AppsKeys.FilesDownloadStatus] = (
                 PackageCodes.InvalidUri
             )
 

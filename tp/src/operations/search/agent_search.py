@@ -5,7 +5,7 @@ import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
 from vFense.core._constants import SortValues, DefaultQueryValues
 from vFense.core.decorators import results_message
-from vFense.operations import AgentOperationKey
+from vFense.operations import AgentOperationKeys
 from vFense.operations._constants import AgentOperations
 from vFense.operations.search._db_agent_search import FetchAgentOperations
 from vFense.errorz.status_codes import GenericCodes, GenericFailureCodes
@@ -22,7 +22,7 @@ class AgentOperationRetriever(object):
             count=DefaultQueryValues.COUNT,
             offset=DefaultQueryValues.OFFSET,
             sort=SortValues.DESC,
-            sort_key=AgentOperationKey.CreatedTime,
+            sort_key=AgentOperationKeys.CreatedTime,
             user_name=None, uri=None, method=None
         ):
         """
@@ -58,19 +58,19 @@ class AgentOperationRetriever(object):
         self.method = method
         sort_by_list = (
             [
-                AgentOperationKey.Operation,
-                AgentOperationKey.OperationStatus,
-                AgentOperationKey.CreatedTime,
-                AgentOperationKey.UpdatedTime,
-                AgentOperationKey.CompletedTime,
-                AgentOperationKey.CreatedBy,
-                AgentOperationKey.CustomerName,
+                AgentOperationKeys.Operation,
+                AgentOperationKeys.OperationStatus,
+                AgentOperationKeys.CreatedTime,
+                AgentOperationKeys.UpdatedTime,
+                AgentOperationKeys.CompletedTime,
+                AgentOperationKeys.CreatedBy,
+                AgentOperationKeys.CustomerName,
             ]
         )
         if sort_key in sort_by_list:
             sort_key = sort_key
         else:
-            sort_key = AgentOperationKey.CreatedTime
+            sort_key = AgentOperationKeys.CreatedTime
 
         self.agent_operations = (
             FetchAgentOperations(

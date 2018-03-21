@@ -139,7 +139,7 @@ class AgentIdCustomAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', CustomAppsKey.Name)
+        sort_by = self.get_argument('sort_by', CustomAppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO
@@ -349,7 +349,7 @@ class TagIdCustomAppsHandler(BaseHandler):
         status = self.get_argument('status', 'installed')
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', CustomAppsKey.Name)
+        sort_by = self.get_argument('sort_by', CustomAppsKeys.Name)
         uri = self.request.uri
         method = self.request.method
         patches = (
@@ -579,7 +579,7 @@ class AppIdCustomAppsHandler(BaseHandler):
                     severity = severity.capitalize()
                     sev_data = (
                         {
-                            AppsKey.RvSeverity: severity
+                            AppsKeys.RvSeverity: severity
                         }
                     )
                     update_app_data_by_app_id(
@@ -607,7 +607,7 @@ class AppIdCustomAppsHandler(BaseHandler):
             elif install_options:
                 install_options_hash = (
                     {
-                        CustomAppsKey.CliOptions: install_options
+                        CustomAppsKeys.CliOptions: install_options
                     }
                 )
 
@@ -973,7 +973,7 @@ class CustomAppsHandler(BaseHandler):
         status = self.get_argument('status', None)
         severity = self.get_argument('severity', None)
         sort = self.get_argument('sort', 'asc')
-        sort_by = self.get_argument('sort_by', CustomAppsKey.Name)
+        sort_by = self.get_argument('sort_by', CustomAppsKeys.Name)
         hidden = self.get_argument('hidden', 'false')
         if hidden == 'false':
             hidden = CommonKeys.NO

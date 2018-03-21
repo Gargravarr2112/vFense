@@ -32,27 +32,27 @@ class RetrieveAppsByAppId(object):
         self.CurrentAppsCollection = AppCollections.UniqueApplications
         self.CurrentAppsIndexes = AppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsKey = AppsKey
-        self.CurrentAppsPerAgentKey = AppsPerAgentKey
+        self.CurrentAppsKeys = AppsKeys
+        self.CurrentAppsPerAgentKeys = AppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = AppsPerAgentIndexes
 
         self.map_hash = (
             {
-                self.CurrentAppsKey.AppId: r.row[self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version: r.row[self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name: r.row[self.CurrentAppsKey.Name],
-                self.CurrentAppsKey.Description: r.row[self.CurrentAppsKey.Description],
-                self.CurrentAppsKey.Kb: r.row[self.CurrentAppsKey.Kb],
-                self.CurrentAppsKey.ReleaseDate: r.row[self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity: r.row[self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VendorSeverity: r.row[self.CurrentAppsKey.VendorSeverity],
-                self.CurrentAppsKey.VendorName: r.row[self.CurrentAppsKey.VendorName],
-                self.CurrentAppsKey.SupportUrl: r.row[self.CurrentAppsKey.SupportUrl],
-                self.CurrentAppsKey.OsCode: r.row[self.CurrentAppsKey.OsCode],
-                self.CurrentAppsKey.FilesDownloadStatus: r.row[self.CurrentAppsKey.FilesDownloadStatus],
-                self.CurrentAppsKey.CveIds: r.row[self.CurrentAppsKey.CveIds],
-                self.CurrentAppsKey.VulnerabilityId: r.row[self.CurrentAppsKey.VulnerabilityId],
-                self.CurrentAppsKey.VulnerabilityCategories: r.row[self.CurrentAppsKey.VulnerabilityCategories],
+                self.CurrentAppsKeys.AppId: r.row[self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version: r.row[self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name: r.row[self.CurrentAppsKeys.Name],
+                self.CurrentAppsKeys.Description: r.row[self.CurrentAppsKeys.Description],
+                self.CurrentAppsKeys.Kb: r.row[self.CurrentAppsKeys.Kb],
+                self.CurrentAppsKeys.ReleaseDate: r.row[self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity: r.row[self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VendorSeverity: r.row[self.CurrentAppsKeys.VendorSeverity],
+                self.CurrentAppsKeys.VendorName: r.row[self.CurrentAppsKeys.VendorName],
+                self.CurrentAppsKeys.SupportUrl: r.row[self.CurrentAppsKeys.SupportUrl],
+                self.CurrentAppsKeys.OsCode: r.row[self.CurrentAppsKeys.OsCode],
+                self.CurrentAppsKeys.FilesDownloadStatus: r.row[self.CurrentAppsKeys.FilesDownloadStatus],
+                self.CurrentAppsKeys.CveIds: r.row[self.CurrentAppsKeys.CveIds],
+                self.CurrentAppsKeys.VulnerabilityId: r.row[self.CurrentAppsKeys.VulnerabilityId],
+                self.CurrentAppsKeys.VulnerabilityCategories: r.row[self.CurrentAppsKeys.VulnerabilityCategories],
             }
         )
 
@@ -69,7 +69,7 @@ class RetrieveAppsByAppId(object):
                 .run(conn)
             )
             if pkg:
-                pkg[0][self.CurrentAppsKey.FileData] = fetch_file_data(self.app_id)
+                pkg[0][self.CurrentAppsKeys.FileData] = fetch_file_data(self.app_id)
 
                 if stats:
                     pkg[0]['agent_stats'] = (
@@ -123,15 +123,15 @@ class RetrieveAgentsByAppId(object):
         self.CurrentAppsCollection = AppCollections.UniqueApplications
         self.CurrentAppsIndexes = AppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsKey = AppsKey
-        self.CurrentAppsPerAgentKey = AppsPerAgentKey
+        self.CurrentAppsKeys = AppsKeys
+        self.CurrentAppsPerAgentKeys = AppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = AppsPerAgentIndexes
 
         self.map_hash = (
             {
-                AgentKey.ComputerName: r.row[AgentKey.ComputerName],
-                AgentKey.DisplayName: r.row[AgentKey.DisplayName],
-                self.CurrentAppsPerAgentKey.AgentId: r.row[self.CurrentAppsPerAgentKey.AgentId]
+                AgentKeys.ComputerName: r.row[AgentKeys.ComputerName],
+                AgentKeys.DisplayName: r.row[AgentKeys.DisplayName],
+                self.CurrentAppsPerAgentKeys.AgentId: r.row[self.CurrentAppsPerAgentKeys.AgentId]
             }
         )
 
@@ -154,11 +154,11 @@ class RetrieveAgentsByAppId(object):
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AgentId,
+                            self.CurrentAppsPerAgentKeys.AgentId,
                             r.table(AgentsCollection)
                         )
                         .zip()
-                        .order_by(r.asc(AgentKey.ComputerName))
+                        .order_by(r.asc(AgentKeys.ComputerName))
                         .skip(self.offset)
                         .limit(self.count)
                         .map(self.map_hash)
@@ -222,14 +222,14 @@ class RetrieveAgentsByAppId(object):
                     .table(self.CurrentAppsPerAgentCollection)
                     .get_all(self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId)
                     .eq_join(
-                        self.CurrentAppsPerAgentKey.AgentId,
+                        self.CurrentAppsPerAgentKeys.AgentId,
                         r.table(AgentsCollection)
                     )
                     .zip()
                     .filter(
-                        r.row[AgentKey.ComputerName].match("(?i)"+name)
+                        r.row[AgentKeys.ComputerName].match("(?i)"+name)
                         |
-                        r.row[AgentKey.DisplayName].match("(?i)"+name)
+                        r.row[AgentKeys.DisplayName].match("(?i)"+name)
                     )
                     .order_by(r.asc('computer_name'))
                     .skip(self.offset)
@@ -243,14 +243,14 @@ class RetrieveAgentsByAppId(object):
                     .table(self.CurrentAppsPerAgentCollection)
                     .get_all(self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId)
                     .eq_join(
-                        self.CurrentAppsPerAgentKey.AgentId,
+                        self.CurrentAppsPerAgentKeys.AgentId,
                         r.table(AgentsCollection)
                     )
                     .zip()
                     .filter(
-                        r.row[AgentKey.ComputerName].match("(?i)"+name)
+                        r.row[AgentKeys.ComputerName].match("(?i)"+name)
                         |
-                        r.row[AgentKey.DisplayName].match("(?i)"+name)
+                        r.row[AgentKeys.DisplayName].match("(?i)"+name)
                     )
                     .count()
                     .run(conn)
@@ -299,16 +299,16 @@ class RetrieveAgentsByAppId(object):
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AgentId,
+                            self.CurrentAppsPerAgentKeys.AgentId,
                             r.table(AgentsCollection)
                         )
                         .zip()
                         .filter(
-                            r.row[AgentKey.ComputerName].match("(?i)"+name)
+                            r.row[AgentKeys.ComputerName].match("(?i)"+name)
                             |
-                            r.row[AgentKey.DisplayName].match("(?i)"+name)
+                            r.row[AgentKeys.DisplayName].match("(?i)"+name)
                         )
-                        .order_by(r.asc(AgentKey.ComputerName))
+                        .order_by(r.asc(AgentKeys.ComputerName))
                         .skip(self.offset)
                         .limit(self.count)
                         .map(self.map_hash)
@@ -321,14 +321,14 @@ class RetrieveAgentsByAppId(object):
                         .get_all([self.app_id, pkg_status],
                                  index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus)
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AgentId,
+                            self.CurrentAppsPerAgentKeys.AgentId,
                             r.table(AgentsCollection)
                         )
                         .zip()
                         .filter(
-                            r.row[AgentKey.ComputerName].match("(?i)"+name)
+                            r.row[AgentKeys.ComputerName].match("(?i)"+name)
                             |
-                            r.row[AgentKey.DisplayName].match("(?i)"+name)
+                            r.row[AgentKeys.DisplayName].match("(?i)"+name)
                         )
                         .count()
                         .run(conn)
@@ -389,21 +389,21 @@ class RetrieveAgentsByAppId(object):
                                 index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus
                             )
                             .eq_join(
-                                self.CurrentAppsPerAgentKey.AppId,
+                                self.CurrentAppsPerAgentKeys.AppId,
                                 r.table(self.CurrentAppsCollection)
                             )
                             .zip()
                             .eq_join(
-                                self.CurrentAppsPerAgentKey.AgentId,
+                                self.CurrentAppsPerAgentKeys.AgentId,
                                 r.table(AgentsCollection)
                             )
                             .zip()
                             .filter(
-                                (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                                (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                                 &
-                                (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                                (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                             )
-                            .order_by(r.asc(self.CurrentAppsKey.Name))
+                            .order_by(r.asc(self.CurrentAppsKeys.Name))
                             .skip(self.offset)
                             .limit(self.count)
                             .map(self.map_hash)
@@ -417,13 +417,13 @@ class RetrieveAgentsByAppId(object):
                                 [self.app_id, pkg_status],
                                 index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus
                             )
-                            .eq_join(self.CurrentAppsPerAgentKey.AppId,
+                            .eq_join(self.CurrentAppsPerAgentKeys.AppId,
                                      r.table(self.CurrentAppsCollection))
                             .zip()
                             .filter(
-                                (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                                (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                                 &
-                                (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                                (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                                 )
                             .count()
                             .run(conn)
@@ -487,17 +487,17 @@ class RetrieveAgentsByAppId(object):
                             self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId
                             )
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AppId,
+                            self.CurrentAppsPerAgentKeys.AppId,
                             r.table(self.CurrentAppsCollection)
                         )
                         .zip()
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AgentId,
+                            self.CurrentAppsPerAgentKeys.AgentId,
                             r.table(AgentsCollection)
                         )
                         .zip()
-                        .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
-                        .order_by(r.asc(self.CurrentAppsKey.Name))
+                        .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
+                        .order_by(r.asc(self.CurrentAppsKeys.Name))
                         .skip(self.offset)
                         .limit(self.count)
                         .map(self.map_hash)
@@ -508,9 +508,9 @@ class RetrieveAgentsByAppId(object):
                         r
                         .table(self.CurrentAppsPerAgentCollection)
                         .get_all(self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId)
-                        .eq_join(self.CurrentAppsPerAgentKey.AppId, r.table(self.CurrentAppsCollection))
+                        .eq_join(self.CurrentAppsPerAgentKeys.AppId, r.table(self.CurrentAppsCollection))
                         .zip()
-                        .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                        .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                         .count()
                         .run(conn)
                     )
@@ -567,21 +567,21 @@ class RetrieveAgentsByAppId(object):
                             self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId
                         )
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AppId,
+                            self.CurrentAppsPerAgentKeys.AppId,
                             r.table(self.CurrentAppsCollection)
                         )
                         .zip()
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AgentId,
+                            self.CurrentAppsPerAgentKeys.AgentId,
                             r.table(AgentsCollection)
                         )
                         .zip()
                         .filter(
-                            (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                            (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                             &
-                            (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                            (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                         )
-                        .order_by(r.asc(self.CurrentAppsKey.Name))
+                        .order_by(r.asc(self.CurrentAppsKeys.Name))
                         .skip(self.offset)
                         .limit(self.count)
                         .map(self.map_hash)
@@ -595,14 +595,14 @@ class RetrieveAgentsByAppId(object):
                             self.app_id, index=self.CurrentAppsPerAgentIndexes.AppId
                         )
                         .eq_join(
-                            self.CurrentAppsPerAgentKey.AppId,
+                            self.CurrentAppsPerAgentKeys.AppId,
                             r.table(self.CurrentAppsCollection)
                         )
                         .zip()
                         .filter(
-                            (r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                            (r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                             &
-                            (r.row[self.CurrentAppsKey.Name].match("(?i)"+name))
+                            (r.row[self.CurrentAppsKeys.Name].match("(?i)"+name))
                         )
                         .count()
                         .run(conn)
@@ -663,17 +663,17 @@ class RetrieveAgentsByAppId(object):
                                 index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus
                             )
                             .eq_join(
-                                self.CurrentAppsPerAgentKey.AppId,
+                                self.CurrentAppsPerAgentKeys.AppId,
                                 r.table(self.CurrentAppsCollection)
                             )
                             .zip()
                             .eq_join(
-                                self.CurrentAppsPerAgentKey.AgentId,
+                                self.CurrentAppsPerAgentKeys.AgentId,
                                 r.table(AgentsCollection)
                             )
                             .zip()
-                            .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
-                            .order_by(r.asc(self.CurrentAppsKey.Name))
+                            .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
+                            .order_by(r.asc(self.CurrentAppsKeys.Name))
                             .skip(self.offset)
                             .limit(self.count)
                             .map(self.map_hash)
@@ -688,11 +688,11 @@ class RetrieveAgentsByAppId(object):
                                 index=self.CurrentAppsPerAgentIndexes.AppIdAndStatus
                             )
                             .eq_join(
-                                self.CurrentAppsPerAgentKey.AppId,
+                                self.CurrentAppsPerAgentKeys.AppId,
                                 r.table(self.CurrentAppsCollection)
                             )
                             .zip()
-                            .filter(r.row[self.CurrentAppsKey.RvSeverity] == sev)
+                            .filter(r.row[self.CurrentAppsKeys.RvSeverity] == sev)
                             .count()
                             .run(conn)
                         )
@@ -755,26 +755,26 @@ class RetrieveCustomAppsByAppId(RetrieveAppsByAppId):
         self.CurrentAppsCollection = AppCollections.CustomApps
         self.CurrentAppsIndexes = CustomAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        self.CurrentAppsKey = CustomAppsKey
-        self.CurrentAppsPerAgentKey = CustomAppsPerAgentKey
+        self.CurrentAppsKeys = CustomAppsKeys
+        self.CurrentAppsPerAgentKeys = CustomAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = CustomAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                self.CurrentAppsKey.AppId: r.row[self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version: r.row[self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name: r.row[self.CurrentAppsKey.Name],
-                self.CurrentAppsPerAgentKey.Dependencies: r.row[self.CurrentAppsPerAgentKey.Dependencies],
-                self.CurrentAppsKey.Description: r.row[self.CurrentAppsKey.Description],
-                self.CurrentAppsKey.Kb: r.row[self.CurrentAppsKey.Kb],
-                self.CurrentAppsKey.ReleaseDate: r.row[self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity: r.row[self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VendorSeverity: r.row[self.CurrentAppsKey.VendorSeverity],
-                self.CurrentAppsKey.VendorName: r.row[self.CurrentAppsKey.VendorName],
-                self.CurrentAppsKey.SupportUrl: r.row[self.CurrentAppsKey.SupportUrl],
-                self.CurrentAppsKey.OsCode: r.row[self.CurrentAppsKey.OsCode],
-                self.CurrentAppsKey.FilesDownloadStatus: r.row[self.CurrentAppsKey.FilesDownloadStatus],
-                self.CurrentAppsKey.CliOptions: r.row[self.CurrentAppsKey.CliOptions],
+                self.CurrentAppsKeys.AppId: r.row[self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version: r.row[self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name: r.row[self.CurrentAppsKeys.Name],
+                self.CurrentAppsPerAgentKeys.Dependencies: r.row[self.CurrentAppsPerAgentKeys.Dependencies],
+                self.CurrentAppsKeys.Description: r.row[self.CurrentAppsKeys.Description],
+                self.CurrentAppsKeys.Kb: r.row[self.CurrentAppsKeys.Kb],
+                self.CurrentAppsKeys.ReleaseDate: r.row[self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity: r.row[self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VendorSeverity: r.row[self.CurrentAppsKeys.VendorSeverity],
+                self.CurrentAppsKeys.VendorName: r.row[self.CurrentAppsKeys.VendorName],
+                self.CurrentAppsKeys.SupportUrl: r.row[self.CurrentAppsKeys.SupportUrl],
+                self.CurrentAppsKeys.OsCode: r.row[self.CurrentAppsKeys.OsCode],
+                self.CurrentAppsKeys.FilesDownloadStatus: r.row[self.CurrentAppsKeys.FilesDownloadStatus],
+                self.CurrentAppsKeys.CliOptions: r.row[self.CurrentAppsKeys.CliOptions],
             }
         )
 
@@ -797,25 +797,25 @@ class RetrieveSupportedAppsByAppId(RetrieveAppsByAppId):
         self.CurrentAppsCollection = AppCollections.SupportedApps
         self.CurrentAppsIndexes = SupportedAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        self.CurrentAppsKey = SupportedAppsKey
-        self.CurrentAppsPerAgentKey = SupportedAppsPerAgentKey
+        self.CurrentAppsKeys = SupportedAppsKeys
+        self.CurrentAppsPerAgentKeys = SupportedAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = SupportedAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                self.CurrentAppsKey.AppId: r.row[self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version: r.row[self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name: r.row[self.CurrentAppsKey.Name],
-                self.CurrentAppsPerAgentKey.Dependencies: r.row[self.CurrentAppsPerAgentKey.Dependencies],
-                self.CurrentAppsKey.Description: r.row[self.CurrentAppsKey.Description],
-                self.CurrentAppsKey.Kb: r.row[self.CurrentAppsKey.Kb],
-                self.CurrentAppsKey.ReleaseDate: r.row[self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity: r.row[self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VendorSeverity: r.row[self.CurrentAppsKey.VendorSeverity],
-                self.CurrentAppsKey.VendorName: r.row[self.CurrentAppsKey.VendorName],
-                self.CurrentAppsKey.SupportUrl: r.row[self.CurrentAppsKey.SupportUrl],
-                self.CurrentAppsKey.OsCode: r.row[self.CurrentAppsKey.OsCode],
-                self.CurrentAppsKey.FilesDownloadStatus: r.row[self.CurrentAppsKey.FilesDownloadStatus],
+                self.CurrentAppsKeys.AppId: r.row[self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version: r.row[self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name: r.row[self.CurrentAppsKeys.Name],
+                self.CurrentAppsPerAgentKeys.Dependencies: r.row[self.CurrentAppsPerAgentKeys.Dependencies],
+                self.CurrentAppsKeys.Description: r.row[self.CurrentAppsKeys.Description],
+                self.CurrentAppsKeys.Kb: r.row[self.CurrentAppsKeys.Kb],
+                self.CurrentAppsKeys.ReleaseDate: r.row[self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity: r.row[self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VendorSeverity: r.row[self.CurrentAppsKeys.VendorSeverity],
+                self.CurrentAppsKeys.VendorName: r.row[self.CurrentAppsKeys.VendorName],
+                self.CurrentAppsKeys.SupportUrl: r.row[self.CurrentAppsKeys.SupportUrl],
+                self.CurrentAppsKeys.OsCode: r.row[self.CurrentAppsKeys.OsCode],
+                self.CurrentAppsKeys.FilesDownloadStatus: r.row[self.CurrentAppsKeys.FilesDownloadStatus],
             }
         )
 
@@ -837,25 +837,25 @@ class RetrieveAgentAppsByAppId(RetrieveAppsByAppId):
         self.CurrentAppsCollection = AppCollections.vFenseApps
         self.CurrentAppsIndexes = vFenseAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        self.CurrentAppsKey = vFenseAppsKey
-        self.CurrentAppsPerAgentKey = vFenseAppsPerAgentKey
+        self.CurrentAppsKeys = vFenseAppsKeys
+        self.CurrentAppsPerAgentKeys = vFenseAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = vFenseAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                self.CurrentAppsKey.AppId: r.row[self.CurrentAppsKey.AppId],
-                self.CurrentAppsKey.Version: r.row[self.CurrentAppsKey.Version],
-                self.CurrentAppsKey.Name: r.row[self.CurrentAppsKey.Name],
-                self.CurrentAppsPerAgentKey.Dependencies: r.row[self.CurrentAppsPerAgentKey.Dependencies],
-                self.CurrentAppsKey.Description: r.row[self.CurrentAppsKey.Description],
-                self.CurrentAppsKey.Kb: r.row[self.CurrentAppsKey.Kb],
-                self.CurrentAppsKey.ReleaseDate: r.row[self.CurrentAppsKey.ReleaseDate].to_epoch_time(),
-                self.CurrentAppsKey.RvSeverity: r.row[self.CurrentAppsKey.RvSeverity],
-                self.CurrentAppsKey.VendorSeverity: r.row[self.CurrentAppsKey.VendorSeverity],
-                self.CurrentAppsKey.VendorName: r.row[self.CurrentAppsKey.VendorName],
-                self.CurrentAppsKey.SupportUrl: r.row[self.CurrentAppsKey.SupportUrl],
-                self.CurrentAppsKey.OsCode: r.row[self.CurrentAppsKey.OsCode],
-                self.CurrentAppsKey.FilesDownloadStatus: r.row[self.CurrentAppsKey.FilesDownloadStatus],
+                self.CurrentAppsKeys.AppId: r.row[self.CurrentAppsKeys.AppId],
+                self.CurrentAppsKeys.Version: r.row[self.CurrentAppsKeys.Version],
+                self.CurrentAppsKeys.Name: r.row[self.CurrentAppsKeys.Name],
+                self.CurrentAppsPerAgentKeys.Dependencies: r.row[self.CurrentAppsPerAgentKeys.Dependencies],
+                self.CurrentAppsKeys.Description: r.row[self.CurrentAppsKeys.Description],
+                self.CurrentAppsKeys.Kb: r.row[self.CurrentAppsKeys.Kb],
+                self.CurrentAppsKeys.ReleaseDate: r.row[self.CurrentAppsKeys.ReleaseDate].to_epoch_time(),
+                self.CurrentAppsKeys.RvSeverity: r.row[self.CurrentAppsKeys.RvSeverity],
+                self.CurrentAppsKeys.VendorSeverity: r.row[self.CurrentAppsKeys.VendorSeverity],
+                self.CurrentAppsKeys.VendorName: r.row[self.CurrentAppsKeys.VendorName],
+                self.CurrentAppsKeys.SupportUrl: r.row[self.CurrentAppsKeys.SupportUrl],
+                self.CurrentAppsKeys.OsCode: r.row[self.CurrentAppsKeys.OsCode],
+                self.CurrentAppsKeys.FilesDownloadStatus: r.row[self.CurrentAppsKeys.FilesDownloadStatus],
             }
         )
 
@@ -879,15 +879,15 @@ class RetrieveAgentsByCustomAppId(RetrieveAgentsByAppId):
         self.CurrentAppsCollection = AppCollections.CustomApps
         self.CurrentAppsIndexes = CustomAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        self.CurrentAppsKey = CustomAppsKey
-        self.CurrentAppsPerAgentKey = CustomAppsPerAgentKey
+        self.CurrentAppsKeys = CustomAppsKeys
+        self.CurrentAppsPerAgentKeys = CustomAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = CustomAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                AgentKey.ComputerName: r.row[AgentKey.ComputerName],
-                AgentKey.DisplayName: r.row[AgentKey.DisplayName],
-                self.CurrentAppsPerAgentKey.AgentId: r.row[self.CurrentAppsPerAgentKey.AgentId]
+                AgentKeys.ComputerName: r.row[AgentKeys.ComputerName],
+                AgentKeys.DisplayName: r.row[AgentKeys.DisplayName],
+                self.CurrentAppsPerAgentKeys.AgentId: r.row[self.CurrentAppsPerAgentKeys.AgentId]
             }
         )
 
@@ -910,15 +910,15 @@ class RetrieveAgentsBySupportedAppId(RetrieveAgentsByAppId):
         self.CurrentAppsCollection = AppCollections.SupportedApps
         self.CurrentAppsIndexes = SupportedAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        self.CurrentAppsKey = SupportedAppsKey
-        self.CurrentAppsPerAgentKey = SupportedAppsPerAgentKey
+        self.CurrentAppsKeys = SupportedAppsKeys
+        self.CurrentAppsPerAgentKeys = SupportedAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = SupportedAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                AgentKey.ComputerName: r.row[AgentKey.ComputerName],
-                AgentKey.DisplayName: r.row[AgentKey.DisplayName],
-                self.CurrentAppsPerAgentKey.AgentId: r.row[self.CurrentAppsPerAgentKey.AgentId]
+                AgentKeys.ComputerName: r.row[AgentKeys.ComputerName],
+                AgentKeys.DisplayName: r.row[AgentKeys.DisplayName],
+                self.CurrentAppsPerAgentKeys.AgentId: r.row[self.CurrentAppsPerAgentKeys.AgentId]
             }
         )
 
@@ -941,15 +941,15 @@ class RetrieveAgentsByAgentAppId(RetrieveAgentsByAppId):
         self.CurrentAppsCollection = AppCollections.vFenseApps
         self.CurrentAppsIndexes = vFenseAppsIndexes
         self.CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        self.CurrentAppsKey = vFenseAppsKey
-        self.CurrentAppsPerAgentKey = vFenseAppsPerAgentKey
+        self.CurrentAppsKeys = vFenseAppsKeys
+        self.CurrentAppsPerAgentKeys = vFenseAppsPerAgentKeys
         self.CurrentAppsPerAgentIndexes = vFenseAppsPerAgentIndexes
 
         self.map_hash = (
             {
-                AgentKey.ComputerName: r.row[AgentKey.ComputerName],
-                AgentKey.DisplayName: r.row[AgentKey.DisplayName],
-                self.CurrentAppsPerAgentKey.AgentId: r.row[self.CurrentAppsPerAgentKey.AgentId]
+                AgentKeys.ComputerName: r.row[AgentKeys.ComputerName],
+                AgentKeys.DisplayName: r.row[AgentKeys.DisplayName],
+                self.CurrentAppsPerAgentKeys.AgentId: r.row[self.CurrentAppsPerAgentKeys.AgentId]
             }
         )
 
