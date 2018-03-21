@@ -9,8 +9,8 @@ from vFense.plugins.patching._db_sub_queries import AppsMerge
 from vFense.plugins.patching._constants import CommonFileKeys
 from vFense.plugins.patching import (
     AppCollections, FileCollections, AppsKeys,
-    DbCommonAppKeys, DbCommonAppPerAgentKeys,
-    DbCommonAppIndexes, DbCommonAppPerAgentIndexes, FilesKeys,
+    DbCommonAppsKeys, DbCommonAppsPerAgentKeys,
+    DbCommonAppsIndexes, DbCommonAppsPerAgentIndexes, FilesKeys,
     FileServerIndexes, FileServerKeys
 )
 
@@ -137,8 +137,8 @@ def fetch_app_data_by_appids(
                     .merge(
                         lambda x: 
                         {
-                            DbCommonAppKeys.ReleaseDate: (
-                                x[DbCommonAppKeys.ReleaseDate].to_epoch_time()
+                            DbCommonAppsKeys.ReleaseDate: (
+                                x[DbCommonAppsKeys.ReleaseDate].to_epoch_time()
                             )
                         }
                     )
@@ -159,8 +159,8 @@ def fetch_app_data_by_appids(
                     .merge(
                         lambda x:
                         {
-                            DbCommonAppKeys.ReleaseDate: (
-                                x[DbCommonAppKeys.ReleaseDate].to_epoch_time()
+                            DbCommonAppsKeys.ReleaseDate: (
+                                x[DbCommonAppsKeys.ReleaseDate].to_epoch_time()
                             )
                         }
                     )
@@ -223,7 +223,7 @@ def fetch_app_data_by_appid_and_agentid(
     """
 
     data = {}
-    index_to_use = DbCommonAppPerAgentIndexes.AgentIdAndAppId
+    index_to_use = DbCommonAppsPerAgentIndexes.AgentIdAndAppId
     try:
         if fields_to_pluck:
             data = list(
@@ -307,7 +307,7 @@ def fetch_apps_data_by_os_code(
     """
 
     data = {}
-    index_to_use = DbCommonAppIndexes.Customers
+    index_to_use = DbCommonAppsIndexes.Customers
     merge = AppsMerge.RELEASE_DATE
     try:
         if customer_name and fields_to_pluck:
@@ -405,13 +405,13 @@ def fetch_app_data_to_send_to_agent(
             .map(
                 lambda app:
                 {
-                    DbCommonAppKeys.Name: app[DbCommonAppKeys.Name],
-                    DbCommonAppKeys.Version: app[DbCommonAppKeys.Version],
-                    DbCommonAppKeys.CliOptions: (
+                    DbCommonAppsKeys.Name: app[DbCommonAppsKeys.Name],
+                    DbCommonAppsKeys.Version: app[DbCommonAppsKeys.Version],
+                    DbCommonAppsKeys.CliOptions: (
                         r.branch(
-                            app.has_fields(DbCommonAppKeys.CliOptions) == False,
+                            app.has_fields(DbCommonAppsKeys.CliOptions) == False,
                             '',
-                            app[DbCommonAppKeys.CliOptions]
+                            app[DbCommonAppsKeys.CliOptions]
                         )
                     ),
                     CommonFileKeys.PKG_FILEDATA: (
@@ -464,19 +464,19 @@ def fetch_appids_by_agentid_and_status(agent_id, status, sev=None,
                 [
                     status, agent_id
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .eq_join(
                 lambda x:
                 [
-                    x[DbCommonAppKeys.AppId],
+                    x[DbCommonAppsKeys.AppId],
                     sev
                 ],
                 r.table(join_table),
-                index=DbCommonAppIndexes.AppIdAndRvSeverity
+                index=DbCommonAppsIndexes.AppIdAndRvSeverity
             )
             .map(
-                lambda y: y['right'][DbCommonAppKeys.AppId]
+                lambda y: y['right'][DbCommonAppsKeys.AppId]
             )
             .run(conn)
         )
@@ -489,10 +489,10 @@ def fetch_appids_by_agentid_and_status(agent_id, status, sev=None,
                 [
                     status, agent_id
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .map(
-                lambda y: y[DbCommonAppPerAgentKeys.AppId]
+                lambda y: y[DbCommonAppsPerAgentKeys.AppId]
             )
             .run(conn)
         )
@@ -533,9 +533,9 @@ def fetch_app_id_by_name_and_version(app_name, app_version,
             .table(collection)
             .get_all(
                 [app_name, app_version],
-                index=DbCommonAppIndexes.NameAndVersion
+                index=DbCommonAppsIndexes.NameAndVersion
             )
-            .map(lambda app: app[DbCommonAppKeys.AppId])
+            .map(lambda app: app[DbCommonAppsKeys.AppId])
             .run(conn)
         )
         if app_ids:
@@ -585,11 +585,11 @@ def return_valid_appids_for_agent(app_ids, agent_id,
                 .table(collection)
                 .get_all(
                     [agent_id, app_id],
-                    index=DbCommonAppPerAgentIndexes.AgentIdAndAppId
+                    index=DbCommonAppsPerAgentIndexes.AgentIdAndAppId
                 )
                 .coerce_to('array')
             )
-            .concat_map(lambda app_id: app_id[DbCommonAppKeys.AppId])
+            .concat_map(lambda app_id: app_id[DbCommonAppsKeys.AppId])
             .run(conn)
         )
 
@@ -671,7 +671,7 @@ def update_customers_in_apps_by_customer(current_customer, new_customer,
         >>> (2001, 1, None, [])
     """
 
-    index_name = DbCommonAppIndexes.Customers
+    index_name = DbCommonAppsIndexes.Customers
     data = {}
     try:
         if remove_customer:
@@ -683,8 +683,8 @@ def update_customers_in_apps_by_customer(current_customer, new_customer,
                 )
                 .update(
                     {
-                        DbCommonAppKeys.Customers: (
-                            r.row[DbCommonAppKeys.Customers]
+                        DbCommonAppsKeys.Customers: (
+                            r.row[DbCommonAppsKeys.Customers]
                             .difference([current_customer])
                             .set_insert(new_customer)
                         )
@@ -702,8 +702,8 @@ def update_customers_in_apps_by_customer(current_customer, new_customer,
                 )
                 .update(
                     {
-                        DbCommonAppKeys.Customers: (
-                            r.row[DbCommonAppKeys.Customers]
+                        DbCommonAppsKeys.Customers: (
+                            r.row[DbCommonAppsKeys.Customers]
                             .set_insert(new_customer)
                         )
                     }
@@ -746,7 +746,7 @@ def update_apps_per_agent_by_customer(
         >>> (2001, 1, None, [])
     """
 
-    index_name = DbCommonAppPerAgentIndexes.CustomerName
+    index_name = DbCommonAppsPerAgentIndexes.CustomerName
     data = {}
     try:
         data = (
@@ -793,7 +793,7 @@ def update_apps_per_agent_by_agentids(
         >>> (2001, 1, None, [])
     """
 
-    index_name = DbCommonAppPerAgentIndexes.AgentId
+    index_name = DbCommonAppsPerAgentIndexes.AgentId
     data = {}
     try:
         data = (
@@ -845,7 +845,7 @@ def delete_apps_by_customer(
         Tuple (status_code, count, error, generated ids)
         >>> (2001, 1, None, [])
     """
-    index_name = DbCommonAppPerAgentIndexes.CustomerName
+    index_name = DbCommonAppsPerAgentIndexes.CustomerName
     data = {}
     try:
         data = (
@@ -893,7 +893,7 @@ def update_app_data_by_agentid(
         >>> (2001, 1, None, [])
     """
     data = {}
-    index_to_use = DbCommonAppPerAgentIndexes.AgentId
+    index_to_use = DbCommonAppsPerAgentIndexes.AgentId
     try:
         data = (
             r
@@ -940,7 +940,7 @@ def update_app_data_by_agentid_and_appid(
         >>> (2001, 1, None, [])
     """
     data = {}
-    index_to_use = DbCommonAppPerAgentIndexes.AgentIdAndAppId
+    index_to_use = DbCommonAppsPerAgentIndexes.AgentIdAndAppId
     try:
         data = (
             r
@@ -985,7 +985,7 @@ def delete_app_data_for_agentid(
         data = (
             r
             .table(collection)
-            .get_all(agent_id, index=DbCommonAppPerAgentIndexes.AgentId)
+            .get_all(agent_id, index=DbCommonAppsPerAgentIndexes.AgentId)
             .delete()
             .run(conn)
         )
@@ -1031,8 +1031,8 @@ def update_customers_in_app_by_app_id(
             .get(app_id)
             .update(
                 {
-                    DbCommonAppKeys.Customers: (
-                        r.row[DbCommonAppKeys.Customers]
+                    DbCommonAppsKeys.Customers: (
+                        r.row[DbCommonAppsKeys.Customers]
                         .set_insert(customer_name)
                     ),
                 }
@@ -1109,10 +1109,10 @@ def delete_apps_per_agent_older_than(
             .table(collection)
             .get_all(
                 agent_id,
-                index=DbCommonAppPerAgentIndexes.AgentId
+                index=DbCommonAppsPerAgentIndexes.AgentId
             )
             .filter(
-                r.row[DbCommonAppPerAgentKeys.LastModifiedTime] < now
+                r.row[DbCommonAppsPerAgentKeys.LastModifiedTime] < now
             )
             .delete()
             .run(conn)
@@ -1203,7 +1203,7 @@ def update_hidden_status(
                     .get(app_id)
                     .update(
                         {
-                            DbCommonAppKeys.Hidden: hidden
+                            DbCommonAppsKeys.Hidden: hidden
                         }
                     )
                 )
@@ -1218,9 +1218,9 @@ def update_hidden_status(
                     .get(app_id)
                     .update(
                         {
-                            DbCommonAppKeys.Hidden: (
+                            DbCommonAppsKeys.Hidden: (
                                 r.branch(
-                                    r.row[DbCommonAppKeys.Hidden] == CommonKeys.YES,
+                                    r.row[DbCommonAppsKeys.Hidden] == CommonKeys.YES,
                                     CommonKeys.NO,
                                     CommonKeys.YES
                                 )
@@ -1270,14 +1270,14 @@ def delete_app_from_vfense(
         (
             r
             .table(collection)
-            .filter({DbCommonAppKeys.AppId: app_id})
+            .filter({DbCommonAppsKeys.AppId: app_id})
             .delete()
             .run(conn)
         )
         (
             r
             .table(per_agent_collection)
-            .filter({DbCommonAppKeys.AppId: app_id})
+            .filter({DbCommonAppsKeys.AppId: app_id})
             .delete()
             .run(conn)
         )

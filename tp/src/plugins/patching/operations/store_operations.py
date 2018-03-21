@@ -9,8 +9,8 @@ from vFense.operations.store_agent_operation import StoreAgentOperation
 from vFense.operations import AgentOperationKeys, OperationPerAgentKeys
 from vFense.core.decorators import results_message
 from vFense.core._constants import CPUThrottleValues, RebootValues
-from vFense.plugins.patching import AppCollections, DbCommonAppKeys, \
-        DbCommonAppPerAgentKeys
+from vFense.plugins.patching import AppCollections, DbCommonAppsKeys, \
+        DbCommonAppsPerAgentKeys
 from vFense.plugins.patching._db import fetch_app_data_to_send_to_agent, \
     return_valid_appids_for_agent
 
@@ -118,9 +118,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_OS_APPS
 
         self.CurrentAppsCollection = AppCollections.UniqueApplications
-        self.CurrentAppsKeys = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppsKeys
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppsPerAgentKeys
 
         return(
             self.install_apps(
@@ -178,9 +178,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_CUSTOM_APPS
 
         self.CurrentAppsCollection = AppCollections.CustomApps
-        self.CurrentAppsKeys = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppsKeys
         self.CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppsPerAgentKeys
 
         return(
             self.install_apps(
@@ -238,9 +238,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_SUPPORTED_APPS
 
         self.CurrentAppsCollection = AppCollections.SupportedApps
-        self.CurrentAppsKeys = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppsKeys
         self.CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppsPerAgentKeys
 
         return(
             self.install_apps(
@@ -298,9 +298,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.INSTALL_AGENT_UPDATE
 
         self.CurrentAppsCollection = AppCollections.vFenseApps
-        self.CurrentAppsKeys = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppsKeys
         self.CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppsPerAgentKeys
 
         return self.install_apps(
             oper_type,
@@ -360,9 +360,9 @@ class StorePatchingOperation(StoreAgentOperation):
         oper_type = AgentOperations.UNINSTALL
 
         self.CurrentAppsCollection = AppCollections.UniqueApplications
-        self.CurrentAppsKeys = DbCommonAppKeys
+        self.CurrentAppsKeys = DbCommonAppsKeys
         self.CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        self.CurrentAppsPerAgentKeys = DbCommonAppPerAgentKeys
+        self.CurrentAppsPerAgentKeys = DbCommonAppsPerAgentKeys
 
         return(
             self.install_apps(
@@ -506,8 +506,8 @@ class StorePatchingOperation(StoreAgentOperation):
         )
 
         pkg_data = {
-            CommonAppKeys.APP_NAME: pkg[DbCommonAppKeys.Name],
-            CommonAppKeys.APP_VERSION: pkg[DbCommonAppKeys.Version],
+            CommonAppKeys.APP_NAME: pkg[DbCommonAppsKeys.Name],
+            CommonAppKeys.APP_VERSION: pkg[DbCommonAppsKeys.Version],
             CommonAppKeys.APP_URIS: uris,
             CommonAppKeys.APP_ID: app_id,
             CommonFileKeys.PKG_CLI_OPTIONS: pkg[CommonFileKeys.PKG_CLI_OPTIONS]
