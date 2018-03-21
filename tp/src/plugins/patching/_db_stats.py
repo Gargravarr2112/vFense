@@ -8,8 +8,8 @@ from vFense.core.tag import (
     TagCollections, TagsPerAgentKeys, TagsPerAgentIndexes
 )
 from vFense.plugins.patching import (
-    AppCollections, DbCommonAppPerAgentIndexes,
-    DbCommonAppPerAgentKeys, DbCommonAppKeys
+    AppCollections, DbCommonAppsPerAgentIndexes,
+    DbCommonAppsPerAgentKeys, DbCommonAppsKeys
 )
 from vFense.plugins.patching._constants import CommonAppKeys
 
@@ -39,7 +39,7 @@ def get_all_app_stats_by_agentid(agent_id, conn=None):
             .table(AppCollections.AppsPerAgent)
             .get_all(
                 [CommonAppKeys.INSTALLED, agent_id],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .count()
             .run(conn)
@@ -56,7 +56,7 @@ def get_all_app_stats_by_agentid(agent_id, conn=None):
             .table(AppCollections.AppsPerAgent)
             .get_all(
                 [CommonAppKeys.AVAILABLE, agent_id],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .count()
             .run(conn)
@@ -73,7 +73,7 @@ def get_all_app_stats_by_agentid(agent_id, conn=None):
             .table(AppCollections.CustomAppsPerAgent)
             .get_all(
                 [CommonAppKeys.AVAILABLE, agent_id],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .count()
             .run(conn)
@@ -90,7 +90,7 @@ def get_all_app_stats_by_agentid(agent_id, conn=None):
         #    .table(AppCollections.SupportedAppsPerAgent)
         #    .get_all(
         #        [CommonAppKeys.AVAILABLE, agent_id],
-        #        index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+        #        index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
         #    )
         #    .count()
         #    .run(conn)
@@ -109,7 +109,7 @@ def get_all_app_stats_by_agentid(agent_id, conn=None):
             .table(AppCollections.vFenseAppsPerAgent)
             .get_all(
                 [CommonAppKeys.AVAILABLE, agent_id],
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
             .count()
             .run(conn)
@@ -154,21 +154,21 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.INSTALLED,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .eq_join(lambda x: x['right'][DbCommonAppPerAgentKeys.AppId], r.table(AppCollections.UniqueApplications))
+            .eq_join(lambda x: x['right'][DbCommonAppsPerAgentKeys.AppId], r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda y: y['right'][DbCommonAppKeys.Hidden] == CommonKeys.NO
+                lambda y: y['right'][DbCommonAppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    DbCommonAppPerAgentKeys.AppId: r.row['right'][DbCommonAppPerAgentKeys.AppId],
+                    DbCommonAppsPerAgentKeys.AppId: r.row['right'][DbCommonAppsPerAgentKeys.AppId],
                 }
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -188,12 +188,12 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -213,12 +213,12 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.CustomAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -238,12 +238,12 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.SupportedAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -263,12 +263,12 @@ def get_all_app_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.vFenseAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -312,21 +312,21 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.AppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .eq_join(lambda x: x['right'][DbCommonAppPerAgentKeys.AppId], r.table(AppCollections.UniqueApplications))
+            .eq_join(lambda x: x['right'][DbCommonAppsPerAgentKeys.AppId], r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda y: y['right'][DbCommonAppKeys.Hidden] == CommonKeys.NO
+                lambda y: y['right'][DbCommonAppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    DbCommonAppPerAgentKeys.AppId: r.row['right'][DbCommonAppPerAgentKeys.AppId],
+                    DbCommonAppsPerAgentKeys.AppId: r.row['right'][DbCommonAppsPerAgentKeys.AppId],
                 }
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -346,12 +346,12 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentIndexes.AgentId]
+                    x[DbCommonAppsPerAgentIndexes.AgentId]
                 ],
                 r.table(AppCollections.CustomAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -371,12 +371,12 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.SupportedAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -396,12 +396,12 @@ def get_all_avail_stats_by_tagid(tag_id, conn=None):
             .eq_join(
                 lambda x: [
                     CommonAppKeys.AVAILABLE,
-                    x[DbCommonAppPerAgentKeys.AgentId]
+                    x[DbCommonAppsPerAgentKeys.AgentId]
                 ],
                 r.table(AppCollections.vFenseAppsPerAgent),
-                index=DbCommonAppPerAgentIndexes.StatusAndAgentId
+                index=DbCommonAppsPerAgentIndexes.StatusAndAgentId
             )
-            .pluck({'right': DbCommonAppPerAgentKeys.AppId})
+            .pluck({'right': DbCommonAppsPerAgentKeys.AppId})
             .distinct()
             .count()
             .run(conn)
@@ -444,18 +444,18 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
                 [
                     CommonAppKeys.AVAILABLE, customer_name
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndCustomer
+                index=DbCommonAppsPerAgentIndexes.StatusAndCustomer
             )
-            .eq_join(DbCommonAppKeys.AppId, r.table(AppCollections.UniqueApplications))
+            .eq_join(DbCommonAppsKeys.AppId, r.table(AppCollections.UniqueApplications))
             .filter(
-                lambda x: x['right'][DbCommonAppKeys.Hidden] == CommonKeys.NO
+                lambda x: x['right'][DbCommonAppsKeys.Hidden] == CommonKeys.NO
             )
             .map(
                 {
-                    DbCommonAppPerAgentKeys.AppId: r.row['left'][DbCommonAppPerAgentKeys.AppId],
+                    DbCommonAppsPerAgentKeys.AppId: r.row['left'][DbCommonAppsPerAgentKeys.AppId],
                 }
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -474,9 +474,9 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
                 [
                     CommonAppKeys.AVAILABLE, customer_name
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndCustomer
+                index=DbCommonAppsPerAgentIndexes.StatusAndCustomer
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -495,9 +495,9 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
                 [
                     CommonAppKeys.AVAILABLE, customer_name
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndCustomer
+                index=DbCommonAppsPerAgentIndexes.StatusAndCustomer
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -516,9 +516,9 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
                 [
                     CommonAppKeys.AVAILABLE, customer_name
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndCustomer
+                index=DbCommonAppsPerAgentIndexes.StatusAndCustomer
             )
-            .pluck(DbCommonAppPerAgentKeys.AppId)
+            .pluck(DbCommonAppsPerAgentKeys.AppId)
             .distinct()
             .count()
             .run(conn)
@@ -538,7 +538,7 @@ def get_all_app_stats_by_customer(customer_name, conn=None):
                 [
                     CommonAppKeys.PENDING, customer_name
                 ],
-                index=DbCommonAppPerAgentIndexes.StatusAndCustomer
+                index=DbCommonAppsPerAgentIndexes.StatusAndCustomer
             )
             .pluck((CommonAppKeys.APP_ID))
             .distinct()

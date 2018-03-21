@@ -17,7 +17,7 @@ from vFense.errorz.status_codes import DbCodes, GenericCodes, \
 from vFense.plugins.patching.file_data import add_file_data
 from vFense.plugins.patching.utils import build_agent_app_id
 from vFense.plugins.patching import AppsKeys, AppCollections, \
-        DbCommonAppKeys, DbCommonAppPerAgentKeys, FileServerKeys
+        DbCommonAppsKeys, DbCommonAppsPerAgentKeys, FileServerKeys
 from vFense.plugins.patching._constants import CommonAppKeys, \
     FileLocationUris, CommonFileKeys
 from vFense.plugins.patching._db import (fetch_file_servers_addresses,
@@ -678,7 +678,7 @@ def update_app_status_by_agentid_and_appid(
     updated = False
 
     if status in CommonAppKeys.ValidPackageStatuses:
-        app_status = {DbCommonAppPerAgentKeys.Status: status}
+        app_status = {DbCommonAppsPerAgentKeys.Status: status}
 
         status_code, _, _, _ = update_app_data_by_agentid_and_appid(
             agent_id, app_id, app_status, collection
@@ -795,14 +795,14 @@ def application_updater(customer_name, app_data, os_string,
     updated_count = 0
     inserted_count = 0
 
-    status = app_data.pop(DbCommonAppPerAgentKeys.Status, None)
-    agent_id = app_data.pop(DbCommonAppPerAgentKeys.AgentId, None)
-    app_data.pop(DbCommonAppPerAgentKeys.InstallDate, None)
-    file_data = app_data.pop(DbCommonAppKeys.FileData)
-    app_name = app_data.get(DbCommonAppKeys.Name, None)
-    app_version = app_data.get(DbCommonAppKeys.Version, None)
-    app_kb = app_data.get(DbCommonAppKeys.Kb, '')
-    app_id = app_data.get(DbCommonAppKeys.AppId)
+    status = app_data.pop(DbCommonAppsPerAgentKeys.Status, None)
+    agent_id = app_data.pop(DbCommonAppsPerAgentKeys.AgentId, None)
+    app_data.pop(DbCommonAppsPerAgentKeys.InstallDate, None)
+    file_data = app_data.pop(DbCommonAppsKeys.FileData)
+    app_name = app_data.get(DbCommonAppsKeys.Name, None)
+    app_version = app_data.get(DbCommonAppsKeys.Version, None)
+    app_kb = app_data.get(DbCommonAppsKeys.Kb, '')
+    app_id = app_data.get(DbCommonAppsKeys.AppId)
     exists = object_exist(app_id, collection)
 
     if exists:
