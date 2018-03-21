@@ -3,7 +3,7 @@ import logging
 from vFense import VFENSE_LOGGING_CONFIG
 from vFense.db.client import db_create_close, r
 from vFense.core.agent import AgentCollections, \
-    AgentIndexes, AgentKey
+    AgentIndexes, AgentKeys
 from vFense.core.agent._db_sub_queries import Merge
 #from vFense.core.tag import *
 #from vFense.plugins.patching import *
@@ -38,9 +38,9 @@ def fetch_production_levels_from_agent(customer_name, conn=None):
             r
             .table(AgentCollections.Agents)
             .get_all(customer_name, index=AgentIndexes.CustomerName)
-            .pluck(AgentKey.ProductionLevel)
+            .pluck(AgentKeys.ProductionLevel)
             .distinct()
-            .map(lambda x: x[AgentKey.ProductionLevel])
+            .map(lambda x: x[AgentKeys.ProductionLevel])
             .run(conn)
         )
 
@@ -106,9 +106,9 @@ def fetch_supported_os_strings(customer_name, conn=None):
             r
             .table(AgentCollections.Agents)
             .get_all(customer_name, index=AgentIndexes.CustomerName)
-            .pluck(AgentKey.OsString)
+            .pluck(AgentKeys.OsString)
             .distinct()
-            .map(lambda x: x[AgentKey.OsString])
+            .map(lambda x: x[AgentKeys.OsString])
             .run(conn)
         )
 
@@ -146,8 +146,8 @@ def fetch_agent_ids(customer_name=None, agent_os=None, conn=None):
                 r
                 .table(AgentCollections.Agents)
                 .get_all(customer_name, index=AgentIndexes.CustomerName)
-                .filter({AgentKey.OsCode: agent_os})
-                .map(lambda x: x[AgentKey.AgentId])
+                .filter({AgentKeys.OsCode: agent_os})
+                .map(lambda x: x[AgentKeys.AgentId])
                 .run(conn)
             )
 
@@ -156,7 +156,7 @@ def fetch_agent_ids(customer_name=None, agent_os=None, conn=None):
                 r
                 .table(AgentCollections.Agents)
                 .get_all(customer_name, index=AgentIndexes.CustomerName)
-                .map(lambda x: x[AgentKey.AgentId])
+                .map(lambda x: x[AgentKeys.AgentId])
                 .run(conn)
             )
 
@@ -164,8 +164,8 @@ def fetch_agent_ids(customer_name=None, agent_os=None, conn=None):
             data = list(
                 r
                 .table(AgentCollections.Agents)
-                .filter({AgentKey.OsCode: agent_os})
-                .map(lambda x: x[AgentKey.AgentId])
+                .filter({AgentKeys.OsCode: agent_os})
+                .map(lambda x: x[AgentKeys.AgentId])
                 .run(conn)
             )
 
@@ -173,7 +173,7 @@ def fetch_agent_ids(customer_name=None, agent_os=None, conn=None):
             data = list(
                 r
                 .table(AgentCollections.Agents)
-                .map(lambda x: x[AgentKey.AgentId])
+                .map(lambda x: x[AgentKeys.AgentId])
                 .run(conn)
             )
 
@@ -529,7 +529,7 @@ def move_all_agents_to_customer(current_customer, new_customer, conn=None):
             .get_all(current_customer, index=AgentIndexes.CustomerName)
             .update(
                 {
-                    AgentKey.CustomerName: new_customer
+                    AgentKeys.CustomerName: new_customer
                 }
             )
             .run(conn)
@@ -571,7 +571,7 @@ def move_agents_to_customer(agent_ids, new_customer, conn=None):
                 .get(agent_id)
                 .update(
                     {
-                        AgentKey.CustomerName: new_customer
+                        AgentKeys.CustomerName: new_customer
                     }
                 )
             )
@@ -610,7 +610,7 @@ def move_agent_to_customer(agent_id, new_customer, conn=None):
             .get(agent_id)
             .update(
                 {
-                    AgentKey.CustomerName: new_customer
+                    AgentKeys.CustomerName: new_customer
                 }
             )
             .run(conn)

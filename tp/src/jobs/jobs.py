@@ -29,16 +29,16 @@ def remove_expired_jobs_and_update_operations():
     logger.info(msg)
     for job in expired_jobs:
         operation = (
-            AgentOperation('admin', job[OperationKey.CustomerName], None, None)
+            AgentOperation('admin', job[OperationKeys.CustomerName], None, None)
         )
 
         operation.update_operation_expire_time(
-            job[OperationKey.OperationId],
-            job[OperationPerAgentKey.AgentId],
-            job[OperationKey.Operation]
+            job[OperationKeys.OperationId],
+            job[OperationPerAgentKeys.AgentId],
+            job[OperationKeys.Operation]
         )
 
-        if job[OperationKey.Plugin] == RV_PLUGIN:
+        if job[OperationKeys.Plugin] == RV_PLUGIN:
             collection = AppCollections.UniqueApplications
 
             if re.search('^install', job['operation']):
@@ -54,10 +54,10 @@ def remove_expired_jobs_and_update_operations():
 
             elif re.search('^uninstall', job['operation']):
                 app_status = {STATUS:  INSTALLED}
-            for app in job[AppsKey.FileData]:
+            for app in job[AppsKeys.FileData]:
                 update_app_status_by_agentid_and_appid(
-                    job[OperationPerAgentKey.AgentId],
+                    job[OperationPerAgentKeys.AgentId],
                     collection,
-                    app[AppsKey.AppId],
+                    app[AppsKeys.AppId],
                     app_status
                 )

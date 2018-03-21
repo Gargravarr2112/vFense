@@ -1,4 +1,4 @@
-from vFense.server.hierarchy import GroupKey
+from vFense.server.hierarchy import GroupKeys
 
 
 class Group():
@@ -39,10 +39,10 @@ class Group():
     def dict(self):
 
         return {
-            GroupKey.Id: self.id,
-            GroupKey.GroupName: self.group_name,
-            GroupKey.Permissions: self.permissions,
-            GroupKey.CustomerId: self.customer
+            GroupKeys.Id: self.id,
+            GroupKeys.GroupName: self.group_name,
+            GroupKeys.Permissions: self.permissions,
+            GroupKeys.CustomerId: self.customer
         }
 
     def __repr__(self):

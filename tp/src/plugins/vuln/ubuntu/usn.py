@@ -31,8 +31,8 @@ def get_vuln_ids(name, version, os_string):
     """
 
     info = {
-        UbuntuSecurityBulletinKey.BulletinId: '',
-        UbuntuSecurityBulletinKey.CveIds: []
+        UbuntuSecurityBulletinKeys.BulletinId: '',
+        UbuntuSecurityBulletinKeys.CveIds: []
     }
 
     data = fetch_vuln_ids(name, version, os_string)

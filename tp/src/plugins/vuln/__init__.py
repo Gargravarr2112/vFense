@@ -1,4 +1,4 @@
-class SecurityBulletinKey():
+class SecurityBulletinKeys():
     Id = 'id'
     DatePosted = 'date_posted'
     BulletinId = 'bulletin_id'

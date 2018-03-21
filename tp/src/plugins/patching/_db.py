@@ -8,9 +8,9 @@ from vFense.core.decorators import return_status_tuple, time_it
 from vFense.plugins.patching._db_sub_queries import AppsMerge
 from vFense.plugins.patching._constants import CommonFileKeys
 from vFense.plugins.patching import (
-    AppCollections, FileCollections, AppsKey,
+    AppCollections, FileCollections, AppsKeys,
     DbCommonAppKeys, DbCommonAppPerAgentKeys,
-    DbCommonAppIndexes, DbCommonAppPerAgentIndexes, FilesKey,
+    DbCommonAppIndexes, DbCommonAppPerAgentIndexes, FilesKeys,
     FileServerIndexes, FileServerKeys
 )
 
@@ -315,7 +315,7 @@ def fetch_apps_data_by_os_code(
                 r
                 .table(collection)
                 .get_all(customer_name, index=index_to_use)
-                .filter({AppsKey.OsCode: os_code})
+                .filter({AppsKeys.OsCode: os_code})
                 .merge(merge)
                 .pluck(fields_to_pluck)
                 .run(conn)
@@ -326,7 +326,7 @@ def fetch_apps_data_by_os_code(
                 r
                 .table(collection)
                 .get_all(customer_name, index=index_to_use)
-                .filter({AppsKey.OsCode: os_code})
+                .filter({AppsKeys.OsCode: os_code})
                 .merge(merge)
                 .run(conn)
             )
@@ -335,7 +335,7 @@ def fetch_apps_data_by_os_code(
             data = list(
                 r
                 .table(collection)
-                .filter({AppsKey.OsCode: os_code})
+                .filter({AppsKeys.OsCode: os_code})
                 .merge(merge)
                 .pluck(fields_to_pluck)
                 .run(conn)
@@ -345,7 +345,7 @@ def fetch_apps_data_by_os_code(
             data = list(
                 r
                 .table(collection)
-                .filter({AppsKey.OsCode: os_code})
+                .filter({AppsKeys.OsCode: os_code})
                 .merge(merge)
                 .run(conn)
             )
@@ -419,13 +419,13 @@ def fetch_app_data_to_send_to_agent(
                         .table(FileCollections.Files)
                         .filter(
                             lambda x: (
-                                x[FilesKey.AppIds].contains(app_id)
+                                x[FilesKeys.AppIds].contains(app_id)
                                 &
-                                x[FilesKey.AgentIds].contains(agent_id)
+                                x[FilesKeys.AgentIds].contains(agent_id)
                             )
                         )
                         .coerce_to('array')
-                        .without(FilesKey.AppIds, FilesKey.AgentIds)
+                        .without(FilesKeys.AppIds, FilesKeys.AgentIds)
                     )
                 }
             )
@@ -1284,7 +1284,7 @@ def delete_app_from_vfense(
         (
             r
             .table(FileCollections.Files)
-            .filter(lambda x: x[FilesKey.AppIds].contains(app_id))
+            .filter(lambda x: x[FilesKeys.AppIds].contains(app_id))
             .delete()
             .run(conn)
         )

@@ -2,7 +2,7 @@ class WindowsSecurityCollection():
     Bulletin = 'windows_security_bulletin'
 
 
-class WindowsSecurityBulletinKey():
+class WindowsSecurityBulletinKeys():
     Id = 'id'
     DatePosted = 'date_posted'
     BulletinId = 'bulletin_id'

@@ -73,7 +73,7 @@ class User():
             Nothing
         """
 
-        g = {UserKey.Name: group.name, UserKey.Id: group.id}
+        g = {UserKeys.Name: group.name, UserKeys.Id: group.id}
         gi = GroupInfo(group.id, group.name)
 
         self._raw_groups.append(g)
@@ -94,7 +94,7 @@ class User():
             True if group was removed successfully, False otherwise.
         """
 
-        g = {UserKey.Name: group.name, UserKey.Id: group.id}
+        g = {UserKeys.Name: group.name, UserKeys.Id: group.id}
         gi = GroupInfo(group.id, group.name)
 
         self._raw_groups.remove(g)
@@ -112,7 +112,7 @@ class User():
             True if user was added successfully, False otherwise.
         """
 
-        c = {UserKey.Name: customer.name}
+        c = {UserKeys.Name: customer.name}
         ci = CustomerInfo(customer.name)
 
         self._raw_customers.append(c)
@@ -130,7 +130,7 @@ class User():
             True if user was removed successfully, False otherwise.
         """
 
-        c = {UserKey.Name: customer.name}
+        c = {UserKeys.Name: customer.name}
         ci = CustomerInfo(customer.name)
 
         self._raw_customers.remove(c)
@@ -151,7 +151,7 @@ class User():
             True if user was removed successfully, False otherwise.
         """
 
-        c = {UserKey.Name: customer.name}
+        c = {UserKeys.Name: customer.name}
         ci = CustomerInfo(customer.name)
 
         self._raw_current_customer = c
@@ -172,7 +172,7 @@ class User():
             True if user was removed successfully, False otherwise.
         """
 
-        c = {UserKey.Name: customer.name}
+        c = {UserKeys.Name: customer.name}
         ci = CustomerInfo(customer.name)
 
         self._raw_default_customer = c

@@ -83,10 +83,10 @@ def send_notifications(username, customer_name, operation_id, agent_id):
     try:
         notif_handler = RvNotificationHandler(customer_name, operation_id, agent_id)
         oper_info = get_agent_operation(operation_id)
-        oper_plugin = oper_info[OperationKey.Plugin]
-        oper_status = oper_info[OperationKey.OperationStatus]
+        oper_plugin = oper_info[OperationKeys.Plugin]
+        oper_status = oper_info[OperationKeys.OperationStatus]
         threshold = translate_opercodes_to_notif_threshold(oper_status)
-        oper_type = return_notif_type_from_operation(oper_info[OperationKey.Operation])
+        oper_type = return_notif_type_from_operation(oper_info[OperationKeys.Operation])
         notif_rules = (
             notification_rule_exists(
                 notif_handler, oper_plugin, oper_type, threshold

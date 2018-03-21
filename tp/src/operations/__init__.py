@@ -5,7 +5,7 @@ class OperationCollections():
     Admin = 'admin_operations'
 
 
-class AdminOperationKey():
+class AdminOperationKeys():
     OperationId = 'operation_id'
     CreatedBy = 'created_by'
     CreatedTime = 'created_time'
@@ -18,7 +18,7 @@ class AdminOperationKey():
     IdsRemoved = 'ids_removed'
 
 
-class AgentOperationKey():
+class AgentOperationKeys():
     OperationId = 'operation_id'
     Operation = 'operation'
     OperationStatus = 'operation_status'
@@ -56,7 +56,7 @@ class AgentOperationIndexes():
     CreatedByAndCustomer = 'createdby_and_customer'
 
 
-class OperationPerAgentKey():
+class OperationPerAgentKeys():
     Id = 'id'
     AgentId = 'agent_id'
     TagId = 'tag_id'
@@ -81,7 +81,7 @@ class OperationPerAgentIndexes():
     StatusAndCustomer = 'status_and_customer'
 
 
-class OperationPerAppKey():
+class OperationPerAppKeys():
     Id = 'id'
     AgentId = 'agent_id'
     AppId = 'app_id'

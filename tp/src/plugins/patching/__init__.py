@@ -20,7 +20,7 @@ class FileCollections():
     FileServers = 'file_servers'
 
 
-class FilesKey():
+class FilesKeys():
     AppId = 'app_id'
     AppIds = 'app_ids'
     AgentIds = 'agent_ids'
@@ -45,8 +45,9 @@ class FileServerKeys():
 class FileServerIndexes():
     CustomerName = 'customer_name'
 
+#-------------------------------------------------------
 
-class AppsKey():
+class DbCommonAppsKeys():
     AppId = 'app_id'
     Customers = 'customers'
     Name = 'name'
@@ -67,22 +68,10 @@ class AppsKey():
     VulnerabilityId = 'vulnerability_id'
     VulnerabilityCategories = 'vulnerability_categories'
     CveIds = 'cve_ids'
+    CliOptions = 'cli_options'
 
 
-class AppsIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
-
-
-class AppsPerAgentKey():
+class DbCommonAppsPerAgentKeys():
     AppId = 'app_id'
     Id = 'id'
     InstallDate = 'install_date'
@@ -96,7 +85,20 @@ class AppsPerAgentKey():
     CveIds = 'cve_ids'
 
 
-class AppsPerAgentIndexes():
+class DbCommonAppsIndexes():
+    AppId = 'app_id'
+    Name = 'name'
+    RvSeverity = 'rv_severity'
+    AppIdAndRvSeverity = 'appid_and_rv_severity'
+    NameAndVersion = 'name_and_version'
+    Customers = 'customers'
+    CustomerAndRvSeverity = 'customer_and_rvseverity'
+    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
+    AppIdAndHidden = 'appid_and_hidden'
+    CustomerAndHidden = 'customer_and_hidden'
+
+
+class DbCommonAppsPerAgentIndexes():
     AppId = 'app_id'
     AgentId = 'agent_id'
     Status = 'status'
@@ -110,357 +112,93 @@ class AppsPerAgentIndexes():
     StatusAndCveId = 'status_and_cve_id'
     AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'
 
+#--------------------------------------------------------------------    
 
-class CustomAppsKey():
-    AppId = 'app_id'
-    Customers = 'customers'
-    RvId = 'rv_id'
-    Name = 'name'
-    Hidden = 'hidden'
-    CustomerName = 'customer_name'
-    Description = 'description'
-    ReleaseDate = 'release_date'
-    Kb = 'kb'
-    FileSize = 'file_size'
-    FileData = 'file_data'
-    FilesVerified = 'files_verified'
-    FilesDownloadStatus = 'files_download_status'
-    RebootRequired = 'reboot_required'
-    SupportUrl = 'support_url'
-    Version = 'version'
-    MajorVersion = 'major_version'
-    MinorVersion = 'minor_version'
-    OsCode = 'os_code'
-    RvSeverity = 'rv_severity'
-    VendorSeverity = 'vendor_severity'
-    VendorName = 'vendor_name'
-    CliOptions = 'cli_options'
-    Arch = 'arch'
-    VulnerabilityId = 'vulnerability_id'
-    VulnerabilityCategories = 'vulnerability_categories'
-    CveIds = 'cve_ids'
+class AppsKeys(DbCommonAppsKeys):
+	pass #Now handled with inheritance
 
 
-class CustomAppsIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
+class AppsIndexes(DbCommonAppsIndexes):
+	pass
 
 
-class CustomAppsPerAgentKey():
-    Id = 'id'
-    AppId = 'app_id'
-    CustomerName = 'customer_name'
-    Name = 'name'
-    InstallDate = 'install_date'
-    Status = 'status'
-    Hidden = 'hidden'
-    AgentId = 'agent_id'
-    Dependencies = 'dependencies'
-    LastModifiedTime = 'last_modified_time'
-    Update = 'update'
-    CveIds = 'cve_ids'
+class AppsPerAgentKeys(DbCommonAppsPerAgentKeys):
+	pass
 
 
-class CustomAppsPerAgentIndexes():
-    AppId = 'app_id'
-    AgentId = 'agent_id'
-    Status = 'status'
-    CustomerName = 'customer_name'
-    AppIdAndStatus = 'appid_and_status'
-    AgentIdAndAppId = 'agentid_and_appid'
-    AppIdAndCustomer = 'appid_and_customer'
-    StatusAndAgentId = 'status_and_agentid'
-    StatusAndCustomer = 'status_and_customer'
-    StatusAndCveId = 'status_and_cve_id'
-    AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'
+class AppsPerAgentIndexes(DbCommonAppsPerAgentIndexes):
+	pass
+
+#----------------------------------------------------------------------
+
+class CustomAppsKeys(DbCommonAppsKeys):
+	RvId = 'rv_id'
+	CustomerName = 'customer_name'
+	FilesVerified = 'files_verified'
+	FilesDownloadStatus = 'files_download_status'
+	MajorVersion = 'major_version'
+	MinorVersion = 'minor_version'
+	Arch = 'arch'
 
 
-class SupportedAppsKey():
-    AppId = 'app_id'
-    Customers = 'customers'
-    RvId = 'rv_id'
-    Name = 'name'
-    Hidden = 'hidden'
-    Description = 'description'
-    ReleaseDate = 'release_date'
-    Kb = 'kb'
-    FileSize = 'file_size'
-    FileData = 'file_data'
-    FilesVerified = 'files_verified'
-    FilesDownloadStatus = 'files_download_status'
-    RebootRequired = 'reboot_required'
-    SupportUrl = 'support_url'
-    Version = 'version'
-    MajorVersion = 'major_version'
-    MinorVersion = 'minor_version'
-    OsCode = 'os_code'
-    RvSeverity = 'rv_severity'
-    VendorSeverity = 'vendor_severity'
-    VendorName = 'vendor_name'
-    CliOptions = 'cli_options'
-    Arch = 'arch'
-    VulnerabilityId = 'vulnerability_id'
-    VulnerabilityCategories = 'vulnerability_categories'
-    CveIds = 'cve_ids'
+class CustomAppsIndexes(DbCommonAppsIndexes):
+	pass
 
 
-class SupportedAppsIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    CustomerName = 'customer_name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
+class CustomAppsPerAgentKeys(DbCommonAppsPerAgentKeys):
+	Name = 'name'
 
 
-class SupportedAppsPerAgentKey():
-    Id = 'id'
-    AppId = 'app_id'
-    Name = 'name'
-    InstallDate = 'install_date'
-    Status = 'status'
-    Hidden = 'hidden'
-    AgentId = 'agent_id'
-    CustomerName = 'customer_name'
-    Dependencies = 'dependencies'
-    LastModifiedTime = 'last_modified_time'
-    Update = 'update'
-    CveIds = 'cve_ids'
+class CustomAppsPerAgentIndexes(DbCommonAppsPerAgentIndexes):
+	pass
+
+#----------------------------------------------------------------------
+
+class SupportedAppsKeys(CustomAppsKeys):
+	pass
 
 
-class SupportedAppsPerAgentIndexes():
-    AppId = 'app_id'
-    AgentId = 'agent_id'
-    Status = 'status'
-    CustomerName = 'customer_name'
-    AppIdAndStatus = 'appid_and_status'
-    AgentIdAndAppId = 'agentid_and_appid'
-    AppIdAndCustomer = 'appid_and_customer'
-    StatusAndAgentId = 'status_and_agentid'
-    StatusAndCustomer = 'status_and_customer'
-    StatusAndCveId = 'status_and_cve_id'
-    AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'
+class SupportedAppsIndexes(DbCommonAppsIndexes):
+	CustomerName = 'customer_name'
 
 
-class AgentAppsKey():
-    AppId = 'app_id'
-    Customers = 'customers'
-    RvId = 'rv_id'
-    Name = 'name'
-    Hidden = 'hidden'
-    Description = 'description'
-    ReleaseDate = 'release_date'
-    Kb = 'kb'
-    FileSize = 'file_size'
-    FileData = 'file_data'
-    FilesVerified = 'files_verified'
-    FilesDownloadStatus = 'files_download_status'
-    RebootRequired = 'reboot_required'
-    SupportUrl = 'support_url'
-    Version = 'version'
-    MajorVersion = 'major_version'
-    MinorVersion = 'minor_version'
-    OsCode = 'os_code'
-    RvSeverity = 'rv_severity'
-    VendorSeverity = 'vendor_severity'
-    VendorName = 'vendor_name'
-    CliOptions = 'cli_options'
-    Arch = 'arch'
-    VulnerabilityId = 'vulnerability_id'
-    VulnerabilityCategories = 'vulnerability_categories'
-    CveIds = 'cve_ids'
+class SupportedAppsPerAgentKeys(CustomAppsPerAgentKeys):
+	pass
 
 
-class AgentAppsIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    CustomerName = 'customer_name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
+class SupportedAppsPerAgentIndexes(DbCommonAppsPerAgentIndexes):
+	pass
+
+#----------------------------------------------------------------------
+
+class AgentAppsKeys(CustomAppsKeys):
+	pass
 
 
-class AgentAppsPerAgentKey():
-    Id = 'id'
-    AppId = 'app_id'
-    CustomerName = 'customer_name'
-    Dependencies = 'dependencies'
-    Name = 'name'
-    InstallDate = 'install_date'
-    Status = 'status'
-    Hidden = 'hidden'
-    AgentId = 'agent_id'
-    LastModifiedTime = 'last_modified_time'
-    Update = 'update'
-    CveIds = 'cve_ids'
+class AgentAppsIndexes(SupportedAppsIndexes):
+	pass
 
 
-class AgentAppsPerAgentIndexes():
-    AppId = 'app_id'
-    AgentId = 'agent_id'
-    Status = 'status'
-    CustomerName = 'customer_name'
-    AppIdAndStatus = 'appid_and_status'
-    AgentIdAndAppId = 'agentid_and_appid'
-    AppIdAndCustomer = 'appid_and_customer'
-    StatusAndAgentId = 'status_and_agentid'
-    StatusAndCustomer = 'status_and_customer'
-    StatusAndCveId = 'status_and_cve_id'
-    AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'
+class AgentAppsPerAgentKeys(CustomAppsPerAgentKeys):
+    pass
 
 
-class vFenseAppsKey():
-    AppId = 'app_id'
-    Customers = 'customers'
-    RvId = 'rv_id'
-    Name = 'name'
-    Hidden = 'hidden'
-    Description = 'description'
-    ReleaseDate = 'release_date'
-    Kb = 'kb'
-    FileSize = 'file_size'
-    FileData = 'file_data'
-    FilesVerified = 'files_verified'
-    FilesDownloadStatus = 'files_download_status'
-    RebootRequired = 'reboot_required'
-    SupportUrl = 'support_url'
-    Version = 'version'
-    MajorVersion = 'major_version'
-    MinorVersion = 'minor_version'
-    OsCode = 'os_code'
-    RvSeverity = 'rv_severity'
-    VendorSeverity = 'vendor_severity'
-    VendorName = 'vendor_name'
-    CliOptions = 'cli_options'
-    Arch = 'arch'
-    VulnerabilityId = 'vulnerability_id'
-    VulnerabilityCategories = 'vulnerability_categories'
-    CveIds = 'cve_ids'
+class AgentAppsPerAgentIndexes(DbCommonAppsPerAgentIndexes):
+	pass
+
+#----------------------------------------------------------------------
+
+class vFenseAppsKeys(CustomAppsKeys):
+	pass
 
 
-
-class vFenseAppsIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    CustomerName = 'customer_name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
+class vFenseAppsIndexes(SupportedAppsIndexes):
+	pass
 
 
-class vFenseAppsPerAgentKey():
-    Id = 'id'
-    AppId = 'app_id'
-    CustomerName = 'customer_name'
-    Dependencies = 'dependencies'
-    Name = 'name'
-    InstallDate = 'install_date'
-    Status = 'status'
-    Hidden = 'hidden'
-    AgentId = 'agent_id'
-    LastModifiedTime = 'last_modified_time'
-    Update = 'update'
-    CveIds = 'cve_ids'
+class vFenseAppsPerAgentKeys(CustomAppsPerAgentKeys):
+	pass
 
+class vFenseAppsPerAgentIndexes(DbCommonAppsPerAgentIndexes):
+	pass
 
-class vFenseAppsPerAgentIndexes():
-    AppId = 'app_id'
-    AgentId = 'agent_id'
-    Status = 'status'
-    CustomerName = 'customer_name'
-    AppIdAndStatus = 'appid_and_status'
-    AgentIdAndAppId = 'agentid_and_appid'
-    AppIdAndCustomer = 'appid_and_customer'
-    StatusAndAgentId = 'status_and_agentid'
-    StatusAndCustomer = 'status_and_customer'
-    StatusAndCveId = 'status_and_cve_id'
-    AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'
-
-
-class DbCommonAppKeys():
-    AppId = 'app_id'
-    Customers = 'customers'
-    Name = 'name'
-    Hidden = 'hidden'
-    Description = 'description'
-    ReleaseDate = 'release_date'
-    RebootRequired = 'reboot_required'
-    Kb = 'kb'
-    FileSize = 'file_size'
-    FileData = 'file_data'
-    SupportUrl = 'support_url'
-    Version = 'version'
-    OsCode = 'os_code'
-    RvSeverity = 'rv_severity'
-    VendorSeverity = 'vendor_severity'
-    VendorName = 'vendor_name'
-    FilesDownloadStatus = 'files_download_status'
-    VulnerabilityId = 'vulnerability_id'
-    VulnerabilityCategories = 'vulnerability_categories'
-    CveIds = 'cve_ids'
-    CliOptions = 'cli_options'
-
-
-class DbCommonAppPerAgentKeys():
-    AppId = 'app_id'
-    Id = 'id'
-    InstallDate = 'install_date'
-    Status = 'status'
-    Hidden = 'hidden'
-    AgentId = 'agent_id'
-    CustomerName = 'customer_name'
-    Dependencies = 'dependencies'
-    LastModifiedTime = 'last_modified_time'
-    Update = 'update'
-    CveIds = 'cve_ids'
-
-
-class DbCommonAppIndexes():
-    AppId = 'app_id'
-    Name = 'name'
-    RvSeverity = 'rv_severity'
-    AppIdAndRvSeverity = 'appid_and_rv_severity'
-    NameAndVersion = 'name_and_version'
-    Customers = 'customers'
-    CustomerAndRvSeverity = 'customer_and_rvseverity'
-    AppIdAndRvSeverityAndHidden = 'appid_and_rv_severity_and_hidden'
-    AppIdAndHidden = 'appid_and_hidden'
-    CustomerAndHidden = 'customer_and_hidden'
-
-
-class DbCommonAppPerAgentIndexes():
-    AppId = 'app_id'
-    AgentId = 'agent_id'
-    Status = 'status'
-    CustomerName = 'customer_name'
-    AppIdAndStatus = 'appid_and_status'
-    AgentIdAndAppId = 'agentid_and_appid'
-    AppIdAndCustomer = 'appid_and_customer'
-    StatusAndAgentId = 'status_and_agentid'
-    AppIdStatusAndAgentId = 'appid_and_status_and_agentid'
-    StatusAndCustomer = 'status_and_customer'
-    StatusAndCveId = 'status_and_cve_id'
-    AppIdAndStatusAndCustomer = 'appid_and_status_and_customer'

@@ -42,7 +42,7 @@ def format_data_to_insert_into_db(
     data_to_insert = []
     for data in apps_data:
         string_to_build_id = ''
-        for app in data[UbuntuSecurityBulletinKey.Apps]:
+        for app in data[UbuntuSecurityBulletinKeys.Apps]:
             string_to_build_id = (
                 string_to_build_id +
                 app['name'] +
@@ -51,7 +51,7 @@ def format_data_to_insert_into_db(
 
         string_to_build_id = (
             string_to_build_id +
-            data[UbuntuSecurityBulletinKey.OsString]
+            data[UbuntuSecurityBulletinKeys.OsString]
         )
 
         bulletin_id = build_bulletin_id(string_to_build_id)
@@ -65,13 +65,13 @@ def format_data_to_insert_into_db(
 
         data_to_insert.append(
             {
-                UbuntuSecurityBulletinKey.Id: bulletin_id,
-                UbuntuSecurityBulletinKey.BulletinId: usn_id,
-                UbuntuSecurityBulletinKey.Details: details,
-                UbuntuSecurityBulletinKey.DatePosted: date_posted,
-                UbuntuSecurityBulletinKey.Apps: data[UbuntuSecurityBulletinKey.Apps],
-                UbuntuSecurityBulletinKey.OsString: data[UbuntuSecurityBulletinKey.OsString],
-                UbuntuSecurityBulletinKey.CveIds: cve_ids
+                UbuntuSecurityBulletinKeys.Id: bulletin_id,
+                UbuntuSecurityBulletinKeys.BulletinId: usn_id,
+                UbuntuSecurityBulletinKeys.Details: details,
+                UbuntuSecurityBulletinKeys.DatePosted: date_posted,
+                UbuntuSecurityBulletinKeys.Apps: data[UbuntuSecurityBulletinKeys.Apps],
+                UbuntuSecurityBulletinKeys.OsString: data[UbuntuSecurityBulletinKeys.OsString],
+                UbuntuSecurityBulletinKeys.CveIds: cve_ids
             }
         )
 

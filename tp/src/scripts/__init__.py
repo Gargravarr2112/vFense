@@ -1,4 +1,4 @@
-class CustomerKey():
+class CustomerKeys():
 
     Name = 'name'  # Primary key!!
     Properties = 'properties'

@@ -51,7 +51,7 @@ class Customer():
             True if group was added successfully, False otherwise.
         """
 
-        g = {CustomerKey.Name: group.name, CustomerKey.Id: group.id}
+        g = {CustomerKeys.Name: group.name, CustomerKeys.Id: group.id}
         gi = GroupInfo(group.id, group.name)
 
         self._raw_groups.append(g)
@@ -69,7 +69,7 @@ class Customer():
             True if group was removed successfully, False otherwise.
         """
 
-        g = {CustomerKey.Name: group.name, CustomerKey.Id: group.id}
+        g = {CustomerKeys.Name: group.name, CustomerKeys.Id: group.id}
         gi = GroupInfo(group.id, group.name)
 
         self._raw_groups.remove(g)
@@ -87,7 +87,7 @@ class Customer():
             True if user was added successfully, False otherwise.
         """
 
-        u = {CustomerKey.Name: user.name}
+        u = {CustomerKeys.Name: user.name}
         ui = UserInfo(user.name)
 
         self._raw_users.append(u)
@@ -105,7 +105,7 @@ class Customer():
             True if user was removed successfully, False otherwise.
         """
 
-        u = {CustomerKey.Name: user.name}
+        u = {CustomerKeys.Name: user.name}
         ui = UserInfo(user.name)
 
         self._raw_users.remove(u)
@@ -137,12 +137,12 @@ class Customer():
 
         _customer = {}
 
-        _customer[CustomerKey.Name] = self.name
-        _customer[CustomerKey.NetThrottle] = self.net_throttle
-        _customer[CustomerKey.CpuThrottle] = self.cpu_throttle
+        _customer[CustomerKeys.Name] = self.name
+        _customer[CustomerKeys.NetThrottle] = self.net_throttle
+        _customer[CustomerKeys.CpuThrottle] = self.cpu_throttle
 
-        _customer[CustomerKey.Groups] = self.get_groups(raw=True)
-        _customer[CustomerKey.Users] = self.get_users(raw=True)
+        _customer[CustomerKeys.Groups] = self.get_groups(raw=True)
+        _customer[CustomerKeys.Users] = self.get_users(raw=True)
 
         return _customer
 

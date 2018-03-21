@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timedelta
 
-from vFense.plugins.monit.utils import Monitor, MonitorKey
+from vFense.plugins.monit.utils import Monitor, MonitorKeys
 
 
 def _default_from_date():
@@ -222,27 +222,27 @@ def get_agent_latest(agent=None):
 
     if file_system:
 
-        data[MonitorKey.FileSystem] = file_system
+        data[MonitorKeys.FileSystem] = file_system
 
     else:
 
-        data[MonitorKey.FileSystem] = []
+        data[MonitorKeys.FileSystem] = []
 
     if cpu:
 
-        data[MonitorKey.Cpu] = cpu
+        data[MonitorKeys.Cpu] = cpu
 
     else:
 
-        data[MonitorKey.Cpu] = {}
+        data[MonitorKeys.Cpu] = {}
 
     if memory:
 
-        data[MonitorKey.Memory] = memory
+        data[MonitorKeys.Memory] = memory
 
     else:
 
-        data[MonitorKey.Memory] = {}
+        data[MonitorKeys.Memory] = {}
 
     results = {}
 

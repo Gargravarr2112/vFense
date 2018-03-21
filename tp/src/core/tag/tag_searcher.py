@@ -22,7 +22,7 @@ class TagSearcher():
     def __init__(self, username, customer_name,
                  uri=None, method=None, count=30,
                  offset=0, sort='asc',
-                 sort_key=TagsKey.TagName):
+                 sort_key=TagsKeys.TagName):
 
         self.qcount = count
         self.qoffset = offset
@@ -31,13 +31,13 @@ class TagSearcher():
         self.uri = uri
         self.method = method
         self.list_of_valid_keys = [
-            TagsKey.TagName, TagsKey.ProductionLevel,
+            TagsKeys.TagName, TagsKeys.ProductionLevel,
         ]
 
         if sort_key in self.list_of_valid_keys:
             self.sort_key = sort_key
         else:
-            self.sort_key = TagsKey.TagName
+            self.sort_key = TagsKeys.TagName
 
         if sort == 'asc':
             self.sort = r.asc
@@ -60,7 +60,7 @@ class TagSearcher():
                 for tag in xrange(len(data)):
                     data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                         get_all_avail_stats_by_tagid(
-                            data[tag][TagsKey.TagId]
+                            data[tag][TagsKeys.TagId]
                         )
                     )
 
@@ -68,14 +68,14 @@ class TagSearcher():
                         r
                         .table(TagsPerAgentCollection)
                         .get_all(
-                            data[tag][TagsPerAgentKey.TagId],
+                            data[tag][TagsPerAgentKeys.TagId],
                             index=TagsPerAgentIndexes.TagId
                         )
-                        .eq_join(TagsPerAgentKey.AgentId, r.table(AgentsCollection))
+                        .eq_join(TagsPerAgentKeys.AgentId, r.table(AgentsCollection))
                         .zip()
                         .pluck(
-                            TagsPerAgentKey.AgentId, AgentKey.ComputerName,
-                            AgentKey.DisplayName
+                            TagsPerAgentKeys.AgentId, AgentKeys.ComputerName,
+                            AgentKeys.DisplayName
                         )
                         .run(conn)
                     )
@@ -113,7 +113,7 @@ class TagSearcher():
                     .filter(
                         {
                             fkey: fval,
-                            TagsKey.CustomerName: self.customer_name
+                            TagsKeys.CustomerName: self.customer_name
                         }
                     )
                     .count()
@@ -125,7 +125,7 @@ class TagSearcher():
                     .filter(
                         {
                             fkey: fval,
-                            TagsKey.CustomerName: self.customer_name
+                            TagsKeys.CustomerName: self.customer_name
                         }
                     )
                     .order_by(self.sort(self.sort_key))
@@ -137,20 +137,20 @@ class TagSearcher():
                     for tag in xrange(len(data)):
                         data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                             get_all_avail_stats_by_tagid(
-                                tag[TagsKey.TagId]
+                                tag[TagsKeys.TagId]
                             )
                         )
 
                         agents_in_tag = list(
                             r
                             .table(TagsPerAgentCollection)
-                            .get_all(data[tag][TagsPerAgentKey.Id],
+                            .get_all(data[tag][TagsPerAgentKeys.Id],
                                      index=TagsPerAgentIndexes.TagId)
-                            .eq_join(TagsPerAgentKey.AgentId, r.table(AgentsCollection))
+                            .eq_join(TagsPerAgentKeys.AgentId, r.table(AgentsCollection))
                             .zip()
                             .pluck(
-                                TagsPerAgentKey.AgentId, AgentKey.ComputerName,
-                                AgentKey.DisplayName)
+                                TagsPerAgentKeys.AgentId, AgentKeys.ComputerName,
+                                AgentKeys.DisplayName)
                             .run(conn)
                         )
                         data[tag]['agents'] = agents_in_tag
@@ -207,20 +207,20 @@ class TagSearcher():
                 for tag in xrange(len(data)):
                     data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                         get_all_avail_stats_by_tagid(
-                            data[tag][TagsKey.TagId]
+                            data[tag][TagsKeys.TagId]
                         )
                     )
 
                     agents_in_tag = list(
                         r
                         .table(TagsPerAgentCollection)
-                        .get_all(data[tag][TagsPerAgentKey.TagId],
+                        .get_all(data[tag][TagsPerAgentKeys.TagId],
                                  index=TagsPerAgentIndexes.TagId)
-                        .eq_join(TagsPerAgentKey.AgentId, r.table(AgentsCollection))
+                        .eq_join(TagsPerAgentKeys.AgentId, r.table(AgentsCollection))
                         .zip()
                         .pluck(
-                            TagsPerAgentKey.AgentId, AgentKey.ComputerName,
-                            AgentKey.DisplayName)
+                            TagsPerAgentKeys.AgentId, AgentKeys.ComputerName,
+                            AgentKeys.DisplayName)
                         .run(conn)
                     )
                     data[tag]['agents'] = agents_in_tag
@@ -259,11 +259,11 @@ class TagSearcher():
                     r
                     .table(TagsPerAgentCollection)
                     .get_all(tag_id, index=TagsPerAgentIndexes.TagId)
-                    .eq_join(TagsPerAgentKey.AgentId, r.table(AgentsCollection))
+                    .eq_join(TagsPerAgentKeys.AgentId, r.table(AgentsCollection))
                     .zip()
                     .pluck(
-                        TagsPerAgentKey.AgentId, AgentKey.ComputerName,
-                        AgentKey.DisplayName)
+                        TagsPerAgentKeys.AgentId, AgentKeys.ComputerName,
+                        AgentKeys.DisplayName)
                     .run(conn)
                 )
 

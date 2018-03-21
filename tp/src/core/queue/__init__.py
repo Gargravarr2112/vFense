@@ -2,7 +2,7 @@ class QueueCollections():
     Agent = 'agent_queue'
 
 
-class AgentQueueKey():
+class AgentQueueKeys():
     Id = 'id'
     AgentId = 'agent_id'
     OrderId = 'order_id'
@@ -12,7 +12,7 @@ class AgentQueueKey():
     ExpireMinutes = 'expire_minutes'
     Expired = 'expired'
     CustomerName = 'customer_name'
-    OperationId = 'OperationId'
+    OperationId = 'operation_id'
     RequestMethod = 'request_method'
     ResponseURI = 'response_uri'
 

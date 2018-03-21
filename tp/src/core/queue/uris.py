@@ -3,7 +3,7 @@ from vFense.core._constants import HTTPMethods, CommonKeys
 from vFense.operations._constants import AgentOperations, ListenerURIs, \
     AuthenticationOperations, AuthenticationURIs, BaseURIs
 
-from vFense.core.agent import AgentKey
+from vFense.core.agent import AgentKeys
 from vFense.core.agent.agents import get_agent_info
 from vFense.core.decorators import results_message, time_it
 from vFense.errorz._constants import ApiResultKeys
@@ -194,7 +194,7 @@ def get_result_uris(agent_id, user_name=None, uri=None, method=None):
     status = get_result_uris.func_name + ' - '
     result_uris = _get_result_uris_dict(agent_id)
 
-    agent_exist = get_agent_info(agent_id, AgentKey.AgentId)
+    agent_exist = get_agent_info(agent_id, AgentKeys.AgentId)
     if agent_exist:
         generic_status_code = GenericCodes.InformationRetrieved
         vfense_status_code = GenericCodes.InformationRetrieved

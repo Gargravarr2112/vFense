@@ -141,11 +141,11 @@ class User():
 
         permissions = list(set(permissions))
 
-        user_dict[UserKey.Customers] = customers
-        user_dict[UserKey.Permissions] = permissions
-        user_dict[UserKey.CurrentCustomer] = current_customer
-        user_dict[UserKey.DefaultCustomer] = default_customer
-        user_dict[UserKey.Groups] = groups
+        user_dict[UserKeys.Customers] = customers
+        user_dict[UserKeys.Permissions] = permissions
+        user_dict[UserKeys.CurrentCustomer] = current_customer
+        user_dict[UserKeys.DefaultCustomer] = default_customer
+        user_dict[UserKeys.Groups] = groups
         user_dict['username'] = user.user_name
 
         return user_dict
@@ -157,16 +157,16 @@ class User():
 
         username = kwargs.get('username')
 
-        data[UserKey.Password] = kwargs.get('password', None)
-        data[UserKey.FullName] = kwargs.get('fullname', None)
-        data[UserKey.Email] = kwargs.get('email', None)
+        data[UserKeys.Password] = kwargs.get('password', None)
+        data[UserKeys.FullName] = kwargs.get('fullname', None)
+        data[UserKeys.Email] = kwargs.get('email', None)
 
-        data[UserKey.Customers] = kwargs.get('customer_ids', None)
+        data[UserKeys.Customers] = kwargs.get('customer_ids', None)
         data['customer_context'] = kwargs.get('customer_context', None)
 
-        data[UserKey.DefaultCustomer] = kwargs.get(
+        data[UserKeys.DefaultCustomer] = kwargs.get(
             'default_customer_id', None)
-        data[UserKey.CurrentCustomer] = kwargs.get(
+        data[UserKeys.CurrentCustomer] = kwargs.get(
             'current_customer_id', None)
 
         group_names = kwargs.get('group_names', None)
@@ -177,15 +177,15 @@ class User():
 
             for name in group_names:
 
-                groups.append({GroupKey.Name: name})
+                groups.append({GroupKeys.Name: name})
 
         if group_ids:
 
             for _id in group_ids:
 
-                groups.append({GroupKey.Id: _id})
+                groups.append({GroupKeys.Id: _id})
 
-        data[UserKey.Groups] = groups
+        data[UserKeys.Groups] = groups
 
         result = Hierarchy.edit_user(username, data)
 
@@ -412,7 +412,7 @@ class Customer():
         if pkg_url:
             properties[CoreProperty.PackageUrl] = pkg_url
 
-        data[CustomerKey.Properties] = properties
+        data[CustomerKeys.Properties] = properties
 
         group_names = kwargs.get('group_names', None)
         group_ids = kwargs.get('group_ids', None)
@@ -429,7 +429,7 @@ class Customer():
 
                     groups.append(g.group_name)
 
-        data[CustomerKey.Groups] = groups
+        data[CustomerKeys.Groups] = groups
 
         result = Hierarchy.edit_customer(customer.customer_name, data)
 
@@ -701,8 +701,8 @@ class Group():
                 }
             )
 
-        group_dict[GroupKey.Users] = users
-        group_dict[GroupKey.Customer] = customer
+        group_dict[GroupKeys.Users] = users
+        group_dict[GroupKeys.Customer] = customer
         group_dict['name'] = group.group_name
 
         return group_dict
@@ -747,11 +747,11 @@ class Group():
 
         if group:
 
-            data[GroupKey.Customer] = kwargs.get('customer')
-            data[GroupKey.Users] = kwargs.get('users')
-            data[GroupKey.Permissions] = kwargs.get('permissions')
+            data[GroupKeys.Customer] = kwargs.get('customer')
+            data[GroupKeys.Users] = kwargs.get('users')
+            data[GroupKeys.Permissions] = kwargs.get('permissions')
 
-            if AdminUser in data[GroupKey.Users]:
+            if AdminUser in data[GroupKeys.Users]:
 
                     message = 'The admin user has no editable properties.'
                     return {
@@ -761,7 +761,7 @@ class Group():
 
             if (
                 group.group_name == AdminGroup
-                and data[GroupKey.Permissions]
+                and data[GroupKeys.Permissions]
             ):
                     return {
                         'pass': False,

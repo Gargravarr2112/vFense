@@ -8,7 +8,7 @@ from vFense.db.client import db_create_close, r
 from vFense.core._constants import CommonKeys
 from vFense.operations import OperationCollections, \
     OperationPerAgentIndexes, OperationPerAppIndexes, \
-    AgentOperationKey, OperationPerAppKey
+    AgentOperationKeys, OperationPerAppKeys
 
 from vFense.operations._db_sub_queries import OperationPerAgentMerge
 
@@ -263,7 +263,7 @@ def group_operations_per_app_by_results(
                 [operation_id, agent_id],
                 index=OperationPerAppIndexes.OperationIdAndAgentId
             )
-            .group(OperationPerAppKey.Results)
+            .group(OperationPerAppKeys.Results)
             .count()
             .ungroup()
             .run(conn)
@@ -537,21 +537,21 @@ def update_agent_operation_expire_time(
             .get(operation_id)
             .update(
                 {
-                    AgentOperationKey.AgentsPendingPickUpCount: (
+                    AgentOperationKeys.AgentsPendingPickUpCount: (
                         r.branch(
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount] > 0,
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount] - 1,
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount],
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount] > 0,
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount] - 1,
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount],
                         )
                     ),
-                    AgentOperationKey.AgentsExpiredCount: (
+                    AgentOperationKeys.AgentsExpiredCount: (
                         r.branch(
-                            r.row[AgentOperationKey.AgentsExpiredCount] < r.row[AgentOperationKey.AgentsTotalCount],
-                            r.row[AgentOperationKey.AgentsExpiredCount] + 1,
-                            r.row[AgentOperationKey.AgentsExpiredCount]
+                            r.row[AgentOperationKeys.AgentsExpiredCount] < r.row[AgentOperationKeys.AgentsTotalCount],
+                            r.row[AgentOperationKeys.AgentsExpiredCount] + 1,
+                            r.row[AgentOperationKeys.AgentsExpiredCount]
                         )
                     ),
-                    AgentOperationKey.UpdatedTime: db_time
+                    AgentOperationKeys.UpdatedTime: db_time
                 }
             )
             .run(conn)
@@ -592,23 +592,23 @@ def update_agent_operation_pickup_time(
             .get(operation_id)
             .update(
                 {
-                    AgentOperationKey.AgentsPendingPickUpCount: (
+                    AgentOperationKeys.AgentsPendingPickUpCount: (
                         r.branch(
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount] > 0,
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount] - 1,
-                            r.row[AgentOperationKey.AgentsPendingPickUpCount],
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount] > 0,
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount] - 1,
+                            r.row[AgentOperationKeys.AgentsPendingPickUpCount],
                         )
                     ),
-                    AgentOperationKey.AgentsPendingResultsCount: (
+                    AgentOperationKeys.AgentsPendingResultsCount: (
                         r.branch(
-                            r.row[AgentOperationKey.AgentsPendingResultsCount] < (
-                                r.row[AgentOperationKey.AgentsTotalCount]
+                            r.row[AgentOperationKeys.AgentsPendingResultsCount] < (
+                                r.row[AgentOperationKeys.AgentsTotalCount]
                             ),
-                            r.row[AgentOperationKey.AgentsPendingResultsCount] + 1,
-                            r.row[AgentOperationKey.AgentsPendingResultsCount]
+                            r.row[AgentOperationKeys.AgentsPendingResultsCount] + 1,
+                            r.row[AgentOperationKeys.AgentsPendingResultsCount]
                         )
                     ),
-                    AgentOperationKey.UpdatedTime: db_time
+                    AgentOperationKeys.UpdatedTime: db_time
                 }
             )
             .run(conn)
@@ -649,20 +649,20 @@ def update_completed_and_pending_count(
             .get(operation_id)
             .update(
                 {
-                    AgentOperationKey.AgentsCompletedCount: r.branch(
-                        r.row[AgentOperationKey.AgentsCompletedCount] < (
-                            r.row[AgentOperationKey.AgentsTotalCount]
+                    AgentOperationKeys.AgentsCompletedCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsCompletedCount] < (
+                            r.row[AgentOperationKeys.AgentsTotalCount]
                         ),
-                        r.row[AgentOperationKey.AgentsCompletedCount] + 1,
-                        r.row[AgentOperationKey.AgentsCompletedCount]
+                        r.row[AgentOperationKeys.AgentsCompletedCount] + 1,
+                        r.row[AgentOperationKeys.AgentsCompletedCount]
                     ),
-                    AgentOperationKey.AgentsPendingResultsCount: r.branch(
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] > 0,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] - 1,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount]
+                    AgentOperationKeys.AgentsPendingResultsCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] > 0,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] - 1,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount]
                     ),
-                    AgentOperationKey.UpdatedTime: db_time,
-                    AgentOperationKey.CompletedTime: db_time
+                    AgentOperationKeys.UpdatedTime: db_time,
+                    AgentOperationKeys.CompletedTime: db_time
                 }
             )
             .run(conn)
@@ -703,20 +703,20 @@ def update_failed_and_pending_count(
             .get(operation_id)
             .update(
                 {
-                    AgentOperationKey.AgentsFailedCount: r.branch(
-                        r.row[AgentOperationKey.AgentsFailedCount] < (
-                            r.row[AgentOperationKey.AgentsTotalCount]
+                    AgentOperationKeys.AgentsFailedCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsFailedCount] < (
+                            r.row[AgentOperationKeys.AgentsTotalCount]
                         ),
-                        r.row[AgentOperationKey.AgentsFailedCount] + 1,
-                        r.row[AgentOperationKey.AgentsFailedCount]
+                        r.row[AgentOperationKeys.AgentsFailedCount] + 1,
+                        r.row[AgentOperationKeys.AgentsFailedCount]
                     ),
-                    AgentOperationKey.AgentsPendingResultsCount: r.branch(
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] > 0,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] - 1,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount]
+                    AgentOperationKeys.AgentsPendingResultsCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] > 0,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] - 1,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount]
                     ),
-                    AgentOperationKey.UpdatedTime: db_time,
-                    AgentOperationKey.CompletedTime: db_time
+                    AgentOperationKeys.UpdatedTime: db_time,
+                    AgentOperationKeys.CompletedTime: db_time
                 }
             )
             .run(conn)
@@ -757,20 +757,20 @@ def update_errors_and_pending_count(
             .get(operation_id)
             .update(
                 {
-                    AgentOperationKey.AgentsCompletedWithErrorsCount: r.branch(
-                        r.row[AgentOperationKey.AgentsCompletedWithErrorsCount] < (
-                            r.row[AgentOperationKey.AgentsTotalCount]
+                    AgentOperationKeys.AgentsCompletedWithErrorsCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsCompletedWithErrorsCount] < (
+                            r.row[AgentOperationKeys.AgentsTotalCount]
                         ),
-                        r.row[AgentOperationKey.AgentsCompletedWithErrorsCount] + 1,
-                        r.row[AgentOperationKey.AgentsCompletedWithErrorsCount]
+                        r.row[AgentOperationKeys.AgentsCompletedWithErrorsCount] + 1,
+                        r.row[AgentOperationKeys.AgentsCompletedWithErrorsCount]
                     ),
-                    AgentOperationKey.AgentsPendingResultsCount: r.branch(
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] > 0,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount] - 1,
-                        r.row[AgentOperationKey.AgentsPendingResultsCount]
+                    AgentOperationKeys.AgentsPendingResultsCount: r.branch(
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] > 0,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount] - 1,
+                        r.row[AgentOperationKeys.AgentsPendingResultsCount]
                     ),
-                    AgentOperationKey.UpdatedTime: db_time,
-                    AgentOperationKey.CompletedTime: db_time
+                    AgentOperationKeys.UpdatedTime: db_time,
+                    AgentOperationKeys.CompletedTime: db_time
                 }
             )
             .run(conn)

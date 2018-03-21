@@ -72,25 +72,25 @@ def _create_UPC_indices(conn):
 
         indices = r.table(Collection.UsersPerCustomer).index_list().run(conn)
 
-        if UsersPerCustomerKey.UserId not in indices:
+        if UsersPerCustomerKeys.UserId not in indices:
             r.table(
                 Collection.UsersPerCustomer
-            ).index_create(UsersPerCustomerKey.UserId).run(conn)
+            ).index_create(UsersPerCustomerKeys.UserId).run(conn)
 
-        if UsersPerCustomerKey.CustomerId not in indices:
+        if UsersPerCustomerKeys.CustomerId not in indices:
             r.table(
                 Collection.UsersPerCustomer
-            ).index_create(UsersPerCustomerKey.CustomerId).run(conn)
+            ).index_create(UsersPerCustomerKeys.CustomerId).run(conn)
 
-        if UsersPerCustomerKey.UserAndCustomerId not in indices:
+        if UsersPerCustomerKeys.UserAndCustomerId not in indices:
             r.table(
                 Collection.UsersPerCustomer
             ).index_create(
-                UsersPerCustomerKey.UserAndCustomerId,
+                UsersPerCustomerKeys.UserAndCustomerId,
                 lambda row:
                 [
-                    row[UsersPerCustomerKey.UserId],
-                    row[UsersPerCustomerKey.CustomerId]
+                    row[UsersPerCustomerKeys.UserId],
+                    row[UsersPerCustomerKeys.CustomerId]
                 ]
             ).run(conn)
 
@@ -124,45 +124,45 @@ def _create_GPU_indices(conn=None):
 
         indices = r.table(Collection.GroupsPerUser).index_list().run(conn)
 
-        if GroupsPerUserKey.UserId not in indices:
+        if GroupsPerUserKeys.UserId not in indices:
             r.table(
                 Collection.GroupsPerUser
-            ).index_create(GroupsPerUserKey.UserId).run(conn)
+            ).index_create(GroupsPerUserKeys.UserId).run(conn)
 
-        if GroupsPerUserKey.GroupIdAndCustomerId not in indices:
+        if GroupsPerUserKeys.GroupIdAndCustomerId not in indices:
             r.table(
                 Collection.GroupsPerUser
             ).index_create(
-                GroupsPerUserKey.GroupIdAndCustomerId,
+                GroupsPerUserKeys.GroupIdAndCustomerId,
                 lambda row:
                 [
-                    row[GroupsPerUserKey.GroupId],
-                    row[GroupsPerUserKey.CustomerId]
+                    row[GroupsPerUserKeys.GroupId],
+                    row[GroupsPerUserKeys.CustomerId]
                 ]
             ).run(conn)
 
-        if GroupsPerUserKey.UserIdAndCustomerId not in indices:
+        if GroupsPerUserKeys.UserIdAndCustomerId not in indices:
             r.table(
                 Collection.GroupsPerUser
             ).index_create(
-                GroupsPerUserKey.UserIdAndCustomerId,
+                GroupsPerUserKeys.UserIdAndCustomerId,
                 lambda row:
                 [
-                    row[GroupsPerUserKey.UserId],
-                    row[GroupsPerUserKey.CustomerId]
+                    row[GroupsPerUserKeys.UserId],
+                    row[GroupsPerUserKeys.CustomerId]
                 ]
             ).run(conn)
 
-        if GroupsPerUserKey.GroupUserAndCustomerId not in indices:
+        if GroupsPerUserKeys.GroupUserAndCustomerId not in indices:
             r.table(
                 Collection.GroupsPerUser
             ).index_create(
-                GroupsPerUserKey.GroupUserAndCustomerId,
+                GroupsPerUserKeys.GroupUserAndCustomerId,
                 lambda row:
                 [
-                    row[GroupsPerUserKey.GroupId],
-                    row[GroupsPerUserKey.UserId],
-                    row[GroupsPerUserKey.CustomerId]
+                    row[GroupsPerUserKeys.GroupId],
+                    row[GroupsPerUserKeys.UserId],
+                    row[GroupsPerUserKeys.CustomerId]
                 ]
             ).run(conn)
 
@@ -195,25 +195,25 @@ def _create_GPC_indices(conn=None):
 
         indices = r.table(Collection.GroupsPerCustomer).index_list().run(conn)
 
-        if GroupsPerCustomerKey.GroupId not in indices:
+        if GroupsPerCustomerKeys.GroupId not in indices:
             r.table(
                 Collection.GroupsPerCustomer
-            ).index_create(GroupsPerCustomerKey.GroupId).run(conn)
+            ).index_create(GroupsPerCustomerKeys.GroupId).run(conn)
 
-        if GroupsPerCustomerKey.CustomerId not in indices:
+        if GroupsPerCustomerKeys.CustomerId not in indices:
             r.table(
                 Collection.GroupsPerCustomer
-            ).index_create(GroupsPerCustomerKey.CustomerId).run(conn)
+            ).index_create(GroupsPerCustomerKeys.CustomerId).run(conn)
 
-        if GroupsPerCustomerKey.GroupAndCustomerId not in indices:
+        if GroupsPerCustomerKeys.GroupAndCustomerId not in indices:
             r.table(
                 Collection.GroupsPerCustomer
             ).index_create(
-                GroupsPerCustomerKey.GroupAndCustomerId,
+                GroupsPerCustomerKeys.GroupAndCustomerId,
                 lambda row:
                 [
-                    row[GroupsPerCustomerKey.GroupId],
-                    row[GroupsPerCustomerKey.CustomerId]
+                    row[GroupsPerCustomerKeys.GroupId],
+                    row[GroupsPerCustomerKeys.CustomerId]
                 ]
             ).run(conn)
 
@@ -242,25 +242,25 @@ def _create_groups_indices(conn=None):
 
         indices = r.table(Collection.Groups).index_list().run(conn)
 
-        if GroupKey.GroupName not in indices:
+        if GroupKeys.GroupName not in indices:
             r.table(
                 Collection.Groups
-            ).index_create(GroupKey.GroupName).run(conn)
+            ).index_create(GroupKeys.GroupName).run(conn)
 
-        if GroupKey.CustomerId not in indices:
+        if GroupKeys.CustomerId not in indices:
             r.table(
                 Collection.Groups
-            ).index_create(GroupKey.CustomerId).run(conn)
+            ).index_create(GroupKeys.CustomerId).run(conn)
 
-        if GroupKey.GroupNameAndCustomerId not in indices:
+        if GroupKeys.GroupNameAndCustomerId not in indices:
             r.table(
                 Collection.Groups
             ).index_create(
-                GroupKey.GroupNameAndCustomerId,
+                GroupKeys.GroupNameAndCustomerId,
                 lambda row:
                 [
-                    row[GroupKey.GroupName],
-                    row[GroupKey.CustomerId]
+                    row[GroupKeys.GroupName],
+                    row[GroupKeys.CustomerId]
                 ]
             ).run(conn)
 
@@ -275,7 +275,7 @@ def _create_customers_table(conn=None):
 
         r.db(_main_db).table_create(
             Collection.Customers,
-            primary_key=CustomerKey.CustomerName
+            primary_key=CustomerKeys.CustomerName
         ).run(conn)
 
     except Exception as e:
@@ -289,7 +289,7 @@ def _create_users_table(conn=None):
     try:
         r.db(_main_db).table_create(
             Collection.Users,
-            primary_key=UserKey.UserName
+            primary_key=UserKeys.UserName
         ).run(conn)
 
     except Exception as e:

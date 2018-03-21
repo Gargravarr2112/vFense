@@ -2,7 +2,7 @@ class UbuntuSecurityCollection():
     Bulletin = 'ubuntu_security_bulletin'
 
 
-class UbuntuSecurityBulletinKey():
+class UbuntuSecurityBulletinKeys():
     Id = 'id'
     DatePosted = 'date_posted'
     BulletinId = 'bulletin_id'

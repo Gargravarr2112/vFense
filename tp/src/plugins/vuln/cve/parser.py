@@ -6,7 +6,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 
 from lxml import etree
 from re import sub
-from vFense.plugins.vuln.cve import CveKey
+from vFense.plugins.vuln.cve import CveKeys
 from vFense.plugins.vuln.cve._constants import (
     CVEDataDir, NVDFeeds, CVEStrings, CVEVectors,
     CVSS_BASE_VECTORS, CVSS_BASE_VECTOR_AV_VALUES,
@@ -57,9 +57,9 @@ class NvdParser(object):
         """
         data = {}
         attrib = entry.attrib
-        data[CveKey.CveId] = attrib.get(CVEStrings.CVE_NAME)
-        data[CveKey.CveSev] = attrib.get(CVEStrings.CVE_SEVERITY)
-        data[CveKey.CvePublishedDate] = (
+        data[CveKeys.CveId] = attrib.get(CVEStrings.CVE_NAME)
+        data[CveKeys.CveSev] = attrib.get(CVEStrings.CVE_SEVERITY)
+        data[CveKeys.CvePublishedDate] = (
             r.epoch_time(
                 timestamp_verifier(
                     date_parser(
@@ -68,7 +68,7 @@ class NvdParser(object):
                 )
             )
         )
-        data[CveKey.CveModifiedDate] = (
+        data[CveKeys.CveModifiedDate] = (
             r.epoch_time(
                 timestamp_verifier(
                     date_parser(
@@ -77,22 +77,22 @@ class NvdParser(object):
                 )
             )
         )
-        data[CveKey.CvssScore] = (
+        data[CveKeys.CvssScore] = (
             attrib.get(CVEStrings.CVSS_SCORE)
         )
-        data[CveKey.CvssBaseScore] = (
+        data[CveKeys.CvssBaseScore] = (
             attrib.get(CVEStrings.CVSS_BASE_SCORE)
         )
-        data[CveKey.CvssImpactSubScore] = (
+        data[CveKeys.CvssImpactSubScore] = (
             attrib.get(CVEStrings.CVSS_IMPACT_SUBSCORE)
         )
-        data[CveKey.CvssExploitSubScore] = (
+        data[CveKeys.CvssExploitSubScore] = (
             attrib.get(CVEStrings.CVSS_EXPLOIT_SUBSCORE)
         )
-        data[CveKey.CvssVector] = (
+        data[CveKeys.CvssVector] = (
             self._parse_vectors(attrib.get(CVEStrings.CVSS_VECTOR))
         )
-        data[CveKey.CvssVersion] = (
+        data[CveKeys.CvssVersion] = (
             attrib.get(CVEStrings.CVSS_VERSION)
         )
 
@@ -320,25 +320,25 @@ def parse_cve_and_udpatedb(
                 cve_data = parser.get_entry_info(entry)
 
             if entry.tag == NVDFeeds.DESC and event == 'start':
-                cve_data[CveKey.CveDescriptions] = \
+                cve_data[CveKeys.CveDescriptions] = \
                     parser.get_descriptions(entry)
 
             if entry.tag == NVDFeeds.REFS and event == 'start':
-                cve_data[CveKey.CveRefs] = parser.get_refs(entry)
+                cve_data[CveKeys.CveRefs] = parser.get_refs(entry)
 
             #if entry.tag == NVDFeeds.VULN_SOFT and event == 'start':
-            #    cve_data[CveKey.CveVulnsSoft] = parser.get_vulns_soft(entry)
+            #    cve_data[CveKeys.CveVulnsSoft] = parser.get_vulns_soft(entry)
 
-            cve_data[CveKey.CveCategories] = []
+            cve_data[CveKeys.CveCategories] = []
             if entry.tag == NVDFeeds.ENTRY and event == 'end':
                 for key in cve_data.keys():
-                    if (key != CveKey.CveDescriptions and
-                            key != CveKey.CveRefs and
-                            key != CveKey.CveVulnsSoft and
-                            key != CveKey.CvePublishedDate and
-                            key != CveKey.CveCategories and
-                            key != CveKey.CvssVector and
-                            key != CveKey.CveModifiedDate):
+                    if (key != CveKeys.CveDescriptions and
+                            key != CveKeys.CveRefs and
+                            key != CveKeys.CveVulnsSoft and
+                            key != CveKeys.CvePublishedDate and
+                            key != CveKeys.CveCategories and
+                            key != CveKeys.CvssVector and
+                            key != CveKeys.CveModifiedDate):
                         cve_data[key] = unicode(cve_data[key])
 
                 cve_data_list.append(cve_data)

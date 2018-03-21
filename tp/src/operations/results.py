@@ -5,7 +5,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 
 from vFense.core._constants import CommonKeys
 from vFense.core.decorators import results_message
-from vFense.core.agent import AgentKey
+from vFense.core.agent import AgentKeys
 from vFense.errorz._constants import ApiResultKeys
 from vFense.core.agent.agents import get_agent_info
 from vFense.core._db_constants import DbTime
@@ -58,7 +58,7 @@ class OperationResults(object):
         self.method = method
         self.agent_data = get_agent_info(self.agent_id)
         self.operation_data = get_agent_operation(self.operation_id)
-        self.customer_name = self.agent_data[AgentKey.CustomerName]
+        self.customer_name = self.agent_data[AgentKeys.CustomerName]
         self.date_now = DbTime.time_now()
         self.begining_of_time = DbTime.begining_of_time()
         self.error = error

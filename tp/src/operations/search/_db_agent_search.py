@@ -6,11 +6,11 @@ from vFense import VFENSE_LOGGING_CONFIG
 from vFense.db.client import db_create_close, r
 from vFense.operations.search._constants import OperationSearchValues
 from vFense.core._constants import SortValues, DefaultQueryValues
-from vFense.core.agent import AgentKey, AgentCollections
+from vFense.core.agent import AgentKeys, AgentCollections
 
-from vFense.operations import AgentOperationKey, AgentOperationIndexes, \
-    OperationCollections, OperationPerAgentKey, OperationPerAgentIndexes, \
-    OperationPerAppKey, OperationPerAppIndexes
+from vFense.operations import AgentOperationKeys, AgentOperationIndexes, \
+    OperationCollections, OperationPerAgentKeys, OperationPerAgentIndexes, \
+    OperationPerAppKeys, OperationPerAppIndexes
 
 from vFense.errorz.status_codes import AgentOperationCodes
 
@@ -24,7 +24,7 @@ class FetchAgentOperations(object):
             count=DefaultQueryValues.COUNT,
             offset=DefaultQueryValues.OFFSET,
             sort=SortValues.ASC,
-            sort_key=AgentOperationKey.CreatedTime
+            sort_key=AgentOperationKeys.CreatedTime
         ):
         """
         Kwargs:
@@ -228,7 +228,7 @@ class FetchAgentOperations(object):
             count = (
                 r
                 .table(OperationCollections.Agent)
-                .get_all(tag_id, index=AgentOperationKey.TagId)
+                .get_all(tag_id, index=AgentOperationKeys.TagId)
                 .count()
                 .run(conn)
             )
@@ -236,7 +236,7 @@ class FetchAgentOperations(object):
             data = list(
                 r
                 .table(OperationCollections.Agent)
-                .get_all(tag_id, index=AgentOperationKey.TagId)
+                .get_all(tag_id, index=AgentOperationKeys.TagId)
                 .order_by(self.sort(self.sort_key))
                 .skip(self.offset)
                 .limit(self.count)
@@ -555,33 +555,33 @@ class FetchAgentOperations(object):
         agent_pluck = self._set_agent_collection_pluck()
         merge = (
             {
-                AgentOperationKey.CreatedTime: (
-                    r.row[AgentOperationKey.CreatedTime].to_epoch_time()
+                AgentOperationKeys.CreatedTime: (
+                    r.row[AgentOperationKeys.CreatedTime].to_epoch_time()
                 ),
-                AgentOperationKey.CompletedTime: (
-                    r.row[AgentOperationKey.CompletedTime].to_epoch_time()
+                AgentOperationKeys.CompletedTime: (
+                    r.row[AgentOperationKeys.CompletedTime].to_epoch_time()
                 ),
                 OperationSearchValues.AGENTS: (
                     r
                     .table(OperationCollections.OperationPerAgent)
                     .get_all(
-                        r.row[AgentOperationKey.OperationId],
+                        r.row[AgentOperationKeys.OperationId],
                         index=OperationPerAgentIndexes.OperationId
                     )
                     .coerce_to('array')
                     .eq_join(
-                        OperationPerAgentKey.AgentId,
+                        OperationPerAgentKeys.AgentId,
                         r.table(AgentCollections.Agents)
                     )
                     .zip()
                     .pluck(agent_pluck)
                     .map(lambda x:
                         {
-                            OperationPerAgentKey.PickedUpTime: (
-                                x[OperationPerAgentKey.PickedUpTime].to_epoch_time()
+                            OperationPerAgentKeys.PickedUpTime: (
+                                x[OperationPerAgentKeys.PickedUpTime].to_epoch_time()
                             ),
-                            OperationPerAgentKey.CompletedTime: (
-                                x[OperationPerAgentKey.CompletedTime].to_epoch_time()
+                            OperationPerAgentKeys.CompletedTime: (
+                                x[OperationPerAgentKeys.CompletedTime].to_epoch_time()
                             ),
                         }
                     )
@@ -594,14 +594,14 @@ class FetchAgentOperations(object):
     def _set_base_time_merge(self):
         merge = (
             {
-                AgentOperationKey.CreatedTime: (
-                    r.row[AgentOperationKey.CreatedTime].to_epoch_time()
+                AgentOperationKeys.CreatedTime: (
+                    r.row[AgentOperationKeys.CreatedTime].to_epoch_time()
                 ),
-                AgentOperationKey.UpdatedTime: (
-                    r.row[AgentOperationKey.UpdatedTime].to_epoch_time()
+                AgentOperationKeys.UpdatedTime: (
+                    r.row[AgentOperationKeys.UpdatedTime].to_epoch_time()
                 ),
-                AgentOperationKey.CompletedTime: (
-                    r.row[AgentOperationKey.CompletedTime].to_epoch_time()
+                AgentOperationKeys.CompletedTime: (
+                    r.row[AgentOperationKeys.CompletedTime].to_epoch_time()
                 ),
             }
         )
@@ -611,20 +611,20 @@ class FetchAgentOperations(object):
     def _set_base_time_joined_agent_merge(self):
         merge = (
             {
-                AgentOperationKey.CreatedTime: (
-                    r.row[AgentOperationKey.CreatedTime].to_epoch_time()
+                AgentOperationKeys.CreatedTime: (
+                    r.row[AgentOperationKeys.CreatedTime].to_epoch_time()
                 ),
-                AgentOperationKey.UpdatedTime: (
-                    r.row[AgentOperationKey.UpdatedTime].to_epoch_time()
+                AgentOperationKeys.UpdatedTime: (
+                    r.row[AgentOperationKeys.UpdatedTime].to_epoch_time()
                 ),
-                AgentOperationKey.CompletedTime: (
-                    r.row[AgentOperationKey.CompletedTime].to_epoch_time()
+                AgentOperationKeys.CompletedTime: (
+                    r.row[AgentOperationKeys.CompletedTime].to_epoch_time()
                 ),
-                OperationPerAgentKey.PickedUpTime: (
-                    r.row[OperationPerAgentKey.PickedUpTime].to_epoch_time()
+                OperationPerAgentKeys.PickedUpTime: (
+                    r.row[OperationPerAgentKeys.PickedUpTime].to_epoch_time()
                 ),
-                OperationPerAgentKey.ExpiredTime: (
-                    r.row[OperationPerAgentKey.ExpiredTime].to_epoch_time()
+                OperationPerAgentKeys.ExpiredTime: (
+                    r.row[OperationPerAgentKeys.ExpiredTime].to_epoch_time()
                 ),
             }
         )
@@ -636,57 +636,57 @@ class FetchAgentOperations(object):
         app_without = self._set_app_collection_without()
         merge = (
             {
-                AgentOperationKey.CreatedTime: (
-                    r.row[AgentOperationKey.CreatedTime].to_iso8601()
+                AgentOperationKeys.CreatedTime: (
+                    r.row[AgentOperationKeys.CreatedTime].to_iso8601()
                 ),
-                AgentOperationKey.UpdatedTime: (
-                    r.row[AgentOperationKey.UpdatedTime].to_iso8601()
+                AgentOperationKeys.UpdatedTime: (
+                    r.row[AgentOperationKeys.UpdatedTime].to_iso8601()
                 ),
-                AgentOperationKey.CompletedTime: (
-                    r.row[AgentOperationKey.CompletedTime].to_iso8601()
+                AgentOperationKeys.CompletedTime: (
+                    r.row[AgentOperationKeys.CompletedTime].to_iso8601()
                 ),
                 OperationSearchValues.AGENTS: (
                     r
                     .table(OperationCollections.OperationPerAgent)
                     .get_all(
-                        r.row[AgentOperationKey.OperationId],
+                        r.row[AgentOperationKeys.OperationId],
                         index=OperationPerAgentIndexes.OperationId
                     )
                     .coerce_to('array')
                     .eq_join(
-                        OperationPerAgentKey.AgentId,
+                        OperationPerAgentKeys.AgentId,
                         r.table(AgentCollections.Agents)
                     )
                     .zip()
                     .pluck(agent_pluck)
                     .merge(lambda x:
                         {
-                            OperationPerAgentKey.PickedUpTime: (
-                                x[OperationPerAgentKey.PickedUpTime].to_iso8601()
+                            OperationPerAgentKeys.PickedUpTime: (
+                                x[OperationPerAgentKeys.PickedUpTime].to_iso8601()
                             ),
-                            OperationPerAgentKey.CompletedTime: (
-                                x[OperationPerAgentKey.CompletedTime].to_iso8601()
+                            OperationPerAgentKeys.CompletedTime: (
+                                x[OperationPerAgentKeys.CompletedTime].to_iso8601()
                             ),
                             OperationSearchValues.APPLICATIONS_FAILED: (
                                 r
                                 .table(OperationCollections.OperationPerApp)
                                 .get_all(
                                     [
-                                        x[AgentOperationKey.OperationId],
-                                        x[OperationPerAgentKey.AgentId]
+                                        x[AgentOperationKeys.OperationId],
+                                        x[OperationPerAgentKeys.AgentId]
                                     ],
                                     index=OperationPerAppIndexes.OperationIdAndAgentId
                                 )
                                 .filter(
                                     lambda y:
-                                    y[OperationPerAppKey.Results] ==
+                                    y[OperationPerAppKeys.Results] ==
                                     AgentOperationCodes.ResultsReceivedWithErrors
                                 )
                                 .coerce_to('array')
                                 .merge(lambda y:
                                     {
-                                        OperationPerAppKey.ResultsReceivedTime: (
-                                            y[OperationPerAppKey.ResultsReceivedTime].to_iso8601()
+                                        OperationPerAppKeys.ResultsReceivedTime: (
+                                            y[OperationPerAppKeys.ResultsReceivedTime].to_iso8601()
                                         )
                                     }
                                 )
@@ -697,21 +697,21 @@ class FetchAgentOperations(object):
                                 .table(OperationCollections.OperationPerApp)
                                 .get_all(
                                     [
-                                        x[AgentOperationKey.OperationId],
-                                        x[OperationPerAgentKey.AgentId]
+                                        x[AgentOperationKeys.OperationId],
+                                        x[OperationPerAgentKeys.AgentId]
                                     ],
                                     index=OperationPerAppIndexes.OperationIdAndAgentId
                                 )
                                 .filter(
                                     lambda y:
-                                    y[OperationPerAppKey.Results] ==
+                                    y[OperationPerAppKeys.Results] ==
                                     AgentOperationCodes.ResultsReceived
                                 )
                                 .coerce_to('array')
                                 .merge(lambda y:
                                     {
-                                        OperationPerAppKey.ResultsReceivedTime: (
-                                            y[OperationPerAppKey.ResultsReceivedTime].to_iso8601()
+                                        OperationPerAppKeys.ResultsReceivedTime: (
+                                            y[OperationPerAppKeys.ResultsReceivedTime].to_iso8601()
                                         )
                                     }
                                 )
@@ -729,25 +729,25 @@ class FetchAgentOperations(object):
         agent_pluck = self._set_agent_collection_pluck()
         merge = (
             {
-                AgentOperationKey.CreatedTime: r.row[AgentOperationKey.CreatedTime].to_epoch_time(),
-                AgentOperationKey.UpdatedTime: r.row[AgentOperationKey.UpdatedTime].to_epoch_time(),
-                AgentOperationKey.CompletedTime: r.row[AgentOperationKey.CompletedTime].to_epoch_time(),
+                AgentOperationKeys.CreatedTime: r.row[AgentOperationKeys.CreatedTime].to_epoch_time(),
+                AgentOperationKeys.UpdatedTime: r.row[AgentOperationKeys.UpdatedTime].to_epoch_time(),
+                AgentOperationKeys.CompletedTime: r.row[AgentOperationKeys.CompletedTime].to_epoch_time(),
                 OperationSearchValues.AGENTS: (
                     r
                     .table(OperationCollections.OperationPerAgent)
                     .get_all(
-                        r.row[AgentOperationKey.OperationId],
+                        r.row[AgentOperationKeys.OperationId],
                         index=OperationPerAgentIndexes.OperationId
                     )
                     .coerce_to('array')
-                    .eq_join(OperationPerAgentKey.AgentId, r.table(AgentCollections.Agents))
+                    .eq_join(OperationPerAgentKeys.AgentId, r.table(AgentCollections.Agents))
                     .zip()
                     .pluck(agent_pluck)
                     .merge(lambda x:
                         {
-                            OperationPerAgentKey.PickedUpTime: x[OperationPerAgentKey.PickedUpTime].to_epoch_time(),
-                            OperationPerAgentKey.CompletedTime: x[OperationPerAgentKey.CompletedTime].to_epoch_time(),
-                            OperationPerAgentKey.ExpiredTime: x[OperationPerAgentKey.ExpiredTime].to_epoch_time(),
+                            OperationPerAgentKeys.PickedUpTime: x[OperationPerAgentKeys.PickedUpTime].to_epoch_time(),
+                            OperationPerAgentKeys.CompletedTime: x[OperationPerAgentKeys.CompletedTime].to_epoch_time(),
+                            OperationPerAgentKeys.ExpiredTime: x[OperationPerAgentKeys.ExpiredTime].to_epoch_time(),
                         }
                     )
                 )
@@ -761,33 +761,33 @@ class FetchAgentOperations(object):
         app_without = self._set_app_collection_without()
         merge = (
             {
-                AgentOperationKey.CreatedTime: r.row[AgentOperationKey.CreatedTime].to_epoch_time(),
-                AgentOperationKey.UpdatedTime: r.row[AgentOperationKey.UpdatedTime].to_epoch_time(),
-                AgentOperationKey.CompletedTime: r.row[AgentOperationKey.CompletedTime].to_epoch_time(),
+                AgentOperationKeys.CreatedTime: r.row[AgentOperationKeys.CreatedTime].to_epoch_time(),
+                AgentOperationKeys.UpdatedTime: r.row[AgentOperationKeys.UpdatedTime].to_epoch_time(),
+                AgentOperationKeys.CompletedTime: r.row[AgentOperationKeys.CompletedTime].to_epoch_time(),
                 OperationSearchValues.AGENTS: (
                     r
                     .table(OperationCollections.OperationPerAgent)
                     .get_all(
-                        r.row[AgentOperationKey.OperationId],
+                        r.row[AgentOperationKeys.OperationId],
                         index=OperationPerAgentIndexes.OperationId
                     )
                     .coerce_to('array')
-                    .eq_join(OperationPerAgentKey.AgentId, r.table(AgentCollections.Agents))
+                    .eq_join(OperationPerAgentKeys.AgentId, r.table(AgentCollections.Agents))
                     .zip()
                     .pluck(agent_pluck)
                     .merge(
                         lambda x:
                         {
-                            OperationPerAgentKey.PickedUpTime: x[OperationPerAgentKey.PickedUpTime].to_epoch_time(),
-                            OperationPerAgentKey.CompletedTime: x[OperationPerAgentKey.CompletedTime].to_epoch_time(),
-                            OperationPerAgentKey.ExpiredTime: x[OperationPerAgentKey.ExpiredTime].to_epoch_time(),
+                            OperationPerAgentKeys.PickedUpTime: x[OperationPerAgentKeys.PickedUpTime].to_epoch_time(),
+                            OperationPerAgentKeys.CompletedTime: x[OperationPerAgentKeys.CompletedTime].to_epoch_time(),
+                            OperationPerAgentKeys.ExpiredTime: x[OperationPerAgentKeys.ExpiredTime].to_epoch_time(),
                             OperationSearchValues.APPLICATIONS: (
                                 r
                                 .table(OperationCollections.OperationPerApp)
                                 .get_all(
                                     [
-                                        x[AgentOperationKey.OperationId],
-                                        x[OperationPerAgentKey.AgentId]
+                                        x[AgentOperationKeys.OperationId],
+                                        x[OperationPerAgentKeys.AgentId]
                                     ],
                                     index=OperationPerAppIndexes.OperationIdAndAgentId
                                 )
@@ -795,7 +795,7 @@ class FetchAgentOperations(object):
                                 .without(app_without)
                                 .merge(lambda y:
                                     {
-                                        OperationPerAppKey.ResultsReceivedTime: y[OperationPerAppKey.ResultsReceivedTime].to_epoch_time()
+                                        OperationPerAppKeys.ResultsReceivedTime: y[OperationPerAppKeys.ResultsReceivedTime].to_epoch_time()
                                     }
                                 )
                             )
@@ -845,28 +845,28 @@ class FetchAgentOperations(object):
     def _set_agent_collection_pluck(self):
         pluck = (
             [
-                AgentOperationKey.OperationId,
-                AgentOperationKey.Operation,
-                AgentOperationKey.OperationStatus,
-                AgentOperationKey.CreatedTime,
-                AgentOperationKey.CreatedBy,
-                AgentOperationKey.CompletedTime,
-                AgentOperationKey.AgentsTotalCount,
-                AgentOperationKey.AgentsFailedCount,
-                AgentOperationKey.AgentsCompletedCount,
-                AgentOperationKey.AgentsCompletedWithErrorsCount,
-                OperationPerAgentKey.PickedUpTime,
-                OperationPerAgentKey.CompletedTime,
-                OperationPerAgentKey.ExpiredTime,
-                OperationPerAgentKey.AppsTotalCount,
-                OperationPerAgentKey.AppsPendingCount,
-                OperationPerAgentKey.AppsFailedCount,
-                OperationPerAgentKey.AppsCompletedCount,
-                OperationPerAgentKey.Errors,
-                OperationPerAgentKey.Status,
-                OperationPerAgentKey.AgentId,
-                AgentKey.ComputerName,
-                AgentKey.DisplayName,
+                AgentOperationKeys.OperationId,
+                AgentOperationKeys.Operation,
+                AgentOperationKeys.OperationStatus,
+                AgentOperationKeys.CreatedTime,
+                AgentOperationKeys.CreatedBy,
+                AgentOperationKeys.CompletedTime,
+                AgentOperationKeys.AgentsTotalCount,
+                AgentOperationKeys.AgentsFailedCount,
+                AgentOperationKeys.AgentsCompletedCount,
+                AgentOperationKeys.AgentsCompletedWithErrorsCount,
+                OperationPerAgentKeys.PickedUpTime,
+                OperationPerAgentKeys.CompletedTime,
+                OperationPerAgentKeys.ExpiredTime,
+                OperationPerAgentKeys.AppsTotalCount,
+                OperationPerAgentKeys.AppsPendingCount,
+                OperationPerAgentKeys.AppsFailedCount,
+                OperationPerAgentKeys.AppsCompletedCount,
+                OperationPerAgentKeys.Errors,
+                OperationPerAgentKeys.Status,
+                OperationPerAgentKeys.AgentId,
+                AgentKeys.ComputerName,
+                AgentKeys.DisplayName,
             ]
         )
         return(pluck)
@@ -874,10 +874,10 @@ class FetchAgentOperations(object):
     def _set_app_collection_without(self):
         without = (
             [
-                OperationPerAppKey.AgentId,
-                OperationPerAppKey.CustomerName,
-                OperationPerAppKey.Id,
-                OperationPerAppKey.OperationId,
+                OperationPerAppKeys.AgentId,
+                OperationPerAppKeys.CustomerName,
+                OperationPerAppKeys.Id,
+                OperationPerAppKeys.OperationId,
             ]
         )
         return(without)

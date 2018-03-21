@@ -30,14 +30,14 @@ def insert_into_agent_queue(operation, conn=None):
     """
     data = {}
     try:
-        operation[AgentQueueKey.CreatedTime] = (
-            r.epoch_time(operation[AgentQueueKey.CreatedTime])
+        operation[AgentQueueKeys.CreatedTime] = (
+            r.epoch_time(operation[AgentQueueKeys.CreatedTime])
         )
-        operation[AgentQueueKey.ServerQueueTTL] = (
-            r.epoch_time(operation[AgentQueueKey.ServerQueueTTL])
+        operation[AgentQueueKeys.ServerQueueTTL] = (
+            r.epoch_time(operation[AgentQueueKeys.ServerQueueTTL])
         )
-        operation[AgentQueueKey.AgentQueueTTL] = (
-            r.epoch_time(operation[AgentQueueKey.AgentQueueTTL])
+        operation[AgentQueueKeys.AgentQueueTTL] = (
+            r.epoch_time(operation[AgentQueueKeys.AgentQueueTTL])
         )
 
         data = (
@@ -120,18 +120,18 @@ def get_agent_queue(agent_id, conn=None):
             .get_all(agent_id, index=AgentQueueIndexes.AgentId)
             .merge(
                 {
-                    AgentQueueKey.CreatedTime: (
-                        r.row[AgentQueueKey.CreatedTime].to_epoch_time()
+                    AgentQueueKeys.CreatedTime: (
+                        r.row[AgentQueueKeys.CreatedTime].to_epoch_time()
                     ),
-                    AgentQueueKey.ServerQueueTTL: (
-                        r.row[AgentQueueKey.ServerQueueTTL].to_epoch_time()
+                    AgentQueueKeys.ServerQueueTTL: (
+                        r.row[AgentQueueKeys.ServerQueueTTL].to_epoch_time()
                     ),
-                    AgentQueueKey.AgentQueueTTL: (
-                        r.row[AgentQueueKey.AgentQueueTTL].to_epoch_time()
+                    AgentQueueKeys.AgentQueueTTL: (
+                        r.row[AgentQueueKeys.AgentQueueTTL].to_epoch_time()
                     ),
                 }
             )
-            .order_by(AgentQueueKey.OrderId)
+            .order_by(AgentQueueKeys.OrderId)
             .run(conn)
         )
 
@@ -213,7 +213,7 @@ def get_all_expired_jobs(now=None, conn=None):
                 r
                 .table(QueueCollections.Agent)
                 .filter(
-                    lambda x: x[AgentQueueKey.ServerQueueTTL] <= r.now()
+                    lambda x: x[AgentQueueKeys.ServerQueueTTL] <= r.now()
                 )
                 .run(conn)
             )
@@ -224,7 +224,7 @@ def get_all_expired_jobs(now=None, conn=None):
                 .table(QueueCollections.Agent)
                 .filter(
                     lambda x:
-                        x[AgentQueueKey.ServerQueueTTL].to_epoch_time() <= now
+                        x[AgentQueueKeys.ServerQueueTTL].to_epoch_time() <= now
                 )
                 .run(conn)
             )
@@ -261,7 +261,7 @@ def delete_all_expired_jobs(now=None, conn=None):
                 r
                 .table(QueueCollections.Agent)
                 .filter(
-                    lambda x: x[AgentQueueKey.ServerQueueTTL] <= r.now()
+                    lambda x: x[AgentQueueKeys.ServerQueueTTL] <= r.now()
                 )
                 .delete()
                 .run(conn)
@@ -273,7 +273,7 @@ def delete_all_expired_jobs(now=None, conn=None):
                 .table(QueueCollections.Agent)
                 .filter(
                     lambda x:
-                        x[AgentQueueKey.ServerQueueTTL].to_epoch_time() <= now
+                        x[AgentQueueKeys.ServerQueueTTL].to_epoch_time() <= now
                 )
                 .delete()
                 .run(conn)

@@ -2,7 +2,7 @@ import re
 
 from hashlib import sha256
 
-from vFense.plugins.patching import AppsKey
+from vFense.plugins.patching import AppsKeys
 from vFense.plugins.patching._constants import CommonSeverityKeys
 
 

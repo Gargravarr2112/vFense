@@ -5,7 +5,7 @@ from vFense.core._constants import SortValues, DefaultQueryValues
 from vFense.errorz._constants import ApiResultKeys
 
 from vFense.core.agent._constants import AgentCommonKeys
-from vFense.core.agent import AgentKey 
+from vFense.core.agent import AgentKeys 
 
 from vFense.core.agent.search._db import FetchAgents
 from vFense.core.decorators import time_it, results_message
@@ -21,7 +21,7 @@ class RetrieveAgents(object):
         count=DefaultQueryValues.COUNT,
         offset=DefaultQueryValues.OFFSET,
         sort=SortValues.ASC,
-        sort_key=AgentKey.ComputerName,
+        sort_key=AgentKeys.ComputerName,
         user_name=None, uri=None, method=None
         ):
 
@@ -34,40 +34,40 @@ class RetrieveAgents(object):
         self.sort = sort
 
         self.list_of_valid_keys = [
-            AgentKey.ComputerName, AgentKey.HostName,
-            AgentKey.DisplayName, AgentKey.OsCode,
-            AgentKey.OsString, AgentKey.AgentId, AgentKey.AgentStatus,
-            AgentKey.NeedsReboot, AgentKey.BasicStats,
-            AgentKey.ProductionLevel, AgentKey.LastAgentUpdate
+            AgentKeys.ComputerName, AgentKeys.HostName,
+            AgentKeys.DisplayName, AgentKeys.OsCode,
+            AgentKeys.OsString, AgentKeys.AgentId, AgentKeys.AgentStatus,
+            AgentKeys.NeedsReboot, AgentKeys.BasicStats,
+            AgentKeys.ProductionLevel, AgentKeys.LastAgentUpdate
         ]
 
         self.valid_keys_to_filter_by = (
             [
-                AgentKey.OsCode,
-                AgentKey.OsString,
-                AgentKey.AgentStatus,
-                AgentKey.ProductionLevel
+                AgentKeys.OsCode,
+                AgentKeys.OsString,
+                AgentKeys.AgentStatus,
+                AgentKeys.ProductionLevel
             ]
         )
 
         valid_keys_to_sort_by = (
             [
-                AgentKey.ComputerName,
-                AgentKey.HostName,
-                AgentKey.DisplayName,
-                AgentKey.OsCode,
-                AgentKey.OsString,
-                AgentKey.AgentStatus,
-                AgentKey.ProductionLevel,
+                AgentKeys.ComputerName,
+                AgentKeys.HostName,
+                AgentKeys.DisplayName,
+                AgentKeys.OsCode,
+                AgentKeys.OsString,
+                AgentKeys.AgentStatus,
+                AgentKeys.ProductionLevel,
                 AgentCommonKeys.AVAIL_VULN,
                 AgentCommonKeys.AVAIL_UPDATES,
-                AgentKey.LastAgentUpdate,
+                AgentKeys.LastAgentUpdate,
             ]
         )
         if sort_key in valid_keys_to_sort_by:
             self.sort_key = sort_key
         else:
-            self.sort_key = AgentKey.ComputerName
+            self.sort_key = AgentKeys.ComputerName
         
         self.fetch_agents = (
             FetchAgents(
@@ -255,7 +255,7 @@ class RetrieveAgents(object):
 
         else:
             generic_status_code = GenericFailureCodes.FailedToRetrieveObject
-            vfense_status_code = GenericFailureCodes.InvalidFilterKey
+            vfense_status_code = GenericFailureCodes.InvalidFilterKeys
 
         results = (
             self._set_results(
@@ -331,7 +331,7 @@ class RetrieveAgents(object):
 
         else:
             generic_status_code = GenericFailureCodes.FailedToRetrieveObject
-            vfense_status_code = GenericFailureCodes.InvalidFilterKey
+            vfense_status_code = GenericFailureCodes.InvalidFilterKeys
 
         results = (
             self._set_results(
@@ -462,7 +462,7 @@ class RetrieveAgents(object):
 
         else:
             generic_status_code = GenericFailureCodes.FailedToRetrieveObject
-            vfense_status_code = GenericFailureCodes.InvalidFilterKey
+            vfense_status_code = GenericFailureCodes.InvalidFilterKeys
 
         results = (
             self._set_results(
@@ -594,7 +594,7 @@ class RetrieveAgents(object):
 
         else:
             generic_status_code = GenericFailureCodes.FailedToRetrieveObject
-            vfense_status_code = GenericFailureCodes.InvalidFilterKey
+            vfense_status_code = GenericFailureCodes.InvalidFilterKeys
 
         results = (
             self._set_results(

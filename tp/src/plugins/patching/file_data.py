@@ -3,7 +3,7 @@ import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
 
 from vFense.core.decorators import time_it
-from vFense.plugins.patching import FilesKey
+from vFense.plugins.patching import FilesKeys
 from vFense.plugins.patching._db_files import file_data_exists, \
     update_file_data, insert_file_data
 
@@ -40,7 +40,7 @@ def add_file_data(app_id, file_data, agent_id=None):
     data_to_insert = []
     data_to_update = []
     for uri in file_data:
-        if file_data_exists(uri[FilesKey.FileName]):
+        if file_data_exists(uri[FilesKeys.FileName]):
             data_to_update.append(uri)
         else:
             data_to_insert.append(uri)

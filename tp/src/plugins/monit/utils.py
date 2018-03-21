@@ -11,7 +11,7 @@ AgentStatsKey = 'monit_stats'
 AgentCollection = 'agents'
 
 
-class MonitorKey():
+class MonitorKeys():
 
     Memory = u'memory'
     FileSystem = u'file_system'
@@ -207,8 +207,8 @@ class Monitor():
             stats = stats[AgentStatsKey]
 
             if stats:
-                memory = stats[MonitorKey.Memory]
-                memory[MonitorKey.Timestamp] = stats[MonitorKey.Timestamp]
+                memory = stats[MonitorKeys.Memory]
+                memory[MonitorKeys.Timestamp] = stats[MonitorKey.Timestamp]
 
                 return memory
 
@@ -243,8 +243,8 @@ class Monitor():
             stats = stats[AgentStatsKey]
 
             if stats:
-                cpu = stats[MonitorKey.Cpu]
-                cpu[MonitorKey.Timestamp] = stats[MonitorKey.Timestamp]
+                cpu = stats[MonitorKeys.Cpu]
+                cpu[MonitorKeys.Timestamp] = stats[MonitorKeys.Timestamp]
 
                 return cpu
 
@@ -280,8 +280,8 @@ class Monitor():
 
             if stats:
                 fs = []
-                for _fs in stats[MonitorKey.FileSystem]:
-                    _fs[MonitorKey.Timestamp] = stats[MonitorKey.Timestamp]
+                for _fs in stats[MonitorKeys.FileSystem]:
+                    _fs[MonitorKeys.Timestamp] = stats[MonitorKeys.Timestamp]
                     fs.append(_fs)
 
                 return fs
@@ -312,10 +312,10 @@ def save_monitor_data(agent=None, **kwargs):
     if not agent:
         return None
 
-    memory = kwargs.get(MonitorKey.Memory)
-    fs = kwargs.get(MonitorKey.FileSystem)
+    memory = kwargs.get(MonitorKeys.Memory)
+    fs = kwargs.get(MonitorKeys.FileSystem)
 
-    cpu = kwargs.get(MonitorKey.Cpu)
+    cpu = kwargs.get(MonitorKeys.Cpu)
 
     _mem = None
     _cpu = None
@@ -332,15 +332,15 @@ def save_monitor_data(agent=None, **kwargs):
 
     if memory:
         _mem = Monitor.save_memory_data(agent, memory)
-        result[MonitorKey.Memory] = _mem
+        result[MonitorKeys.Memory] = _mem
 
     if cpu:
         _cpu = Monitor.save_cpu_data(agent, cpu)
-        result[MonitorKey.Cpu] = _cpu
+        result[MonitorKeys.Cpu] = _cpu
 
     if fs:
         _fs = Monitor.save_file_system_data(agent, fs)
-        result[MonitorKey.FileSystem] = _fs
+        result[MonitorKeys.FileSystem] = _fs
 
     return result
 
@@ -368,18 +368,18 @@ def get_monitor_data_since(agent=None, timestamp=None):
 
     data = {}
 
-    data[MonitorKey.Memory] = _mem
-    data[MonitorKey.Cpu] = _cpu
-    data[MonitorKey.FileSystem] = _fs
+    data[MonitorKeys.Memory] = _mem
+    data[MonitorKeys.Cpu] = _cpu
+    data[MonitorKeys.FileSystem] = _fs
 
     return data
 
 @db_create_close
 def update_agent_monit_stats(agent=None, **kwargs):
 
-    memory = kwargs.get(MonitorKey.Memory)
-    cpu = kwargs.get(MonitorKey.Cpu)
-    fs = kwargs.get(MonitorKey.FileSystem)
+    memory = kwargs.get(MonitorKeys.Memory)
+    cpu = kwargs.get(MonitorKeys.Cpu)
+    fs = kwargs.get(MonitorKeys.FileSystem)
 
     conn = kwargs.get('conn')
 

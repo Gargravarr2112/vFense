@@ -4,7 +4,7 @@ from vFense import VFENSE_LOGGING_CONFIG
 
 from vFense.core.decorators import return_status_tuple, time_it
 from vFense.db.client import db_create_close, r
-from vFense.plugins.vuln.cve import CVECollections, CveKey
+from vFense.plugins.vuln.cve import CVECollections, CveKeys
 from vFense.plugins.vuln.cve._constants import CVEStrings, CVECategories
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
@@ -30,7 +30,7 @@ def fetch_vulnerability_categories(cve_id, conn=None):
             r
             .table(CVECollections.CVE)
             .get(cve_id)
-            .pluck(CveKey.CveCategories)
+            .pluck(CveKeys.CveCategories)
             .run(conn)
         )
 
@@ -99,18 +99,18 @@ def fetch_cve_data(cve_id, conn=None):
     data = []
     map_hash = (
         {
-            CveKey.CveId: r.row[CveKey.CveId],
-            CveKey.CveCategories: r.row[CveKey.CveCategories],
-            CveKey.CveDescriptions: r.row[CveKey.CveDescriptions],
-            CveKey.CveRefs: r.row[CveKey.CveRefs],
-            CveKey.CveSev: r.row[CveKey.CveSev],
-            CveKey.CvssScore: r.row[CveKey.CvssScore],
-            CveKey.CvssBaseScore: r.row[CveKey.CvssBaseScore],
-            CveKey.CvssImpactSubScore: r.row[CveKey.CvssImpactSubScore],
-            CveKey.CvssExploitSubScore: r.row[CveKey.CvssExploitSubScore],
-            CveKey.CvssVector: r.row[CveKey.CvssVector],
-            CveKey.CvePublishedDate: r.row[CveKey.CvePublishedDate].to_epoch_time(),
-            CveKey.CveModifiedDate: r.row[CveKey.CveModifiedDate].to_epoch_time(),
+            CveKeys.CveId: r.row[CveKeys.CveId],
+            CveKeys.CveCategories: r.row[CveKeys.CveCategories],
+            CveKeys.CveDescriptions: r.row[CveKeys.CveDescriptions],
+            CveKeys.CveRefs: r.row[CveKeys.CveRefs],
+            CveKeys.CveSev: r.row[CveKeys.CveSev],
+            CveKeys.CvssScore: r.row[CveKeys.CvssScore],
+            CveKeys.CvssBaseScore: r.row[CveKeys.CvssBaseScore],
+            CveKeys.CvssImpactSubScore: r.row[CveKeys.CvssImpactSubScore],
+            CveKeys.CvssExploitSubScore: r.row[CveKeys.CvssExploitSubScore],
+            CveKeys.CvssVector: r.row[CveKeys.CvssVector],
+            CveKeys.CvePublishedDate: r.row[CveKeys.CvePublishedDate].to_epoch_time(),
+            CveKeys.CveModifiedDate: r.row[CveKeys.CveModifiedDate].to_epoch_time(),
         }
     )
     try:
@@ -187,7 +187,7 @@ def update_cve_categories(conn=None):
                 .table(CVECollections.CVE)
                 .filter(
                     lambda x:
-                    x[CveKey.CveDescriptions]
+                    x[CveKeys.CveDescriptions]
                     .contains(
                         lambda y:
                             y[CVEStrings.DESCRIPTION].match('(?i)'+category)
@@ -195,8 +195,8 @@ def update_cve_categories(conn=None):
                 ).update(
                     lambda y:
                     {
-                        CveKey.CveCategories:
-                            y[CveKey.CveCategories].set_insert(category)
+                        CveKeys.CveCategories:
+                            y[CveKeys.CveCategories].set_insert(category)
                     }
                 )
             )

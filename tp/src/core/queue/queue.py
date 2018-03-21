@@ -13,7 +13,7 @@ from vFense.core.customer import *
 from vFense.core.customer.customers import get_customer_property
 
 from vFense.core.queue.uris import get_agent_results_uri
-from vFense.operations import AgentOperationKey
+from vFense.operations import AgentOperationKeys
 
 from vFense.errorz.status_codes import DbCodes
 
@@ -85,18 +85,18 @@ class AgentQueue(object):
         request_method, response_uri = (
             get_agent_results_uri(
                 self.agent_id,
-                operation[AgentOperationKey.Operation]
+                operation[AgentOperationKeys.Operation]
             )
         )
-        operation[AgentQueueKey.AgentId] = self.agent_id
-        operation[AgentQueueKey.CustomerName] = self.customer_name
-        operation[AgentQueueKey.RequestMethod] = request_method
-        operation[AgentQueueKey.ResponseURI] = response_uri
-        operation[AgentQueueKey.OrderId] = self._get_next_avail_order()
-        operation[AgentQueueKey.CreatedTime] = self.epoch_time_now
-        operation[AgentQueueKey.ExpireMinutes] = expire_mins
-        operation[AgentQueueKey.ServerQueueTTL] = server_queue_ttl
-        operation[AgentQueueKey.AgentQueueTTL] = agent_process_time
+        operation[AgentQueueKeys.AgentId] = self.agent_id
+        operation[AgentQueueKeys.CustomerName] = self.customer_name
+        operation[AgentQueueKeys.RequestMethod] = request_method
+        operation[AgentQueueKeys.ResponseURI] = response_uri
+        operation[AgentQueueKeys.OrderId] = self._get_next_avail_order()
+        operation[AgentQueueKeys.CreatedTime] = self.epoch_time_now
+        operation[AgentQueueKeys.ExpireMinutes] = expire_mins
+        operation[AgentQueueKeys.ServerQueueTTL] = server_queue_ttl
+        operation[AgentQueueKeys.AgentQueueTTL] = agent_process_time
         status_code, count, error, generated_ids = (
             insert_into_agent_queue(operation)
         )
@@ -267,7 +267,7 @@ class AgentQueue(object):
 
         if agent_queue:
             for job_id in agent_queue:
-                job_ids.append(job_id[AgentQueueKey.Id])
+                job_ids.append(job_id[AgentQueueKeys.Id])
 
             delete_multiple_jobs(job_ids)
 

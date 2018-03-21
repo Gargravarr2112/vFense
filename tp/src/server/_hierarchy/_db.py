@@ -66,11 +66,11 @@ class _RawModels():
 
             return _raw
 
-        _raw[GroupKey.Name] = group.name
-        _raw[GroupKey.Id] = group.id
-        _raw[GroupKey.Permissions] = group.get_permissions()
-        _raw[GroupKey.Customer] = group.get_customer(raw=True)
-        _raw[GroupKey.Users] = group.get_users(raw=True)
+        _raw[GroupKeys.Name] = group.name
+        _raw[GroupKeys.Id] = group.id
+        _raw[GroupKeys.Permissions] = group.get_permissions()
+        _raw[GroupKeys.Customer] = group.get_customer(raw=True)
+        _raw[GroupKeys.Users] = group.get_users(raw=True)
 
         return _raw
 
@@ -93,18 +93,18 @@ class _RawModels():
 
             return _raw
 
-        _raw[UserKey.Name] = user.name
-        _raw[UserKey.Id] = user.id
-        _raw[UserKey.FullName] = user.full_name
-        _raw[UserKey.Email] = user.email
-        _raw[UserKey.Password] = user.hash_password
-        _raw[UserKey.Enabled] = user.enabled
+        _raw[UserKeys.Name] = user.name
+        _raw[UserKeys.Id] = user.id
+        _raw[UserKeys.FullName] = user.full_name
+        _raw[UserKeys.Email] = user.email
+        _raw[UserKeys.Password] = user.hash_password
+        _raw[UserKeys.Enabled] = user.enabled
 
-        _raw[UserKey.CurrentCustomer] = user.get_current_customer(raw=True)
-        _raw[UserKey.DefaultCustomer] = user.get_default_customer(raw=True)
+        _raw[UserKeys.CurrentCustomer] = user.get_current_customer(raw=True)
+        _raw[UserKeys.DefaultCustomer] = user.get_default_customer(raw=True)
 
-        _raw[UserKey.Customers] = user.get_customers(raw=True)
-        _raw[UserKey.Groups] = user.get_groups(raw=True)
+        _raw[UserKeys.Customers] = user.get_customers(raw=True)
+        _raw[UserKeys.Groups] = user.get_groups(raw=True)
 
         return _raw
 
@@ -127,12 +127,12 @@ class _RawModels():
 
             return _raw
 
-        _raw[CustomerKey.Name] = customer.name
-        _raw[CustomerKey.Id] = customer.id
-        _raw[CustomerKey.NetThrottle] = customer.net_throttle
+        _raw[CustomerKeys.Name] = customer.name
+        _raw[CustomerKeys.Id] = customer.id
+        _raw[CustomerKeys.NetThrottle] = customer.net_throttle
 
-        _raw[CustomerKey.Groups] = customer.get_groups(raw=True)
-        _raw[CustomerKey.Users] = customer.get_users(raw=True)
+        _raw[CustomerKeys.Groups] = customer.get_groups(raw=True)
+        _raw[CustomerKeys.Users] = customer.get_users(raw=True)
 
         return _raw
 
@@ -142,7 +142,7 @@ def get_all_customers(conn=None):
 
     customers = list(
         r.table("customers")
-        .pluck(CustomerKey.Name)
+        .pluck(CustomerKeys.Name)
         .run(conn)
     )
 
@@ -166,36 +166,36 @@ def _db_build_customer(data_doc):
         return None
 
     customer = Customer()
-    customer.name = data_doc.get(CustomerKey.Name)
+    customer.name = data_doc.get(CustomerKeys.Name)
 
-    customer.id = data_doc.get(CustomerKey.Name)
-    customer.cpu_throttle = data_doc.get(CustomerKey.CpuThrottle)
-    customer.net_throttle = data_doc.get(CustomerKey.NetThrottle)
+    customer.id = data_doc.get(CustomerKeys.Name)
+    customer.cpu_throttle = data_doc.get(CustomerKeys.CpuThrottle)
+    customer.net_throttle = data_doc.get(CustomerKeys.NetThrottle)
 
-    if data_doc.get(CustomerKey.Users):
+    if data_doc.get(CustomerKeys.Users):
 
-        for doc in data_doc[CustomerKey.Users]:
+        for doc in data_doc[CustomerKeys.Users]:
 
-            u = _db_document_exist(_id=doc[UserKey.Name],
+            u = _db_document_exist(_id=doc[UserKeys.Name],
                                    collection_name=UserCollection)
 
             if u:
 
-                u = User(doc[CustomerKey.Name])
+                u = User(doc[CustomerKeys.Name])
 
                 customer.add_user(u)
 
-    if data_doc.get(CustomerKey.Groups):
+    if data_doc.get(CustomerKeys.Groups):
 
-        for doc in data_doc[CustomerKey.Groups]:
+        for doc in data_doc[CustomerKeys.Groups]:
 
-            g = _db_document_exist(_id=doc[GroupKey.Id],
+            g = _db_document_exist(_id=doc[GroupKeys.Id],
                                    collection_name=GroupCollection)
 
             if g:
 
-                g = Group(doc[GroupKey.Name])
-                g.id = doc[GroupKey.Id]
+                g = Group(doc[GroupKeys.Name])
+                g.id = doc[GroupKeys.Id]
 
                 customer.add_group(g)
 
@@ -219,38 +219,38 @@ def _db_build_group(data_doc):
         return None
 
     group = Group()
-    group.name = data_doc.get(GroupKey.Name)
-    group.id = data_doc.get(GroupKey.Id)
+    group.name = data_doc.get(GroupKeys.Name)
+    group.id = data_doc.get(GroupKeys.Id)
 
-    if data_doc.get(GroupKey.Permissions):
+    if data_doc.get(GroupKeys.Permissions):
 
-        for perm in data_doc.get(GroupKey.Permissions):
+        for perm in data_doc.get(GroupKeys.Permissions):
 
             group.add_permission(perm)
 
-    if data_doc.get(GroupKey.Customer):
+    if data_doc.get(GroupKeys.Customer):
 
         c = _db_document_exist(
-            _id=data_doc[GroupKey.Customer][CustomerKey.Name],
+            _id=data_doc[GroupKeys.Customer][CustomerKeys.Name],
             collection_name=CustomerCollection
         )
 
         if c:
 
-            c = Customer(data_doc[GroupKey.Customer][CustomerKey.Name])
+            c = Customer(data_doc[GroupKeys.Customer][CustomerKeys.Name])
 
             group.set_customer(c)
 
-    if data_doc.get(GroupKey.Users):
+    if data_doc.get(GroupKeys.Users):
 
-        for doc in data_doc[GroupKey.Users]:
+        for doc in data_doc[GroupKeys.Users]:
 
-            u = _db_document_exist(_id=doc[UserKey.Name],
+            u = _db_document_exist(_id=doc[UserKeys.Name],
                                    collection_name=UserCollection)
 
             if u:
 
-                u = User(doc[UserKey.Name])
+                u = User(doc[UserKeys.Name])
 
                 group.add_user(u)
 
@@ -274,64 +274,64 @@ def _db_build_user(data_doc):
         return None
 
     user = User()
-    user.name = data_doc.get(UserKey.Name)
+    user.name = data_doc.get(UserKeys.Name)
     user.id = user.name
 
-    user.full_name = data_doc.get(UserKey.FullName)
-    user.password = data_doc.get(UserKey.Password)
-    user.email = data_doc.get(UserKey.Email)
-    user.enabled = data_doc.get(UserKey.Enabled)
+    user.full_name = data_doc.get(UserKeys.FullName)
+    user.password = data_doc.get(UserKeys.Password)
+    user.email = data_doc.get(UserKeys.Email)
+    user.enabled = data_doc.get(UserKeys.Enabled)
 
-    if data_doc.get(UserKey.Groups):
+    if data_doc.get(UserKeys.Groups):
 
-        for doc in data_doc[UserKey.Groups]:
+        for doc in data_doc[UserKeys.Groups]:
 
-            g = _db_document_exist(_id=doc[GroupKey.Id],
+            g = _db_document_exist(_id=doc[GroupKeys.Id],
                                    collection_name=GroupCollection)
 
             if g:
 
-                g = Group(doc[GroupKey.Name])
-                g.id = doc[GroupKey.Id]
+                g = Group(doc[GroupKeys.Name])
+                g.id = doc[GroupKeys.Id]
 
                 user.add_group(g)
 
-    if data_doc.get(UserKey.Customers):
+    if data_doc.get(UserKeys.Customers):
 
-        for doc in data_doc[UserKey.Customers]:
+        for doc in data_doc[UserKeys.Customers]:
 
-            c = _db_document_exist(_id=doc[CustomerKey.Name],
+            c = _db_document_exist(_id=doc[CustomerKeys.Name],
                                    collection_name=CustomerCollection)
 
             if c:
 
-                c = Customer(doc[CustomerKey.Name])
+                c = Customer(doc[CustomerKeys.Name])
 
                 user.add_customer(c)
 
-    if data_doc.get(UserKey.CurrentCustomer):
+    if data_doc.get(UserKeys.CurrentCustomer):
 
-        current_customer = data_doc[UserKey.CurrentCustomer]
+        current_customer = data_doc[UserKeys.CurrentCustomer]
 
-        c = _db_document_exist(_id=current_customer[CustomerKey.Name],
+        c = _db_document_exist(_id=current_customer[CustomerKeys.Name],
                                collection_name=CustomerCollection)
 
         if c:
 
-            c = Customer(current_customer[CustomerKey.Name])
+            c = Customer(current_customer[CustomerKeys.Name])
 
             user.set_current_customer(c)
 
-    if data_doc.get(UserKey.DefaultCustomer):
+    if data_doc.get(UserKeys.DefaultCustomer):
 
-        default_customer = data_doc[UserKey.DefaultCustomer]
+        default_customer = data_doc[UserKeys.DefaultCustomer]
 
-        c = _db_document_exist(_id=default_customer[CustomerKey.Name],
+        c = _db_document_exist(_id=default_customer[CustomerKeys.Name],
                                collection_name=CustomerCollection)
 
         if c:
 
-            c = Customer(default_customer[CustomerKey.Name])
+            c = Customer(default_customer[CustomerKeys.Name])
 
             user.set_default_customer(c)
 
@@ -476,13 +476,13 @@ def save_customer(customer):
 
     _customer = {}
 
-    _customer[CustomerKey.Name] = customer.name
-    _customer[CustomerKey.NetThrottle] = customer.net_throttle
-    _customer[CustomerKey.CpuThrottle] = customer.cpu_throttle
+    _customer[CustomerKeys.Name] = customer.name
+    _customer[CustomerKeys.NetThrottle] = customer.net_throttle
+    _customer[CustomerKeys.CpuThrottle] = customer.cpu_throttle
 
-    _customer[CustomerKey.Groups] = customer.get_groups(raw=True)
+    _customer[CustomerKeys.Groups] = customer.get_groups(raw=True)
 
-    _customer[CustomerKey.Users] = customer.get_users(raw=True)
+    _customer[CustomerKeys.Users] = customer.get_users(raw=True)
 
     success = _db_save(_id=customer.id, collection_name=CustomerCollection,
                        data=_customer)
@@ -508,17 +508,17 @@ def save_user(user):
 
     _user = {}
 
-    _user[UserKey.Name] = user.name
-    _user[UserKey.FullName] = user.full_name
-    _user[UserKey.Email] = user.email
-    _user[UserKey.Enabled] = user.enabled
-    _user[UserKey.Password] = user.password
+    _user[UserKeys.Name] = user.name
+    _user[UserKeys.FullName] = user.full_name
+    _user[UserKeys.Email] = user.email
+    _user[UserKeys.Enabled] = user.enabled
+    _user[UserKeys.Password] = user.password
 
-    _user[UserKey.Groups] = user.get_groups(raw=True)
+    _user[UserKeys.Groups] = user.get_groups(raw=True)
 
-    _user[UserKey.Customers] = user.get_customers(raw=True)
-    _user[UserKey.CurrentCustomer] = user.get_current_customer(raw=True)
-    _user[UserKey.DefaultCustomer] = user.get_default_customer(raw=True)
+    _user[UserKeys.Customers] = user.get_customers(raw=True)
+    _user[UserKeys.CurrentCustomer] = user.get_current_customer(raw=True)
+    _user[UserKeys.DefaultCustomer] = user.get_default_customer(raw=True)
 
     success = _db_save(_id=user.id, collection_name=UserCollection, data=_user)
 
@@ -543,11 +543,11 @@ def save_group(group):
 
     _group = {}
 
-    _group[GroupKey.Name] = group.name
-    _group[GroupKey.Customer] = group.get_customer(raw=True)
-    _group[GroupKey.Permissions] = group.get_permissions()
+    _group[GroupKeys.Name] = group.name
+    _group[GroupKeys.Customer] = group.get_customer(raw=True)
+    _group[GroupKeys.Permissions] = group.get_permissions()
 
-    _group[GroupKey.Users] = group.get_users(raw=True)
+    _group[GroupKeys.Users] = group.get_users(raw=True)
 
     success = _db_save(_id=group.id, collection_name=GroupCollection,
                        data=_group)
@@ -649,7 +649,7 @@ def get_group(_id=None, name=None, all_groups=False):
     elif name:
 
         data_doc = _db_get(collection_name=GroupCollection,
-                           _filter={GroupKey.Name: name})
+                           _filter={GroupKeys.Name: name})
 
         if data_doc:
 

@@ -1,4 +1,4 @@
-from vFense.server.hierarchy import UserKey, DefaultCustomer
+from vFense.server.hierarchy import UserKeys, DefaultCustomer
 
 
 class User():
@@ -21,25 +21,25 @@ class User():
     def dict(self):
 
         return {
-            UserKey.UserName: self.user_name,
-            UserKey.FullName: self.full_name,
-            UserKey.Email: self.email,
-            UserKey.Enabled: self.enabled,
-            UserKey.CurrentCustomer: self.current_customer,
-            UserKey.DefaultCustomer: self.default_customer
+            UserKeys.UserName: self.user_name,
+            UserKeys.FullName: self.full_name,
+            UserKeys.Email: self.email,
+            UserKeys.Enabled: self.enabled,
+            UserKeys.CurrentCustomer: self.current_customer,
+            UserKeys.DefaultCustomer: self.default_customer
         }
 
     @staticmethod
     def from_dict(user):
 
         u = User(
-            user.get(UserKey.UserName),
-            user.get(UserKey.Password),
-            user.get(UserKey.FullName),
-            user.get(UserKey.Email),
-            user.get(UserKey.CurrentCustomer),
-            user.get(UserKey.DefaultCustomer),
-            user.get(UserKey.Enabled)
+            user.get(UserKeys.UserName),
+            user.get(UserKeys.Password),
+            user.get(UserKeys.FullName),
+            user.get(UserKeys.Email),
+            user.get(UserKeys.CurrentCustomer),
+            user.get(UserKeys.DefaultCustomer),
+            user.get(UserKeys.Enabled)
         )
 
         return u

@@ -3,8 +3,8 @@ import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
 from vFense.db.client import db_create_close, r
 
-from vFense.server.hierarchy import Collection, GroupKey, UserKey, CustomerKey
-from vFense.server.hierarchy import GroupsPerUserKey, UsersPerCustomerKey
+from vFense.server.hierarchy import Collection, GroupKeys, UserKeys, CustomerKeys
+from vFense.server.hierarchy import GroupsPerUserKeys, UsersPerCustomerKeys
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
@@ -59,7 +59,7 @@ def get_customer(customer_name=None, conn=None):
 #                    group_name,
 #                    customer_name
 #                ],
-#                index=GroupKey.GroupNameAndCustomerId
+#                index=GroupKeys.GroupNameAndCustomerId
 #            )
 #            .run(conn)
 #        )
@@ -82,13 +82,13 @@ def get_customers_of_user(user_name=None, conn=None):
         r.table(Collection.UsersPerCustomer)
         .get_all(
             user_name,
-            index=UsersPerCustomerKey.UserId
+            index=UsersPerCustomerKeys.UserId
         )
-        .pluck(UsersPerCustomerKey.CustomerId)
+        .pluck(UsersPerCustomerKeys.CustomerId)
         .eq_join(
-            UsersPerCustomerKey.CustomerId,
+            UsersPerCustomerKeys.CustomerId,
             r.table(Collection.Customers),
-            index=CustomerKey.CustomerName
+            index=CustomerKeys.CustomerName
         )
         .zip()
         .run(conn)
@@ -111,13 +111,13 @@ def get_users_of_customer(customer_name=None, conn=None):
         r.table(Collection.UsersPerCustomer)
         .get_all(
             customer_name,
-            index=UsersPerCustomerKey.CustomerId
+            index=UsersPerCustomerKeys.CustomerId
         )
-        .pluck(UsersPerCustomerKey.UserId)
+        .pluck(UsersPerCustomerKeys.UserId)
         .eq_join(
-            UsersPerCustomerKey.UserId,
+            UsersPerCustomerKeys.UserId,
             r.table(Collection.Users),
-            index=UserKey.UserName
+            index=UserKeys.UserName
         )
         .zip()
         .run(conn)
@@ -150,9 +150,9 @@ def get_users_of_group(
                 group_name,
                 customer_name
             ],
-            index=GroupsPerUserKey.GroupIdAndCustomerId
+            index=GroupsPerUserKeys.GroupIdAndCustomerId
         )
-        .pluck(GroupsPerUserKey.UserId)
+        .pluck(GroupsPerUserKeys.UserId)
         .run(conn)
     )
 
@@ -162,7 +162,7 @@ def get_users_of_group(
         users.append(
             db_get(
                 collection=Collection.Users,
-                primary_id=user_name[GroupsPerUserKey.UserId]
+                primary_id=user_name[GroupsPerUserKeys.UserId]
             )
         )
 
@@ -189,9 +189,9 @@ def get_groups_of_user(
                 user_name,
                 customer_name
             ],
-            index=GroupsPerUserKey.UserIdAndCustomerId
+            index=GroupsPerUserKeys.UserIdAndCustomerId
         )
-        .pluck(GroupsPerUserKey.GroupId)
+        .pluck(GroupsPerUserKeys.GroupId)
         .run(conn)
     )
 
@@ -202,10 +202,10 @@ def get_groups_of_user(
             db_get_by_secondary(
                 collection=Collection.Groups,
                 values=[
-                    group_name[GroupsPerUserKey.GroupId],
+                    group_name[GroupsPerUserKeys.GroupId],
                     customer_name
                 ],
-                index=GroupKey.GroupNameAndCustomerId
+                index=GroupKeys.GroupNameAndCustomerId
             )
         )
 
@@ -222,9 +222,9 @@ def get_groups_of_customer(customer_name=None, conn=None):
         r.table(Collection.Groups)
         .get_all(
             customer_name,
-            index=GroupKey.CustomerId
+            index=GroupKeys.CustomerId
         )
-        .order_by(GroupKey.GroupName)
+        .order_by(GroupKeys.GroupName)
         .run(conn)
     )
 
@@ -250,7 +250,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #        r.table(Collection.UsersPerCustomer)
 #        .get_all(
 #            [user.user_name, customer.customer_name],
-#            index=UsersPerCustomerKey.UserAndCustomerId
+#            index=UsersPerCustomerKeys.UserAndCustomerId
 #        )
 #        .run(conn)
 #    )
@@ -260,7 +260,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #        result = db_delete_by_secondary(
 #            Collection.UsersPerCustomer,
 #            [user.user_name, customer.customer_name],
-#            UsersPerCustomerKey.UserAndCustomerId
+#            UsersPerCustomerKeys.UserAndCustomerId
 #        )
 #
 #    else:
@@ -287,7 +287,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #        r.table(Collection.Groups)
 #        .get_all(
 #            [group.group_name, customer.customer_name],
-#            index=GroupKey.GroupNameAndCustomerId
+#            index=GroupKeys.GroupNameAndCustomerId
 #        )
 #        .run(conn)
 #    )
@@ -297,7 +297,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #        result = db_delete_by_secondary(
 #            Collection.Groups,
 #            [group.group_name, customer.customer_name],
-#            GroupKey.GroupNameAndCustomerId
+#            GroupKeys.GroupNameAndCustomerId
 #        )
 #
 #    else:
@@ -334,7 +334,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #                user.user_name,
 #                customer.customer_name
 #            ],
-#            index=GroupsPerUserKey.GroupUserAndCustomerId
+#            index=GroupsPerUserKeys.GroupUserAndCustomerId
 #        )
 #        .run(conn)
 #    )
@@ -344,7 +344,7 @@ def get_groups_of_customer(customer_name=None, conn=None):
 #        result = db_delete_by_secondary(
 #            Collection.GroupsPerUser,
 #            [group.group_name, user.user_name, customer.customer_name],
-#            GroupsPerUserKey.GroupUserAndCustomerId
+#            GroupsPerUserKeys.GroupUserAndCustomerId
 #        )
 #
 #    else:

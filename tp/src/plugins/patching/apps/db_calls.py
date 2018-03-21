@@ -18,22 +18,22 @@ def get_all_stats_by_appid(username, customer_name, uri, method, app_id,
 
     if collection == AppCollections.AppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        CurrentAppsPerAgentKey = AppsPerAgentKey
+        CurrentAppsPerAgentKeys = AppsPerAgentKeys
         CurrentAppsPerAgentIndexes = AppsPerAgentIndexes
 
     elif collection == AppCollections.SupportedAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        CurrentAppsPerAgentKey = SupportedAppsPerAgentKey
+        CurrentAppsPerAgentKeys = SupportedAppsPerAgentKeys
         CurrentAppsPerAgentIndexes = SupportedAppsPerAgentIndexes
 
     elif collection == AppCollections.CustomAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        CurrentAppsPerAgentKey = CustomAppsPerAgentKey
+        CurrentAppsPerAgentKeys = CustomAppsPerAgentKeys
         CurrentAppsPerAgentIndexes = CustomAppsPerAgentIndexes
 
     elif collection == AppCollections.vFenseAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        CurrentAppsPerAgentKey = AgentAppsPerAgentKey
+        CurrentAppsPerAgentKeys = AgentAppsPerAgentKeys
         CurrentAppsPerAgentIndexes = AgentAppsPerAgentIndexes
 
     try:
@@ -45,7 +45,7 @@ def get_all_stats_by_appid(username, customer_name, uri, method, app_id,
                 [app_id, customer_name],
                 index=CurrentAppsPerAgentIndexes.AppIdAndCustomer
             )
-            .group(CurrentAppsPerAgentKey.Status)
+            .group(CurrentAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -55,7 +55,7 @@ def get_all_stats_by_appid(username, customer_name, uri, method, app_id,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        CurrentAppsPerAgentKey.Status: i['group'],
+                        CurrentAppsPerAgentKeys.Status: i['group'],
                         CommonAppKeys.COUNT: i['reduction'],
                         CommonAppKeys.NAME: i['group'].capitalize()
                     }
@@ -98,19 +98,19 @@ def get_all_agents_per_appid(username, customer_name, uri, method, app_id,
 
     if collection == AppCollections.AppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        CurrentAppsPerAgentKey = AppsPerAgentKey
+        CurrentAppsPerAgentKeys = AppsPerAgentKeys
 
     elif collection == AppCollections.SupportedAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        CurrentAppsPerAgentKey = SupportedAppsPerAgentKey
+        CurrentAppsPerAgentKeys = SupportedAppsPerAgentKeys
 
     elif collection == AppCollections.CustomAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        CurrentAppsPerAgentKey = CustomAppsPerAgentKey
+        CurrentAppsPerAgentKeys = CustomAppsPerAgentKeys
 
     elif collection == AppCollections.vFenseAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        CurrentAppsPerAgentKey = AgentAppsPerAgentKey
+        CurrentAppsPerAgentKeys = AgentAppsPerAgentKeys
 
     data = []
     try:
@@ -118,14 +118,14 @@ def get_all_agents_per_appid(username, customer_name, uri, method, app_id,
         agents = (
             r
             .table(CurrentAppsPerAgentCollection)
-            .get_all(app_id, index=CurrentAppsPerAgentKey.AppId)
+            .get_all(app_id, index=CurrentAppsPerAgentKeys.AppId)
             .eq_join(
-                CurrentAppsPerAgentKey.AgentId,
+                CurrentAppsPerAgentKeys.AgentId,
                 r.table(CurrentAgentsCollection)
             )
             .zip()
             .group(
-                lambda x: x[CurrentAppsPerAgentKey.Status]
+                lambda x: x[CurrentAppsPerAgentKeys.Status]
             )
             .map(
                 lambda x:
@@ -133,9 +133,9 @@ def get_all_agents_per_appid(username, customer_name, uri, method, app_id,
                     AGENTS:
                     [
                         {
-                            AgentKey.ComputerName: x[AgentKey.ComputerName],
-                            AgentKey.DisplayName: x[AgentKey.DisplayName],
-                            CurrentAppsPerAgentKey.AgentId: x[CurrentAppsPerAgentKey.AgentId]
+                            AgentKeys.ComputerName: x[AgentKeys.ComputerName],
+                            AgentKeys.DisplayName: x[AgentKeys.DisplayName],
+                            CurrentAppsPerAgentKeys.AgentId: x[CurrentAppsPerAgentKeys.AgentId]
                         }
                     ],
                     CommonAppKeys.COUNT: 1
@@ -154,7 +154,7 @@ def get_all_agents_per_appid(username, customer_name, uri, method, app_id,
         if agents:
             for i in agents:
                 new_data = i['reduction']
-                new_data[CurrentAppsPerAgentKey.Status] = i['group']
+                new_data[CurrentAppsPerAgentKeys.Status] = i['group']
                 data.append(new_data)
 
         statuses = map(lambda x: x['status'], data)
@@ -196,27 +196,27 @@ def get_all_stats_by_agentid(username, customer_name,
 
     if collection == AppCollections.AppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.AppsPerAgent
-        CurrentAppsPerAgentKey = AppsPerAgentKey
+        CurrentAppsPerAgentKeys = AppsPerAgentKeys
 
     elif collection == AppCollections.SupportedAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.SupportedAppsPerAgent
-        CurrentAppsPerAgentKey = SupportedAppsPerAgentKey
+        CurrentAppsPerAgentKeys = SupportedAppsPerAgentKeys
 
     elif collection == AppCollections.CustomAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.CustomAppsPerAgent
-        CurrentAppsPerAgentKey = CustomAppsPerAgentKey
+        CurrentAppsPerAgentKeys = CustomAppsPerAgentKeys
 
     elif collection == AppCollections.vFenseAppsPerAgent:
         CurrentAppsPerAgentCollection = AppCollections.vFenseAppsPerAgent
-        CurrentAppsPerAgentKey = AgentAppsPerAgentKey
+        CurrentAppsPerAgentKeys = AgentAppsPerAgentKeys
 
     try:
         data = []
         apps = (
             r
             .table(CurrentAppsPerAgentCollection)
-            .get_all(agent_id, index=CurrentAppsPerAgentKey.AgentId)
-            .group(CurrentAppsPerAgentKey.Status)
+            .get_all(agent_id, index=CurrentAppsPerAgentKeys.AgentId)
+            .group(CurrentAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -226,9 +226,9 @@ def get_all_stats_by_agentid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        AppsPerAgentKey.Status: i['group'][CurrentAppsPerAgentKey.Status],
+                        AppsPerAgentKeys.Status: i['group'][CurrentAppsPerAgentKeys.Status],
                         CommonAppKeys.COUNT: i['reduction'],
-                        CommonAppKeys.NAME: i['group'][CurrentAppsPerAgentKey.Status].capitalize()
+                        CommonAppKeys.NAME: i['group'][CurrentAppsPerAgentKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)

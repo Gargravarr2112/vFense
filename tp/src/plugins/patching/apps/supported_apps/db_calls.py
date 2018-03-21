@@ -23,25 +23,25 @@ def add_supported_app_to_agents(username, customer_name, uri, method, agent_id=N
         agent_info = get_agent_info(agent_id)
         apps_info = (
             fetch_apps_data_by_os_code(
-                agent_info[AgentKey.OsCode],
+                agent_info[AgentKeys.OsCode],
                 customer_name,
                 collection=AppCollections.SupportedApps,
             )
         )
         if len(apps_info) > 0:
             for app_info in apps_info:
-                app_id = app_info.get(SupportedAppsKey.AppId)
+                app_id = app_info.get(SupportedAppsKeys.AppId)
                 file_data = fetch_file_data(app_id)
                 add_file_data(
                     app_id, file_data, agent_id
                 )
                 agent_info_to_insert = (
                     {
-                        SupportedAppsPerAgentKey.AgentId: agent_id,
-                        SupportedAppsPerAgentKey.AppId: app_id,
-                        SupportedAppsPerAgentKey.Status: AVAILABLE,
-                        SupportedAppsPerAgentKey.CustomerName: customer_name,
-                        SupportedAppsPerAgentKey.InstallDate: r.epoch_time(0.0)
+                        SupportedAppsPerAgentKeys.AgentId: agent_id,
+                        SupportedAppsPerAgentKeys.AppId: app_id,
+                        SupportedAppsPerAgentKeys.Status: AVAILABLE,
+                        SupportedAppsPerAgentKeys.CustomerName: customer_name,
+                        SupportedAppsPerAgentKeys.InstallDate: r.epoch_time(0.0)
                     }
                 )
                 insert_app_data(
@@ -62,7 +62,7 @@ def get_all_stats_by_appid(username, customer_name,
                 [app_id, customer_name],
                 index=SupportedAppsPerAgentIndexes.AppIdAndCustomer
             )
-            .group(SupportedAppsPerAgentKey.Status)
+            .group(SupportedAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -72,9 +72,9 @@ def get_all_stats_by_appid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        SupportedAppsPerAgentKey.Status: i['group'][SupportedAppsPerAgentKey.Status],
+                        SupportedAppsPerAgentKeys.Status: i['group'][SupportedAppsPerAgentKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][SupportedAppsPerAgentKey.Status].capitalize()
+                        NAME: i['group'][SupportedAppsPerAgentKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)
@@ -118,11 +118,11 @@ def get_all_agents_per_appid(username, customer_name,
         agents = (
             r
             .table(AppCollections.SupportedAppsPerAgent)
-            .get_all(app_id, index=SupportedAppsPerAgentKey.AppId)
-            .eq_join(SupportedAppsPerAgentKey.AgentId, r.table(AgentsCollection))
+            .get_all(app_id, index=SupportedAppsPerAgentKeys.AppId)
+            .eq_join(SupportedAppsPerAgentKeys.AgentId, r.table(AgentsCollection))
             .zip()
             .group(
-                lambda x: x[SupportedAppsPerAgentKey.Status]
+                lambda x: x[SupportedAppsPerAgentKeys.Status]
             )
             .map(
                 lambda x:
@@ -130,9 +130,9 @@ def get_all_agents_per_appid(username, customer_name,
                     AGENTS:
                     [
                         {
-                            AgentKey.ComputerName: x[AgentKey.ComputerName],
-                            AgentKey.DisplayName: x[AgentKey.DisplayName],
-                            SupportedAppsPerAgentKey.AgentId: x[SupportedAppsPerAgentKey.AgentId]
+                            AgentKeys.ComputerName: x[AgentKeys.ComputerName],
+                            AgentKeys.DisplayName: x[AgentKeys.DisplayName],
+                            SupportedAppsPerAgentKeys.AgentId: x[SupportedAppsPerAgentKeys.AgentId]
                         }
                     ],
                     COUNT: 1
@@ -151,7 +151,7 @@ def get_all_agents_per_appid(username, customer_name,
         if agents:
             for i in agents:
                 new_data = i['reduction']
-                new_data[SupportedAppsPerAgentKey.Status] = i['group']
+                new_data[SupportedAppsPerAgentKeys.Status] = i['group']
                 data.append(new_data)
 
         statuses = map(lambda x: x['status'], data)
@@ -193,8 +193,8 @@ def get_all_stats_by_agentid(username, customer_name,
         apps = (
             r
             .table(AppCollections.SupportedAppsPerAgent)
-            .get_all(agent_id, index=SupportedAppsPerAgentKey.AgentId)
-            .group(SupportedAppsPerAgentKey.Status)
+            .get_all(agent_id, index=SupportedAppsPerAgentKeys.AgentId)
+            .group(SupportedAppsPerAgentKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -204,9 +204,9 @@ def get_all_stats_by_agentid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        SupportedAppsPerAgentKey.Status: i['group'][SupportedAppsPerAgentKey.Status],
+                        SupportedAppsPerAgentKeys.Status: i['group'][SupportedAppsPerAgentKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][SupportedAppsPerAgentKey.Status].capitalize()
+                        NAME: i['group'][SupportedAppsPerAgentKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)
@@ -248,8 +248,8 @@ def get_all_stats_by_tagid(username, customer_name,
         apps = (
             r
             .table(SupportedAppsPerTagCollection)
-            .get_all(tag_id, index=SupportedAppsPerTagKey.TagId)
-            .group(SupportedAppsPerTagKey.Status)
+            .get_all(tag_id, index=SupportedAppsPerTagKeys.TagId)
+            .group(SupportedAppsPerTagKeys.Status)
             .count()
             .ungroup()
             .run(conn)
@@ -259,9 +259,9 @@ def get_all_stats_by_tagid(username, customer_name,
                 new_data = i['reduction']
                 new_data = (
                     {
-                        SupportedAppsPerTagKey.Status: i['group'][SupportedAppsPerTagKey.Status],
+                        SupportedAppsPerTagKeys.Status: i['group'][SupportedAppsPerTagKeys.Status],
                         COUNT: i['reduction'],
-                        NAME: i['group'][SupportedAppsPerTagKey.Status].capitalize()
+                        NAME: i['group'][SupportedAppsPerTagKeys.Status].capitalize()
                     }
                 )
                 data.append(new_data)

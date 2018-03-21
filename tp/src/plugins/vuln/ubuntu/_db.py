@@ -44,7 +44,7 @@ def fetch_vuln_ids(name, version, os_string, conn=None):
                 [name, version],
                 index=UbuntuSecurityBulletinIndexes.NameAndVersion
             )
-            .pluck(UbuntuSecurityBulletinKey.BulletinId, UbuntuSecurityBulletinKey.CveIds)
+            .pluck(UbuntuSecurityBulletinKeys.BulletinId, UbuntuSecurityBulletinKeys.CveIds)
             .run(conn)
         )
 
@@ -86,12 +86,12 @@ def fetch_vuln_data(vuln_id, conn=None):
     data = []
     map_hash = (
         {
-            UbuntuSecurityBulletinKey.Id: r.row[UbuntuSecurityBulletinKey.Id],
-            UbuntuSecurityBulletinKey.BulletinId: r.row[UbuntuSecurityBulletinKey.BulletinId],
-            UbuntuSecurityBulletinKey.DatePosted: r.row[UbuntuSecurityBulletinKey.DatePosted].to_epoch_time(),
-            UbuntuSecurityBulletinKey.Details: r.row[UbuntuSecurityBulletinKey.Details],
-            UbuntuSecurityBulletinKey.CveIds: r.row[UbuntuSecurityBulletinKey.CveIds],
-            SecurityBulletinKey.Supersedes: [],
+            UbuntuSecurityBulletinKeys.Id: r.row[UbuntuSecurityBulletinKeys.Id],
+            UbuntuSecurityBulletinKeys.BulletinId: r.row[UbuntuSecurityBulletinKeys.BulletinId],
+            UbuntuSecurityBulletinKeys.DatePosted: r.row[UbuntuSecurityBulletinKeys.DatePosted].to_epoch_time(),
+            UbuntuSecurityBulletinKeys.Details: r.row[UbuntuSecurityBulletinKeys.Details],
+            UbuntuSecurityBulletinKeys.CveIds: r.row[UbuntuSecurityBulletinKeys.CveIds],
+            SecurityBulletinKeys.Supersedes: [],
         }
     )
     try:

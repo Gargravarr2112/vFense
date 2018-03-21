@@ -101,18 +101,18 @@ class Hierarchy():
             not group
             or not isinstance(group, dict)
             or not (
-                group.get(GroupKey.Id) or group.get(GroupKey.Name)
+                group.get(GroupKeys.Id) or group.get(GroupKeys.Name)
             )
         ):
             return None
 
         if group.get('id'):
 
-            g = _db.get_group(_id=group[GroupKey.Id])
+            g = _db.get_group(_id=group[GroupKeys.Id])
 
         else:
 
-            g = _db.get_group(name=group[GroupKey.Name])
+            g = _db.get_group(name=group[GroupKeys.Name])
 
         return g
 
@@ -212,7 +212,7 @@ class Hierarchy():
 
             groups = []
 
-            g = Hierarchy.get_group({GroupKey.Name: 'Read Only'})
+            g = Hierarchy.get_group({GroupKeys.Name: 'Read Only'})
 
             if g:
 
@@ -392,22 +392,22 @@ class Hierarchy():
 
         user = Hierarchy.get_user(user)
 
-        password = mod_data.get(UserKey.Password)
+        password = mod_data.get(UserKeys.Password)
         if password:
 
             user.password = Crypto.hash_bcrypt(password)
 
-        full_name = mod_data.get(UserKey.FullName)
+        full_name = mod_data.get(UserKeys.FullName)
         if full_name:
 
             user.full_name = full_name
 
-        email = mod_data.get(UserKey.Email)
+        email = mod_data.get(UserKeys.Email)
         if email:
 
             user.email = email
 
-        current_customer = mod_data.get(UserKey.CurrentCustomer)
+        current_customer = mod_data.get(UserKeys.CurrentCustomer)
         if current_customer:
 
             customer = Hierarchy.get_customer(current_customer)
@@ -422,7 +422,7 @@ class Hierarchy():
                 if not customer.name == customer_name:
                     user.set_current_customer(customer)
 
-        default_customer = mod_data.get(UserKey.DefaultCustomer)
+        default_customer = mod_data.get(UserKeys.DefaultCustomer)
         if default_customer:
 
             customer = Hierarchy.get_customer(default_customer)
@@ -431,7 +431,7 @@ class Hierarchy():
 
                 user.set_current_customer(customer)
 
-        customers = mod_data.get(UserKey.Customers)
+        customers = mod_data.get(UserKeys.Customers)
         if customers:
 
             for customer in customers:
@@ -448,7 +448,7 @@ class Hierarchy():
 
                     _db.save_customer(c)
 
-        groups = mod_data.get(UserKey.Groups)
+        groups = mod_data.get(UserKeys.Groups)
 
         if groups:
 
@@ -490,17 +490,17 @@ class Hierarchy():
 
         customer = Hierarchy.get_customer(name)
 
-        net_throttle = mod_data.get(CustomerKey.NetThrottle)
+        net_throttle = mod_data.get(CustomerKeys.NetThrottle)
         if net_throttle:
 
             customer.net_throttle = net_throttle
 
-        cpu_throttle = mod_data.get(CustomerKey.CpuThrottle)
+        cpu_throttle = mod_data.get(CustomerKeys.CpuThrottle)
         if cpu_throttle:
 
             customer.cpu_throttle = cpu_throttle
 
-        groups = mod_data.get(CustomerKey.Groups)
+        groups = mod_data.get(CustomerKeys.Groups)
         if groups:
 
             for group in groups:
@@ -515,7 +515,7 @@ class Hierarchy():
 
                     _db.save_group(g)
 
-        users = mod_data.get(CustomerKey.Users)
+        users = mod_data.get(CustomerKeys.Users)
         if users:
 
             for user in users:
@@ -552,7 +552,7 @@ class Hierarchy():
 
             return False
 
-        customer = mod_data.get(GroupKey.Customer)
+        customer = mod_data.get(GroupKeys.Customer)
         if customer:
 
             c = Hierarchy.get_customer(customer)
@@ -561,7 +561,7 @@ class Hierarchy():
 
                 group.set_customer(c)
 
-        permissions = mod_data.get(GroupKey.Permissions)
+        permissions = mod_data.get(GroupKeys.Permissions)
         group_permissions = group.get_permissions()
         if permissions:
 
@@ -575,7 +575,7 @@ class Hierarchy():
 
                     group.add_permission(perm)
 
-        users = mod_data.get(GroupKey.Users)
+        users = mod_data.get(GroupKeys.Users)
         if users:
 
             new_users = []
@@ -768,7 +768,7 @@ class Hierarchy():
 
         for group in user_groups:
 
-            g = Hierarchy.get_group({GroupKey.Id: group.id})
+            g = Hierarchy.get_group({GroupKeys.Id: group.id})
 
             if g:
 
@@ -888,7 +888,7 @@ class Hierarchy():
 
         for group in customer_groups:
 
-            g = Hierarchy.get_group({GroupKey.Id: group.id})
+            g = Hierarchy.get_group({GroupKeys.Id: group.id})
 
             if g:
 
