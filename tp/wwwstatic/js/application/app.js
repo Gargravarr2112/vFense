@@ -56,15 +56,15 @@ define(
                 user_name: 'John Doe'
             },
             url: '/api/v1/user/',
-           /* initialize: function() {
+            initialize: function() {
                 var userModel = new Backbone.Model();
-                userModel.url = 'api/v1/user/';
+                userModel.url = '/api/v1/user/';
                 userModel.fetch({
                     success: function(model) {
                         app.username = model.get('data').user_name;
                     }
                 });
-            },*/
+            },
             parse: function (response) {
                 this.apiMessage = response.message;
                 this.apiPass = response.rv_status_code === 1001;
