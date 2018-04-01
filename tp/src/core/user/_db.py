@@ -175,8 +175,8 @@ def fetch_user_and_all_properties(username, conn=None):
             .map(map_hash)
             .run(conn)
         )
-        #if data:
-        #    data = data[0]
+        if data and data.responses:
+            data = data.responses[0].data
 
     except Exception as e:
         logger.exception(e)

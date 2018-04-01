@@ -6,9 +6,9 @@ from vFense.core.api.base import BaseHandler
 from vFense.core.decorators import authenticated_request, \
     convert_json_to_arguments
 
-from vFense.plugins.ra.operations.ra_results import RaOperationResults
+from vFense.plugins.remote_assistance.operations.ra_results import RaOperationResults
 
-from vFense.plugins.ra.processor import Processor
+from vFense.plugins.remote_assistance.processor import Processor
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvlistener')

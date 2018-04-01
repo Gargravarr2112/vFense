@@ -8,8 +8,8 @@ import tornado.gen
 
 import tornadoredis
 
-from vFense.plugins import ra
-from vFense.plugins.ra import creator
+from vFense.plugins import remote_assistance as ra
+from vFense.plugins.remote_assistance import creator
 
 
 class RDStatusQueue(tornado.websocket.WebSocketHandler):

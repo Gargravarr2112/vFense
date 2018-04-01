@@ -16,7 +16,7 @@ from vFense.operations._constants import AgentOperations
 from vFense.operations import AgentOperationKeys
 
 from vFense.receiver.rvhandler import RvHandOff
-import plugins.ra.handoff as RaHandoff
+from vFense.plugins.remote_assistance import handoff as RaHandoff
 
 from vFense.core.user import UserKeys
 from vFense.core.user.users import get_user_property
@@ -66,8 +66,8 @@ class StartUpV1(BaseHandler):
                         username, customer_name, uri, method
                     ).startup_operation(agent_id, plugins['rv']['data'])
 
-                if 'ra' in plugins:
-                    RaHandoff.startup(agent_id, plugins['ra'])
+                if 'remote_assistance' in plugins:
+                    RaHandoff.startup(agent_id, plugins['remote_assistance'])
 
             self.set_header('Content-Type', 'application/json')
             self.write(dumps(agent_data))

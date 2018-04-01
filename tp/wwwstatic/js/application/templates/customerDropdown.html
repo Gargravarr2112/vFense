@@ -1,15 +1,15 @@
-<% if (customers.length > 1) { %>
-<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-    <i class="icon-group"></i>
-    <span id="activeCustomer"><%= current_customer || default_customer %></span>
-    <i class="icon-caret-down"></i>
-</a>
-<ul class="dropdown-menu">
-    <%= viewHelpers.renderCustomers(customers, current_customer) %>
-</ul>
-<% } else if (customers.length === 1) { %>
-    <a href="javascript:;">
+<% if (obj[0].customers.length > 1) { %>
+    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
         <i class="icon-group"></i>
-        <span><%= current_customer || default_customer %></span>
+        <span id="activeCustomer"><%= obj[0].current_customer || obj[0].default_customer %></span>
+        <i class="icon-caret-down"></i>
     </a>
-<% } %>
+    <ul class="dropdown-menu">
+        <%= viewHelpers.renderCustomers(obj[0].customers, obj[0].current_customer) %>
+    </ul>
+    <% } else if (obj[0].customers.length === 1) { %>
+        <a href="javascript:;">
+            <i class="icon-group"></i>
+            <span><%= obj[0].current_customer || obj[0].default_customer %></span>
+        </a>
+    <% } %>
