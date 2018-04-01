@@ -28,6 +28,7 @@ from vFense.supported_platforms import *
 from vFense.utils.security import generate_pass, check_password
 from vFense.utils.ssl_initialize import generate_generic_certs
 from vFense.utils.common import pick_valid_ip_address
+from vFense.db import DB_NAME
 from vFense.db.client import db_connect, r
 
 
@@ -94,9 +95,12 @@ parser.set_defaults(cve_data=True)
 
 args = parser.parse_args()
 
-if os.getuid() != 0:
-    print 'MUST BE ROOT IN ORDER TO RUN'
-    sys.exit(1)
+if args.dns_name:
+    url = 'https://%s/packages/' % (args.dns_name)
+    nginx_server_name = args.dns_name
+else:
+    url = 'https://%s/packages/' % (args.ip_address)
+    nginx_server_name = args.ip_address
 
 if args.admin_password:
     password_validated = check_password(args.admin_password)
@@ -108,54 +112,35 @@ if args.admin_password:
     #        (args.admin_password, password_validated[1])
     #    )
     #    sys.exit(1)
+else:
+    args.admin_password = generate_pass()
 
 if args.queue_ttl:
     args.queue_ttl = int(args.queue_ttl)
     if args.queue_ttl < 2:
         args.queue_ttl = 10
 
-if args.dns_name:
-    url = 'https://%s/packages/' % (args.dns_name)
-    nginx_server_name = args.dns_name
-else:
-    url = 'https://%s/packages/' % (args.ip_address)
-    nginx_server_name = args.ip_address
-
-generate_generic_certs()
-ncc.nginx_config_builder(
-    nginx_server_name,
-    args.server_cert,
-    args.server_key,
-    rvlistener_count=int(args.listener_count),
-    rvweb_count=int(args.web_count)
-)
-
-if not os.path.exists(VFENSED_SYMLINK):
-    subprocess.Popen(
-        [
-            'ln', '-s', VFENSED, VFENSED_SYMLINK
-        ],
+def initialise_web_server():
+    generate_generic_certs()
+    ncc.nginx_config_builder(
+        nginx_server_name,
+        args.server_cert,
+        args.server_key,
+        rvlistener_count=int(args.listener_count),
+        rvweb_count=int(args.web_count)
     )
 
-def initialize_db():
+
+def create_folder_structure():
+    if not os.path.exists(VFENSED_SYMLINK):
+        subprocess.Popen(
+            [
+                'ln', '-s', VFENSED, VFENSED_SYMLINK
+            ],
+        )
     os.umask(0)
     if not os.path.exists(VFENSE_TMP_PATH):
         os.mkdir(VFENSE_TMP_PATH, 0755)
-    if not os.path.exists(RETHINK_CONF):
-        subprocess.Popen(
-            [
-                'ln', '-s',
-                RETHINK_SOURCE_CONF,
-                RETHINK_CONF
-            ],
-        )
-    if not os.path.exists('/var/lib/rethinkdb/vFense'):
-        os.makedirs('/var/lib/rethinkdb/vFense')
-        subprocess.Popen(
-            [
-                'chown', '-R', 'rethinkdb.rethinkdb', '/var/lib/rethinkdb/vFense'
-            ],
-        )
 
     if not os.path.exists(VFENSE_LOG_PATH):
         os.mkdir(VFENSE_LOG_PATH, 0755)
@@ -171,6 +156,8 @@ def initialize_db():
         os.makedirs(os.path.join(VFENSE_VULN_PATH,'cve/data/xml'), 0755)
     if not os.path.exists(os.path.join(VFENSE_VULN_PATH, 'ubuntu/data/html')):
         os.makedirs(os.path.join(VFENSE_VULN_PATH, 'ubuntu/data/html'), 0755)
+
+def link_and_start_service():
     if get_distro() in DEBIAN_DISTROS:
         subprocess.Popen(
             [
@@ -213,7 +200,7 @@ def initialize_db():
         if get_distro() in DEBIAN_DISTROS:
             subprocess.Popen(
                 [
-                    'adduser', '--disabled-password', '--gecos', '', 'vfense',
+                    'adduser', '--disabled-password', '--gecos', '--system', 'vfense',
                 ],
             )
         elif get_distro() in REDHAT_DISTROS:
@@ -227,124 +214,99 @@ def initialize_db():
     while not db_connect():
         print 'Sleeping until rethink starts'
         sleep(2)
-    completed = True
-    if completed:
-        conn = db_connect()
-        print "Rethink is running, creating database"
-        r.db_create('vFense').run(conn)
-        print "Database created successfully, beginning to populate (this takes a while, be patient!)"
-        db = r.db('vFense')
-        conn.close()
-        ci.initialize_indexes_and_create_tables()
-        conn = db_connect()
-        print "Database populated and indexed successfully"
 
-        default_customer = Customer(
-            DefaultCustomers.DEFAULT,
-            server_queue_ttl=args.queue_ttl,
-            package_download_url=url
-        )
+def initialise_db(conn):
+    print "Rethink is running, creating database"
+    r.db_create(DB_NAME).run(conn)
+    print "Database created successfully, creating tables and indexes (this takes a while, be patient!)"
+    ci.initialize_indexes_and_create_tables(conn)
+    print "Database tables created and indexed successfully"
 
-        customers.create_customer(default_customer, init=True)
-        print "Default customer created"
+def populate_initial_data(conn):
+    print "Beginning database populate"
+    default_customer = Customer(
+        DefaultCustomers.DEFAULT,
+        server_queue_ttl=args.queue_ttl,
+        package_download_url=url
+    )
+    customers.create_customer(default_customer, init=True)
+    print "Default customer created"
 
-        group_data = group.create_group(
-            DefaultGroups.ADMIN,
-            DefaultCustomers.DEFAULT,
-            [Permissions.ADMINISTRATOR]
-        )
-        admin_group_id = group_data['generated_ids']
-        create_admin_user = user.create_user(
-            DefaultUsers.ADMIN,
-            'vFense Admin Account',
-            args.admin_password,
-            admin_group_id,
-            DefaultCustomers.DEFAULT,
-            '',
-        )
-        if create_admin_user['http_status'] != 200:
-            msg = 'Admin user creation failed with code %d and message "%s"' % (create_admin_user['http_status'], create_admin_user['message'])
-            return False, msg
-        
-        print 'Admin username = admin'
-        print 'Admin password = %s' % (args.admin_password)
+    group_data = group.create_group(
+        DefaultGroups.ADMIN,
+        DefaultCustomers.DEFAULT,
+        [Permissions.ADMINISTRATOR]
+    )
+    admin_group_id = group_data['generated_ids']
+    create_admin_user = user.create_user(
+        DefaultUsers.ADMIN,
+        'vFense Admin Account',
+        args.admin_password,
+        admin_group_id,
+        DefaultCustomers.DEFAULT,
+        '',
+    )
+    if create_admin_user['http_status'] != 200:
+        msg = 'Admin user creation failed with code %d and message "%s"' % (create_admin_user['http_status'], create_admin_user['message'])
+        return False, msg
+    
+    print 'Admin username = admin'
+    print 'Admin password = %s' % (args.admin_password)
+    agent_pass = generate_pass()
+    while not check_password(agent_pass)[0]:
         agent_pass = generate_pass()
-        while not check_password(agent_pass)[0]:
-            agent_pass = generate_pass()
 
-        user.create_user(
-            DefaultUsers.AGENT,
-            'vFense Agent Communication Account',
-            agent_pass,
-            admin_group_id,
-            DefaultCustomers.DEFAULT,
-            '',
-        )
-        print 'Agent api user = agent_api'
-        print 'Agent password = %s' % (agent_pass)
+    user.create_user(
+        DefaultUsers.AGENT,
+        'vFense Agent Communication Account',
+        agent_pass,
+        admin_group_id,
+        DefaultCustomers.DEFAULT,
+        '',
+    )
+    print 'Agent api user = agent_api'
+    print 'Agent password = %s' % (agent_pass)
 
-        monit.monit_initialization()
+    monit.monit_initialization()
 
+    if args.cve_data:
+        print "Updating CVE's..."
+        load_up_all_xml_into_db()
+        print "Done Updating CVE's..."
+        print "Updating Microsoft Security Bulletin Ids..."
+        parse_bulletin_and_updatedb()
+        print "Done Updating Microsoft Security Bulletin Ids..."
+        print "Updating Ubuntu Security Bulletin Ids...( This can take a couple of minutes )"
+        begin_usn_home_page_processing(full_parse=True)
+        print "Done Updating Ubuntu Security Bulletin Ids..."
 
-        if args.cve_data:
-            print "Updating CVE's..."
-            load_up_all_xml_into_db()
-            print "Done Updating CVE's..."
-            print "Updating Microsoft Security Bulletin Ids..."
-            parse_bulletin_and_updatedb()
-            print "Done Updating Microsoft Security Bulletin Ids..."
-            print "Updating Ubuntu Security Bulletin Ids...( This can take a couple of minutes )"
-            begin_usn_home_page_processing(full_parse=True)
-            print "Done Updating Ubuntu Security Bulletin Ids..."
+    print 'Rethink Initialization and Table creation is now complete'
 
-
-        conn.close()
-        completed = True
-
-        msg = 'Rethink Initialization and Table creation is now complete'
-
-        return completed, msg
-    else:
-        completed = False
-        msg = 'Failed during Rethink startup process'
-        return completed, msg
-
-
-def clean_database(connected):
-    os.chdir(RETHINK_PATH)
-    completed = True
-    rql_msg = None
-    msg = None
-    if connected:
-        rethink_stop = subprocess.Popen(['service', 'rethinkdb','stop'])
-        rql_msg = 'Rethink stopped successfully\n'
-    try:
-        if os.path.exists(RETHINK_DATA_PATH):
-            shutil.rmtree(RETHINK_DATA_PATH)
-        msg = 'Rethink instances.d directory removed and cleaned'
-    except Exception as e:
-        msg = 'Rethink instances.d directory could not be removed'
-        completed = False
-    if rql_msg and msg:
-        msg = rql_msg + msg
-    elif rql_msg and not msg:
-        msg = rql_msg
-    return completed, msg
-
+def clean_database(conn):
+    r.dbDrop(DB_NAME).run(conn)
 
 if __name__ == '__main__':
+    if os.getuid() != 0:
+        print 'MUST BE ROOT IN ORDER TO RUN'
+        sys.exit(1)
+
     conn = db_connect()
-    if conn:
-        connected = True
-        rql_msg = 'Rethink is Running'
-    else:
-        connected = False
-        rql_msg = 'Rethink is not Running'
-    print rql_msg
-    db_clean, db_msg = clean_database(connected)
-    print db_msg
-    db_initialized, msg = initialize_db()
-    initialized = False
+    if not conn:
+        print 'Rethink is not running, start RethinkDB server before attempting to initialise vFense!'
+        sys.exit(1)
+    
+    clean_database(connected)
+
+    create_folder_structure()
+
+    link_and_start_service()
+
+    initialise_web_server()
+
+    initialize_db(conn)
+
+    populate_initial_data(conn)
+
     if db_initialized:
         print 'vFense environment has been succesfully initialized\n'
         subprocess.Popen(
@@ -354,5 +316,5 @@ if __name__ == '__main__':
         )
 
     else:
-        print 'vFense Failed to initialize, please contact TopPatch support'
+        print 'vFense Failed to initialize, please see messages above for further information'
 
