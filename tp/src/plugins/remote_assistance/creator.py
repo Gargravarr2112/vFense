@@ -7,10 +7,10 @@ from vFense import VFENSE_LOGGING_CONFIG
 from vFense.settings import Default
 from vFense.tunnels import TunnelKeys, reverse_tunnel_params
 
-from vFense.plugins import ra
-from vFense.plugins.ra.raoperation import store_in_agent_queue, save_operation
-from vFense.plugins.ra.raoperation import RaOperation
-from vFense.plugins.ra.novnc import stop_novnc
+from vFense.plugins import remote_assistance as ra
+from vFense.plugins.remote_assistance.raoperation import store_in_agent_queue, save_operation
+from vFense.plugins.remote_assistance.raoperation import RaOperation
+from vFense.plugins.remote_assistance.novnc import stop_novnc
 
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)

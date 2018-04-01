@@ -8,10 +8,10 @@ import settings
 
 from vFense.tunnels import get_available_port
 
-from vFense.plugins import ra
-from vFense.plugins.ra import RaValue
-from vFense.plugins.ra import novnc
-from vFense.plugins.ra.raoperation import save_result
+from vFense.plugins import remote_assistance as ra
+from vFense.plugins.remote_assistance import RaValue
+from vFense.plugins.remote_assistance import novnc
+from vFense.plugins.remote_assistance.ra_operation import save_result
 
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)

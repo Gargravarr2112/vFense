@@ -5,7 +5,7 @@ from vFense.core.api.base import BaseHandler
 from vFense.core.user import UserKeys
 from vFense.core.user.users import get_user_property
 
-from vFense.plugins.ra import ra_settings
+from vFense.plugins.remote_assistance._db import save_rd_password
 
 
 class SetPassword(BaseHandler):
@@ -19,7 +19,7 @@ class SetPassword(BaseHandler):
         body = json.loads(self.request.body)
         password = body.get('password')
 
-        results = ra_settings.save_rd_password(
+        results = save_rd_password(
             password=password,
             user=current_user,
             customer=current_customer
