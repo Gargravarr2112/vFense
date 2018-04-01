@@ -1,7 +1,7 @@
 class vFensePlugins():
     RV_PLUGIN = 'rv'
     CORE_PLUGIN = 'core'
-    RA_PLUGIN = 'ra'
+    RA_PLUGIN = 'remote_assistance'
     MONITORING_PLUGIN = 'monitoring'
     VULNERABILITY = 'vulnerability'
     PATCHING = 'patching'
@@ -88,7 +88,7 @@ class AgentOperations():
     UNINSTALL_AGENT = 'uninstall_agent'
     REBOOT = 'reboot'
     SHUTDOWN = 'shutdown'
-    RA = 'ra'
+    REMOTE_ASSISTANCE = 'remote_assistance'
     REFRESH_RESPONSE_URIS = 'refresh_response_uris'
     AVAILABLE_AGENT_UPDATE = 'available_agent_update'
 
@@ -97,5 +97,5 @@ class AgentOperations():
         START_UP, INSTALL_OS_APPS, INSTALL_CUSTOM_APPS,
         INSTALL_SUPPORTED_APPS, INSTALL_AGENT_UPDATE,
         UNINSTALL, UNINSTALL_AGENT,
-        REBOOT, SHUTDOWN, RA, REFRESH_RESPONSE_URIS
+        REBOOT, SHUTDOWN, REMOTE_ASSISTANCE, REFRESH_RESPONSE_URIS
     )

@@ -18,7 +18,7 @@ from vFense.receiver.rvhandler import RvHandOff
 from vFense.core.user import UserKeys
 from vFense.core.user.users import get_user_property
 
-import plugins.ra.handoff as RaHandoff
+from vFense.plugins.remote_assistance import handoff as RaHandoff
 #from server.handlers import *
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
@@ -79,8 +79,8 @@ class NewAgentV1(BaseHandler):
                             agent_info
                         )
 
-                    if 'ra' in plugins:
-                        RaHandoff.startup(agent_id, plugins['ra'])
+                    if 'remote_assistance' in plugins:
+                        RaHandoff.startup(agent_id, plugins['remote_assistance'])
 
                 except Exception as e:
                     logger.exception(e)
