@@ -2,9 +2,9 @@ import subprocess
 import json
 import redis
 
-from vFense.plugins.ra import _db as db
+from vFense.plugins.remote_assistance import _db as db
 
-PluginName = "ra"
+PluginName = "remote_assistance"
 
 MaxConnections = 3
 CurrentConnections = 0

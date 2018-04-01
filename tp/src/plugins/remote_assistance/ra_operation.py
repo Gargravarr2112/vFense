@@ -8,8 +8,8 @@ from vFense.operations.agent_operations import AgentOperation
 
 from vFense.errorz.error_messages import AgentOperationCodes
 
-from vFense.plugins import ra
-from vFense.plugins.ra import DesktopProtocol
+from vFense.plugins import remote_assistance as ra
+from vFense.plugins.remote_assistance import DesktopProtocol
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('raapi')
