@@ -1,11 +1,11 @@
 import os
 
+from vFense import VFENSE_VAR_PATH
 from vFense.plugins.vuln._constants import DateValues
 
 
 class CVEDataDir():
-    PLUGIN_DIR = os.path.abspath(os.path.dirname(__file__))
-    XML_DIR = os.path.join(PLUGIN_DIR, 'data/xml')
+    XML_DIR = os.path.join(VFENSE_VAR_PATH, 'plugins', 'vuln', 'cve', 'xml')
     NVD_MODIFIED_FILE = os.path.join(XML_DIR, 'nvdcve-Modified.xml.gz')
     NVD_MODIFIED_FILE_UNCOMPRESSED = (
         os.path.join(XML_DIR, 'nvdcve-Modified.xml.gz')
