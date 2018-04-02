@@ -68,7 +68,7 @@ def get_msft_bulletin_url(count=0):
 
     
     main_url = requests.get(
-        WindowsBulletinStrings.XLS_DOWNLOAD_URL, timeout=2
+        WindowsBulletinStrings.XLS_DOWNLOAD_URL, timeout=30
     )
 
     if main_url.status_code == 200:
