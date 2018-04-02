@@ -19,7 +19,7 @@ from vFense.plugins.vuln.windows import *
 from vFense.core.queue import *
 
 Id = 'id'
-def initialize_indexes_and_create_tables(conn):
+def create_tables(conn):
     tables = [
         ('acls', Id),
         (AgentsCollection, AgentKeys.AgentId),
@@ -65,6 +65,8 @@ def initialize_indexes_and_create_tables(conn):
             print "Creating table {0}".format(table[0])
             r.db(DB_NAME).table_create(table[0], primary_key=table[1]).run(conn)
 
+
+def create_indexes(conn):
 #################################### Get All Indexes ###################################################
     app_list = r.db(DB_NAME).table(AppCollections.AppsPerAgent).index_list().run(conn)
     unique_app_list = r.db(DB_NAME).table(AppCollections.UniqueApplications).index_list().run(conn)
