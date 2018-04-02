@@ -12,9 +12,9 @@ VFENSE_BASE_PATH = (
 )
 BIN_DIR = '/usr/local/bin'
 VFENSE_INIT_D = '/etc/init.d/vFense'
-VFENSED = os.path.join(VFENSE_BASE_SRC_PATH, 'daemon', 'vFensed')
+VFENSED = os.path.join(VFENSE_BASE_PATH, 'bin', 'vFensed')
 VFENSED_SYMLINK = os.path.join(BIN_DIR, 'vFensed')
-VFENSE_TP_PATH = os.path.join(VFENSE_BASE_PATH, 'tp')
+VFENSE_TP_PATH = os.path.join(VFENSE_BASE_PATH, 'lib')
 VFENSE_TEMPLATE_PATH = os.path.join(VFENSE_TP_PATH, 'templates')
 VFENSE_WWW_PATH = os.path.join(VFENSE_TP_PATH, 'wwwstatic')
 VFENSE_SSL_PATH = os.path.join(VFENSE_TP_PATH, 'data', 'ssl')
@@ -27,7 +27,7 @@ VFENSE_APP_PATH = os.path.join(VFENSE_VAR_PATH, 'packages')
 VFENSE_SCHEDULER_PATH = os.path.join(VFENSE_VAR_PATH, 'scheduler')
 VFENSE_APP_TMP_PATH = os.path.join(VFENSE_APP_PATH, 'tmp')
 VFENSE_APP_DEP_PATH = os.path.join(VFENSE_APP_PATH, 'dependencies')
-VFENSE_CONF_PATH = os.path.join(VFENSE_BASE_PATH, 'conf')
+VFENSE_CONF_PATH = os.path.join(VFENSE_BASE_PATH, 'etc')
 VFENSE_LOGGING_CONFIG = os.path.join(VFENSE_CONF_PATH, 'logging.config')
 VFENSE_DB_CONFIG = os.path.join(VFENSE_CONF_PATH, 'database.conf')
 ###RETHINKDB SPECIFIC CONFIG
