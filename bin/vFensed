@@ -26,7 +26,7 @@ RVLSERVICES = []
 RVWSERVICES = []
 
 #################################################################
-RQWORKER = '/usr/local/bin/rqworker'
+RQWORKER = 'rqworker'
 RQ_WORKER_QUEUES = (
     [
         'incoming_updates', 'downloader', 'stats', 'updater',
@@ -43,7 +43,7 @@ for queue in RQ_WORKER_QUEUES:
 
 #################################################################
 RVL_PORTS = range(9020, 9030)
-RVLISTENER = 'src/vFense_listener.py'
+RVLISTENER = 'vFense/vFense_listener.py'
 for port in RVL_PORTS:
     pid_file = os.path.join(PID_DIR, 'RVL_PID_%s.pid' % (str(port)))
     rvl = 'RvListener port %s' % (str(port))
@@ -53,7 +53,7 @@ for port in RVL_PORTS:
 
 ##################################################################
 RVW_PORTS = range(9060, 9061)
-RVWEB = 'src/vFense_web.py'
+RVWEB = 'vFense/vFense_web.py'
 for port in RVW_PORTS:
     pid_file = os.path.join(PID_DIR, 'RVW_PID_%s.pid' % (str(port)))
     rvw = 'RvWeb port %s' % (str(port))
@@ -69,7 +69,7 @@ RVSCHEDULER_PIDFILE= os.path.join(VFENSE_TMP_PATH, 'rvscheduler-9002.pid')
 
 WORKERS_DIR = os.path.join(VFENSE_BASE_SRC_PATH, 'receiver', 'rqworkers')
 PATH = VFENSE_TP_PATH
-RVSCHEDULER='src/scheduler/rvscheduler.py'
+RVSCHEDULER='vFense/scheduler/rvscheduler.py'
 
 PIDS.append((RVSCHEDULER_PIDFILE, 'RvScheduler'))
 
