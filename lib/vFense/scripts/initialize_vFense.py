@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import re
 import pwd
 import argparse
@@ -175,16 +176,6 @@ def link_and_start_service():
                 ],
             )
 
-    if get_distro() in REDHAT_DISTROS:
-        if os.path.exists('/usr/bin/rqworker'):
-            subprocess.Popen(
-                [
-                    'ln', '-s',
-                    '/usr/bin/rqworker',
-                    '/usr/local/bin/rqworker'
-                ],
-            )
-
     if os.path.exists(get_sheduler_location()):
         subprocess.Popen(
             [
@@ -218,8 +209,9 @@ def link_and_start_service():
 def initialise_db(conn):
     print "Rethink is running, creating database"
     r.db_create(DB_NAME).run(conn)
-    print "Database created successfully, creating tables and indexes (this takes a while, be patient!)"
-    ci.initialize_indexes_and_create_tables(conn)
+    print "Database created successfully, creating tables and indexes"
+    ci.create_tables(conn)
+    ci.create_indexes(conn)
     print "Database tables created and indexed successfully"
 
 def populate_initial_data(conn):
@@ -232,12 +224,16 @@ def populate_initial_data(conn):
     customers.create_customer(default_customer, init=True)
     print "Default customer created"
 
-    group_data = group.create_group(
-        DefaultGroups.ADMIN,
-        DefaultCustomers.DEFAULT,
-        [Permissions.ADMINISTRATOR]
-    )
-    admin_group_id = group_data['generated_ids']
+    group_data = group.get_group_by_name(DefaultGroups.ADMIN, DefaultCustomers.DEFAULT)
+    if not group_data:
+        group_data = group.create_group(
+            DefaultGroups.ADMIN,
+            DefaultCustomers.DEFAULT,
+            [Permissions.ADMINISTRATOR]
+        )
+        admin_group_id = group_data['generated_ids']   
+    else:
+        admin_group_id = group_data['id']
     create_admin_user = user.create_user(
         DefaultUsers.ADMIN,
         'vFense Admin Account',
@@ -270,15 +266,21 @@ def populate_initial_data(conn):
     monit.monit_initialization()
 
     if args.cve_data:
-        print "Updating CVE's..."
+        print "Updating CVE's (this takes a while, be patient!)..."
+        cve_start = time.time()
         load_up_all_xml_into_db()
-        print "Done Updating CVE's..."
+        cve_end = time.time()
+        print "Done Updating CVE's (total time: {0} seconds)".format((cve_end - cve_start))
         print "Updating Microsoft Security Bulletin Ids..."
+        ms_start = time.time()
         parse_bulletin_and_updatedb()
-        print "Done Updating Microsoft Security Bulletin Ids..."
+        ms_end = time.time()
+        print "Done Updating Microsoft Security Bulletin Ids (total time: {0} seconds)".format((ms_end - ms_start))
         print "Updating Ubuntu Security Bulletin Ids...( This can take a couple of minutes )"
+        ubuntu_start = time.time()
         begin_usn_home_page_processing(full_parse=True)
-        print "Done Updating Ubuntu Security Bulletin Ids..."
+        ubuntu_end = time.time()
+        print "Done Updating Ubuntu Security Bulletin Ids (total time: {0} seconds)".format((ubuntu_end - ubuntu_start))
 
     print 'Rethink Initialization and Table creation is now complete'
 
