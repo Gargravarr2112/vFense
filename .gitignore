@@ -6,3 +6,4 @@ var/scheduler
 var/redis
 var/packages
 var/tmp
+.DS_Store
