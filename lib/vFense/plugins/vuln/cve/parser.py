@@ -193,7 +193,7 @@ class NvdParser(object):
                 vulns_versions = vuln.getchildren()
                 for version in vulns_versions:
                     version_dict = {}
-                    for key in version.keys():
+                    for key in list(version.keys()):
                         version_dict[key] = version.attrib[key]
                     vuln_soft_dict[CVEStrings.VENDOR_VERSIONS].append(
                         version_dict
@@ -331,7 +331,7 @@ def parse_cve_and_udpatedb(
 
             cve_data[CveKeys.CveCategories] = []
             if entry.tag == NVDFeeds.ENTRY and event == 'end':
-                for key in cve_data.keys():
+                for key in list(cve_data.keys()):
                     if (key != CveKeys.CveDescriptions and
                             key != CveKeys.CveRefs and
                             key != CveKeys.CveVulnsSoft and
@@ -339,7 +339,7 @@ def parse_cve_and_udpatedb(
                             key != CveKeys.CveCategories and
                             key != CveKeys.CvssVector and
                             key != CveKeys.CveModifiedDate):
-                        cve_data[key] = unicode(cve_data[key])
+                        cve_data[key] = str(cve_data[key])
 
                 cve_data_list.append(cve_data)
 

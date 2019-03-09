@@ -270,7 +270,7 @@ def add_users_to_customer(
     customer_is_valid = validate_customer_names([customer_name])
     results = None
     data_list = []
-    status = add_users_to_customer.func_name + ' - '
+    status = add_users_to_customer.__name__ + ' - '
     msg = ''
     status_code = 0
     generic_status_code = 0
@@ -380,7 +380,7 @@ def remove_users_from_customer(
         'http_status': 409
     }
     """
-    status = remove_users_from_customer.func_name + ' - '
+    status = remove_users_from_customer.__name__ + ' - '
     admin_in_list = DefaultUsers.ADMIN in usernames
     try:
         if not admin_in_list:
@@ -485,7 +485,7 @@ def add_users_to_group(
     group = get_group(group_id)
     results = None
     data_list = []
-    status = add_users_to_group.func_name + ' - '
+    status = add_users_to_group.__name__ + ' - '
     msg = ''
     status_code = 0
     generic_status_code = 0
@@ -593,7 +593,7 @@ def remove_users_from_group(
         'http_status': 409
     }
     """
-    status = remove_users_from_group.func_name + ' - '
+    status = remove_users_from_group.__name__ + ' - '
     admin_in_list = DefaultUsers.ADMIN in usernames
     try:
         if not admin_in_list:
@@ -691,7 +691,7 @@ def toggle_user_status(username, user_name=None, uri=None, method=None):
             "uri": null
         }
     """
-    status = toggle_user_status.func_name + ' - '
+    status = toggle_user_status.__name__ + ' - '
     status_code, _, _, _ = (
         user_status_toggle(username)
     )
@@ -785,7 +785,7 @@ def create_user(
 
     user_exist = fetch_user(username)
     pass_strength = check_password(password)
-    status = create_user.func_name + ' - '
+    status = create_user.__name__ + ' - '
     generated_ids = []
     generic_status_code = 0
     vfense_status_code = 0
@@ -941,7 +941,7 @@ def remove_user(username, user_name=None, uri=None, method=None):
     """
 
     user_exist = fetch_user(username)
-    status = remove_user.func_name + ' - '
+    status = remove_user.__name__ + ' - '
     usernames_not_to_delete = []
     usernames_to_delete = []
     try:
@@ -1026,7 +1026,7 @@ def remove_users(usernames, user_name=None, uri=None, method=None):
         Dictionary of the status of the operation.
     """
 
-    status = change_password.func_name + ' - '
+    status = change_password.__name__ + ' - '
     usernames_not_to_delete = []
     usernames_to_delete = []
     generic_status_code = 0
@@ -1037,7 +1037,7 @@ def remove_users(usernames, user_name=None, uri=None, method=None):
             usernames = usernames.split(',')
         for username in usernames:
             user_exist = fetch_user(username)
-            status = remove_users.func_name + ' - '
+            status = remove_users.__name__ + ' - '
             if user_exist and username != DefaultUsers.ADMIN:
                 remove_groups_from_user(username)
                 remove_customers_from_user(username)
@@ -1145,7 +1145,7 @@ def change_password(
         }
     """
     user_exist = fetch_user(username, without_fields=None)
-    status = change_password.func_name + ' - '
+    status = change_password.__name__ + ' - '
     try:
         generic_status_code = 0
         vfense_status_code = 0
@@ -1303,7 +1303,7 @@ def edit_user_properties(username, **kwargs):
         kwargs.pop(UserKeys.Password)
 
     user_exist = fetch_user(username, without_fields=None)
-    status = edit_user_properties.func_name + ' - '
+    status = edit_user_properties.__name__ + ' - '
     generic_status_code = 0
     vfense_status_code = 0
     try:

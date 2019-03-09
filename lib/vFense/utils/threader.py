@@ -1,4 +1,4 @@
-import Queue
+import queue
 from time import sleep
 from random import randint
 import logging, logging.config
@@ -13,7 +13,7 @@ class Worker(Thread):
         self.logger = logging.getLogger(log_name)
         Thread.__init__(self)
         self.tasks = tasks
-        self.process_queue = Queue.Queue(number_of_threads)
+        self.process_queue = queue.Queue(number_of_threads)
         self.daemon = True
         self.run_forever = True
         self.start()
@@ -29,7 +29,7 @@ class Worker(Thread):
                 try:
                     func(*args)
                 except Exception as e:
-                    print e
+                    print(e)
                     self.logger.error(e)
                 if not self.tasks.empty():
                     self.process_queue.put(self.tasks.get_nowait())
@@ -42,7 +42,7 @@ class OperationQueue():
     def __init__(self, number_of_threads=10, log_name='rvlistener'):
         self.logger = logging.getLogger(log_name)
         self.number_of_threads = number_of_threads
-        self.queue = Queue.Queue()
+        self.queue = queue.Queue()
         Worker(self.queue, self.number_of_threads, log_name)
         self.op_in_progress = False
 
@@ -58,7 +58,7 @@ class OperationQueue():
             self.queue.put(operation)
             self.logger.debug("Adding operation to the queue. %s" % (operation[1]))
             result = True
-        except Queue.Full as e:
+        except queue.Full as e:
             self.logger.critical("Queue is busy. Ignoring operation.", "error")
             result = False
         except Exception as e:
@@ -80,7 +80,7 @@ class OperationQueue():
                 item = self.queue.get_nowait()
                 self.logger.debug("Retrieving operation from the queue. %s" % (item[1]))
                 self.op_in_progress = True
-            except Queue.Empty as e:
+            except queue.Empty as e:
                 self.logger.debug("Operations queue is empty.", "debug")
                 item = None
             except Exception as e:

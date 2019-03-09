@@ -162,7 +162,7 @@ def save_connection(
     if connection_exist(customer=customer, agent_id=agent_id)[0]:
         return False, 'Connection already exist for %s' % agent_id
 
-    timestamp = long(time.time())
+    timestamp = int(time.time())
 
     connection = {}
 

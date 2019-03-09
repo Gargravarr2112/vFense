@@ -87,7 +87,7 @@ def store_package_info_in_db(
 
     if os.path.exists(PKG_FILE):
         if (isinstance(release_date, str) or
-            isinstance(release_date, unicode)):
+            isinstance(release_date, str)):
 
             orig_release_date = release_date
             if (len(release_date.split('-')) == 3 or len(release_date.split('/')) == 3):

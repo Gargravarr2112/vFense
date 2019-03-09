@@ -121,7 +121,7 @@ class InstallCustomAppsResults(BaseHandler):
                     apps_to_delete, apps_to_add
                 )
             )
-            print results_data
+            print(results_data)
             self.set_status(results_data['http_status'])
             self.set_header('Content-Type', 'application/json')
             self.write(dumps(results_data, indent=4))
@@ -181,7 +181,7 @@ class InstallSupportedAppsResults(BaseHandler):
                 app_id, reboot_required, apps_to_delete, apps_to_add
             )
 
-            print results_data
+            print(results_data)
             self.set_status(results_data['http_status'])
             self.set_header('Content-Type', 'application/json')
             self.write(dumps(results_data, indent=4))
@@ -242,7 +242,7 @@ class InstallAgentAppsResults(BaseHandler):
                     apps_to_delete, apps_to_add
                 )
             )
-            print results_data
+            print(results_data)
             # TODO: what is this meant for?
             #data = results.install_agent_update(data)
 
@@ -306,7 +306,7 @@ class UninstallAppsResults(BaseHandler):
                     apps_to_delete, apps_to_add
                 )
             )
-            print results_data
+            print(results_data)
             self.set_status(results_data['http_status'])
             self.set_header('Content-Type', 'application/json')
             self.write(dumps(results_data, indent=4))

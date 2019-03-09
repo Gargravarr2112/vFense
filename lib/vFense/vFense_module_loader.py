@@ -235,9 +235,9 @@ class PluginsLoader():
             try:
                 imported_plugins.append(importlib.import_module(module))
             except Exception as e:
-                print "Failed to import {0} because of: {1}".format(
+                print("Failed to import {0} because of: {1}".format(
                     module, e
-                )
+                ))
 
                 continue
 
@@ -269,12 +269,12 @@ class PluginsLoader():
         handlers = []
         for plugin in imported_plugins:
             try:
-                if 'get_listener_api_handlers' in plugin.__dict__.keys():
+                if 'get_listener_api_handlers' in list(plugin.__dict__.keys()):
                     handlers.extend(plugin.get_listener_api_handlers())
 
             except Exception as e:
-                print "Failed to get listener handlers: {0}".format(e)
-                print traceback.format_exc()
+                print("Failed to get listener handlers: {0}".format(e))
+                print(traceback.format_exc())
 
         return handlers
 
@@ -303,11 +303,11 @@ class PluginsLoader():
         handlers = []
         for plugin in imported_plugins:
             try:
-                if 'get_web_api_handlers' in plugin.__dict__.keys():
+                if 'get_web_api_handlers' in list(plugin.__dict__.keys()):
                     handlers.extend(plugin.get_web_api_handlers())
 
             except Exception as e:
-                print "Failed to get web handlers: {0}".format(e)
-                print traceback.format_exc()
+                print("Failed to get web handlers: {0}".format(e))
+                print(traceback.format_exc())
 
         return handlers

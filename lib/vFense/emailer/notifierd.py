@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division, print_function, unicode_literals
+
 import argparse
 import daemon
 import json
@@ -8,7 +8,7 @@ import lockfile
 import logging
 import logging.config
 from vFense import VFENSE_LOGGING_CONFIG, VFENSE_BASE_PATH
-import notifier
+from . import notifier
 import os
 import re
 import redis

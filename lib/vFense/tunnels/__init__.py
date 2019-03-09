@@ -56,12 +56,12 @@ def system_ports_used():
 
             except Exception as e:
 
-                print "Skipping %s." % entry
-                print e
+                print("Skipping %s." % entry)
+                print(e)
 
     except Exception as e:
 
-        print e
+        print(e)
 
     return ports
 
@@ -102,7 +102,7 @@ def reverse_tunnel_params(preferred_ports=None):
     try:
 
         if not preferred_ports:
-            preferred_ports = range(10000, 11000)
+            preferred_ports = list(range(10000, 11000))
 
         port = get_available_port(preferred_ports)
 
@@ -116,7 +116,7 @@ def reverse_tunnel_params(preferred_ports=None):
 
     except Exception as e:
 
-        print e
+        print(e)
         params = None
 
     return params
@@ -138,6 +138,6 @@ def ssh_port():
 
     except Exception as e:
 
-        print e
+        print(e)
 
     return ""

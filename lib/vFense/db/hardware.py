@@ -23,11 +23,11 @@ class Hardware():
             added_by='agent'):
 
         added = False
-        print hardware
+        print(hardware)
         if agent_id and hardware:
             hwlist = []
             if isinstance(hardware, dict):
-                for hwtype in hardware.keys():
+                for hwtype in list(hardware.keys()):
                     hwinfo = {}
                     hwinfo['agent_id'] = agent_id
                     hwinfo['type'] = hwtype
@@ -36,7 +36,7 @@ class Hardware():
                     if hwtype != 'memory':
                         for info in hardware[hwtype]:
                             custominfo = deepcopy(hwinfo)
-                            for key, val in info.items():
+                            for key, val in list(info.items()):
                                 custominfo[key] = val
                             hwlist.append(custominfo)
 

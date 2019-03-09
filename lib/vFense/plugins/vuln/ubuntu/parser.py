@@ -56,10 +56,10 @@ def format_data_to_insert_into_db(
 
         bulletin_id = build_bulletin_id(string_to_build_id)
         try:
-            if isinstance(details, unicode):
+            if isinstance(details, str):
                 details = details.decode('utf-8')
-            elif isinstance(details, basestring):
-                details = unicode(details.decode('utf-8'))
+            elif isinstance(details, str):
+                details = str(details.decode('utf-8'))
         except Exception as e:
             details = details.encode('utf-8').decode('utf-8')
 
@@ -160,7 +160,7 @@ def get_date_posted(date_em):
     Args:
         date_em (str):
     """
-    date_posted = u''
+    date_posted = ''
     try:
         day, month, year = date_em.text.split()
         day = int(re.sub('[a-zA-Z]+', '', day))
@@ -179,18 +179,18 @@ def get_details(soup_details):
     Args:
         soup_details (str)
     """
-    details = u''
+    details = ''
     while True:
         tag = soup_details.findNext()
         if tag.name != 'h3':
             if tag.name == 'p':
-                text = unicode(tag.text).encode(sys.stdout.encoding, 'replace').decode('utf-8')
+                text = str(tag.text).encode(sys.stdout.encoding, 'replace').decode('utf-8')
                 details = details + text + '\n\n'
         else:
             break
         soup_details = tag
 
-    details = unicode(details).encode(sys.stdout.encoding, 'replace')
+    details = str(details).encode(sys.stdout.encoding, 'replace')
     return(details)
 
 def write_content_to_file(file_location, url, content=None):

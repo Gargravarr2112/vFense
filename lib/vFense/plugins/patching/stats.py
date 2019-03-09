@@ -17,7 +17,7 @@ logger = logging.getLogger('rvapi')
 
 def app_stats_by_os(stats):
     try:
-        for i in xrange(len(stats)):
+        for i in range(len(stats)):
             stats[i] = (
                 {
                     'os': stats[i]['group'],
@@ -197,14 +197,14 @@ def bar_chart_for_appid_by_status(app_id=None, customer_name='default',
 def app_stats_by_severity(sevs):
     try:
         new_sevs = []
-        for i in xrange(len(sevs)):
+        for i in range(len(sevs)):
             sevs[i] = (
                 {
                     'severity': sevs[i]['group'],
                     'count': sevs[i]['reduction']
                 }
             )
-        sevs_in_sevs = map(lambda x: x['severity'], sevs)
+        sevs_in_sevs = [x['severity'] for x in sevs]
         difference = list(set(CommonSeverityKeys.ValidRvSeverities).difference(sevs_in_sevs))
 
         if difference:

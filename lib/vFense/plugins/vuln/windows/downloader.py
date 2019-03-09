@@ -124,16 +124,16 @@ def download_latest_xls_from_msft():
     xls_file_location = None
 
     if not os.path.exists(WindowsDataDir.XLS_DIR):
-        print 'Creating data directory %s' % WindowsDataDir.XLS_DIR
+        print('Creating data directory %s' % WindowsDataDir.XLS_DIR)
         os.makedirs(WindowsDataDir.XLS_DIR)
 
     xls_url, xls_file_name = get_msft_bulletin_url()
-    print 'Resolved URL as %s' % xls_url
-    print 'Resolved filename as %s' % xls_file_name
+    print('Resolved URL as %s' % xls_url)
+    print('Resolved filename as %s' % xls_file_name)
 
     if xls_url:
         xls_file_location = os.path.join(WindowsDataDir.XLS_DIR, xls_file_name)
-        print 'Resolved full filename as %s' % xls_file_location
+        print('Resolved full filename as %s' % xls_file_location)
         file_downloaded, xls_data = get_msft_bulletin_xlsx(xls_url)
 
         if file_downloaded:
@@ -161,7 +161,7 @@ def download_latest_xls_from_msft():
                     )
                 )
     else:
-        print 'Download failed!'
+        print('Download failed!')
 
     return(downloaded, xls_file_location)
 

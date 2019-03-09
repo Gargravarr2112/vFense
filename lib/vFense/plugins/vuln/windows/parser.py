@@ -33,7 +33,7 @@ def parse_spread_sheet(bulletin_file):
     bulletin_list = []
     workbook = open_workbook(bulletin_file)
     sheet = workbook.sheet_by_name(WindowsBulletinStrings.WORKBOOK_SHEET)
-    rows = range(sheet.nrows)
+    rows = list(range(sheet.nrows))
     rows.pop(0)
     for i in rows:
         row = sheet.row_values(i)
@@ -50,7 +50,7 @@ def parse_spread_sheet(bulletin_file):
             row[6] + row[7] + row[8] + row[9]
         )
         rows_to_use = \
-            unicode(rows_to_use).encode(sys.stdout.encoding, 'replace')
+            str(rows_to_use).encode(sys.stdout.encoding, 'replace')
         built_id = build_bulletin_id(rows_to_use)
         bulletin_dict[WindowsSecurityBulletinKeys.Id] = built_id
         date = xldate_as_tuple(row[0], workbook.datemode)
@@ -111,7 +111,7 @@ def parse_bulletin_and_updatedb():
     """
     logger.info('starting microsoft security bulletin update process')
     if not os.path.exists(WindowsDataDir.XLS_DIR):
-        os.makedirs(WindowsDataDir.XLS_DIR, 0755)
+        os.makedirs(WindowsDataDir.XLS_DIR, 0o755)
     downloaded, xls_file = download_latest_xls_from_msft()
     if downloaded:
         bulletin_data = parse_spread_sheet(xls_file)

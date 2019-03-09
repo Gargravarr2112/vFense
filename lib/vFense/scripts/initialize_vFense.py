@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import time
@@ -22,8 +23,8 @@ vfense_logger.create_config()
 
 import logging, logging.config
 
-import create_indexes as ci
-import nginx_config_creator as ncc
+from . import create_indexes as ci
+from . import nginx_config_creator as ncc
 from vFense import *
 from vFense.supported_platforms import *
 from vFense.utils.security import generate_pass, check_password
@@ -141,22 +142,22 @@ def create_folder_structure():
 		)
 	os.umask(0)
 	if not os.path.exists(VFENSE_TMP_PATH):
-		os.mkdir(VFENSE_TMP_PATH, 0755)
+		os.mkdir(VFENSE_TMP_PATH, 0o755)
 
 	if not os.path.exists(VFENSE_LOG_PATH):
-		os.mkdir(VFENSE_LOG_PATH, 0755)
+		os.mkdir(VFENSE_LOG_PATH, 0o755)
 	if not os.path.exists(VFENSE_SCHEDULER_PATH):
-		os.mkdir(VFENSE_SCHEDULER_PATH, 0755)
+		os.mkdir(VFENSE_SCHEDULER_PATH, 0o755)
 	if not os.path.exists(VFENSE_APP_PATH):
-		os.mkdir(VFENSE_APP_PATH, 0755)
+		os.mkdir(VFENSE_APP_PATH, 0o755)
 	if not os.path.exists(VFENSE_APP_TMP_PATH):
-		os.mkdir(VFENSE_APP_TMP_PATH, 0775)
+		os.mkdir(VFENSE_APP_TMP_PATH, 0o775)
 	if not os.path.exists(os.path.join(VFENSE_VULN_PATH, 'windows/data/xls')):
-		os.makedirs(os.path.join(VFENSE_VULN_PATH, 'windows/data/xls'), 0755)
+		os.makedirs(os.path.join(VFENSE_VULN_PATH, 'windows/data/xls'), 0o755)
 	if not os.path.exists(os.path.join(VFENSE_VULN_PATH, 'cve/data/xml')):
-		os.makedirs(os.path.join(VFENSE_VULN_PATH,'cve/data/xml'), 0755)
+		os.makedirs(os.path.join(VFENSE_VULN_PATH,'cve/data/xml'), 0o755)
 	if not os.path.exists(os.path.join(VFENSE_VULN_PATH, 'ubuntu/data/html')):
-		os.makedirs(os.path.join(VFENSE_VULN_PATH, 'ubuntu/data/html'), 0755)
+		os.makedirs(os.path.join(VFENSE_VULN_PATH, 'ubuntu/data/html'), 0o755)
 
 def link_and_start_service():
 	if get_distro() in DEBIAN_DISTROS:
@@ -203,26 +204,26 @@ def link_and_start_service():
 
 	rethink_start = subprocess.Popen(['service', 'rethinkdb','start'])
 	while not db_connect():
-		print 'Sleeping until rethink starts'
+		print('Sleeping until rethink starts')
 		sleep(2)
 
 def initialise_db(conn):
-	print "Rethink is running, creating database"
+	print("Rethink is running, creating database")
 	r.db_create(DB_NAME).run(conn)
-	print "Database created successfully, creating tables and indexes"
+	print("Database created successfully, creating tables and indexes")
 	ci.create_tables(conn)
 	ci.create_indexes(conn)
-	print "Database tables created and indexed successfully"
+	print("Database tables created and indexed successfully")
 
 def populate_initial_data(conn):
-	print "Beginning database populate"
+	print("Beginning database populate")
 	default_customer = Customer(
 		DefaultCustomers.DEFAULT,
 		server_queue_ttl=args.queue_ttl,
 		package_download_url=url
 	)
 	customers.create_customer(default_customer, init=True)
-	print "Default customer created"
+	print("Default customer created")
 
 	group_data = group.get_group_by_name(DefaultGroups.ADMIN, DefaultCustomers.DEFAULT)
 	if not group_data:
@@ -246,8 +247,8 @@ def populate_initial_data(conn):
 		msg = 'Admin user creation failed with code %d and message "%s"' % (create_admin_user['http_status'], create_admin_user['message'])
 		return False, msg
 	
-	print 'Admin username = admin'
-	print 'Admin password = %s' % (args.admin_password)
+	print('Admin username = admin')
+	print(('Admin password = %s' % (args.admin_password)))
 	agent_pass = generate_pass()
 	while not check_password(agent_pass)[0]:
 		agent_pass = generate_pass()
@@ -260,41 +261,41 @@ def populate_initial_data(conn):
 		DefaultCustomers.DEFAULT,
 		'',
 	)
-	print 'Agent api user = agent_api'
-	print 'Agent password = %s' % (agent_pass)
+	print('Agent api user = agent_api')
+	print(('Agent password = %s' % (agent_pass)))
 
 	monit.monit_initialization()
 
 	if args.cve_data:
-		print "Updating CVE's (this takes a while, be patient!)..."
+		print("Updating CVE's (this takes a while, be patient!)...")
 		cve_start = time.time()
 		load_up_all_xml_into_db()
 		cve_end = time.time()
-		print "Done Updating CVE's (total time: {0} seconds)".format((cve_end - cve_start))
-		print "Updating Microsoft Security Bulletin Ids..."
+		print(("Done Updating CVE's (total time: {0} seconds)".format((cve_end - cve_start))))
+		print("Updating Microsoft Security Bulletin Ids...")
 		ms_start = time.time()
 		parse_bulletin_and_updatedb()
 		ms_end = time.time()
-		print "Done Updating Microsoft Security Bulletin Ids (total time: {0} seconds)".format((ms_end - ms_start))
-		print "Updating Ubuntu Security Bulletin Ids...( This can take a couple of minutes )"
+		print(("Done Updating Microsoft Security Bulletin Ids (total time: {0} seconds)".format((ms_end - ms_start))))
+		print("Updating Ubuntu Security Bulletin Ids...( This can take a couple of minutes )")
 		ubuntu_start = time.time()
 		begin_usn_home_page_processing(full_parse=True)
 		ubuntu_end = time.time()
-		print "Done Updating Ubuntu Security Bulletin Ids (total time: {0} seconds)".format((ubuntu_end - ubuntu_start))
+		print(("Done Updating Ubuntu Security Bulletin Ids (total time: {0} seconds)".format((ubuntu_end - ubuntu_start))))
 
-	print 'Rethink Initialization and Table creation is now complete'
+	print('Rethink Initialization and Table creation is now complete')
 
 def clean_database(conn):
 	r.dbDrop(DB_NAME).run(conn)
 
 if __name__ == '__main__':
 	if os.getuid() != 0:
-		print 'MUST BE ROOT IN ORDER TO RUN'
+		print('MUST BE ROOT IN ORDER TO RUN')
 		sys.exit(1)
 
 	conn = db_connect()
 	if not conn:
-		print 'Rethink is not running, start RethinkDB server before attempting to initialise vFense!'
+		print('Rethink is not running, start RethinkDB server before attempting to initialise vFense!')
 		sys.exit(1)
 	
 	#clean_database(conn)
@@ -310,7 +311,7 @@ if __name__ == '__main__':
 	populate_initial_data(conn)
 
 	if db_initialized:
-		print 'vFense environment has been succesfully initialized\n'
+		print('vFense environment has been succesfully initialized\n')
 		subprocess.Popen(
 			[
 				'chown', '-R', 'vfense.vfense', VFENSE_BASE_PATH
@@ -318,5 +319,5 @@ if __name__ == '__main__':
 		)
 
 	else:
-		print 'vFense Failed to initialize, please see messages above for further information'
+		print('vFense Failed to initialize, please see messages above for further information')
 

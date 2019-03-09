@@ -1,7 +1,7 @@
 import os
 import re
 import logging
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from vFense import VFENSE_LOGGING_CONFIG
 from vFense.core._constants import CommonKeys
@@ -58,7 +58,7 @@ def get_remote_file_size(url):
     if url:
         try:
             remote_size = (
-                urllib
+                urllib.request
                 .urlopen(url)
                 .info()
                 .getheaders("Content-Length")[0]
@@ -840,7 +840,7 @@ def application_updater(customer_name, app_data, os_string,
             os_string, app_name, app_version, app_kb
         )
 
-        app_data = dict(app_data.items() + vuln_data.items())
+        app_data = dict(list(app_data.items()) + list(vuln_data.items()))
 
         data_inserted = insert_data_in_table(app_data, collection)
 
@@ -1001,7 +1001,7 @@ def toggle_hidden_status(
 
     Returns:
     """
-    status = toggle_hidden_status.func_name + ' - '
+    status = toggle_hidden_status.__name__ + ' - '
     results = {
         ApiResultKeys.DATA: [],
         ApiResultKeys.USERNAME: username,

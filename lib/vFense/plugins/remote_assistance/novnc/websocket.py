@@ -32,9 +32,9 @@ else:
     s2b = lambda s: s      # No-op
     s2a = lambda s: [ord(c) for c in s]
 try:    from io import StringIO
-except: from cStringIO import StringIO
+except: from io import StringIO
 try:    from http.server import SimpleHTTPRequestHandler
-except: from SimpleHTTPServer import SimpleHTTPRequestHandler
+except: from http.server import SimpleHTTPRequestHandler
 
 # python 2.6 differences
 try:    from hashlib import md5, sha1
@@ -57,8 +57,8 @@ for mod, sup in [('numpy', 'HyBi protocol'), ('ssl', 'TLS/SSL/wss'),
         globals()[mod] = __import__(mod)
     except ImportError:
         globals()[mod] = None
-        print("WARNING: no '%s' module, %s is slower or disabled" % (
-            mod, sup))
+        print(("WARNING: no '%s' module, %s is slower or disabled" % (
+            mod, sup)))
 if multiprocessing and sys.platform == 'win32':
     # make sockets pickle-able/inheritable
     import multiprocessing.reduction
@@ -139,11 +139,11 @@ Sec-WebSocket-Accept: %s\r
 
         # Show configuration
         print("WebSocket server settings:")
-        print("  - Listen on %s:%s" % (
-                self.listen_host, self.listen_port))
+        print(("  - Listen on %s:%s" % (
+                self.listen_host, self.listen_port)))
         print("  - Flash security policy server")
         if self.web:
-            print("  - Web server. Web root: %s" % self.web)
+            print(("  - Web server. Web root: %s" % self.web))
         if ssl:
             if os.path.exists(self.cert):
                 print("  - SSL/TLS support")
@@ -156,7 +156,7 @@ Sec-WebSocket-Accept: %s\r
         if self.daemon:
             print("  - Backgrounding (daemon)")
         if self.record:
-            print("  - Recording to '%s.*'" % self.record)
+            print(("  - Recording to '%s.*'" % self.record))
 
     #
     # WebSocketServer static methods
@@ -226,7 +226,7 @@ Sec-WebSocket-Accept: %s\r
         # Close open files
         maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
         if maxfd == resource.RLIM_INFINITY: maxfd = 256
-        for fd in reversed(range(maxfd)):
+        for fd in reversed(list(range(maxfd))):
             try:
                 if fd != keepfd:
                     os.close(fd)
@@ -362,15 +362,15 @@ Sec-WebSocket-Accept: %s\r
             f['payload'] = WebSocketServer.unmask(buf, f['hlen'],
                                                   f['length'])
         else:
-            print("Unmasked frame: %s" % repr(buf))
+            print(("Unmasked frame: %s" % repr(buf)))
             f['payload'] = buf[(f['hlen'] + f['masked'] * 4):full_len]
 
         if base64 and f['opcode'] in [1, 2]:
             try:
                 f['payload'] = b64decode(f['payload'])
             except:
-                print("Exception while b64decoding buffer: %s" %
-                        repr(buf))
+                print(("Exception while b64decoding buffer: %s" %
+                        repr(buf)))
                 raise
 
         if f['opcode'] == 0x08:
@@ -422,7 +422,7 @@ Sec-WebSocket-Accept: %s\r
     def msg(self, msg):
         """ Output message with handler_id prefix. """
         if not self.daemon:
-            print("% 3d: %s" % (self.handler_id, msg))
+            print(("% 3d: %s" % (self.handler_id, msg)))
 
     def vmsg(self, msg):
         """ Same as msg() but only if verbose. """

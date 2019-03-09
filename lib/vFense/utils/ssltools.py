@@ -90,7 +90,8 @@ def save_key(location, key, key_type, name=socket.gethostname()):
     return(path_to_key, name, status)
 
 
-def create_cert_request(pkey, (CN, O, OU, C, ST, L), digest="sha512"):
+def create_cert_request(pkey, xxx_todo_changeme, digest="sha512"):
+    (CN, O, OU, C, ST, L) = xxx_todo_changeme
     csr = crypto.X509Req()
     csr.set_version(3)
     subj = csr.get_subject()
@@ -105,8 +106,9 @@ def create_cert_request(pkey, (CN, O, OU, C, ST, L), digest="sha512"):
     return csr
 
 
-def create_certificate(cert, (issuerCert, issuerKey), serial,\
-        (notBefore, notAfter), digest="sha512"):
+def create_certificate(cert, xxx_todo_changeme1, serial, xxx_todo_changeme2, digest="sha512"):
+    (issuerCert, issuerKey) = xxx_todo_changeme1
+    (notBefore, notAfter) = xxx_todo_changeme2
     cert = crypto.X509()
     cert.set_version(3)
     cert.set_serial_number(serial)
@@ -117,7 +119,8 @@ def create_certificate(cert, (issuerCert, issuerKey), serial,\
     return cert
 
 
-def create_signed_certificate(csr, issuerKey, serial, (notBefore, notAfter), digest="sha512"):
+def create_signed_certificate(csr, issuerKey, serial, xxx_todo_changeme3, digest="sha512"):
+    (notBefore, notAfter) = xxx_todo_changeme3
     cert = crypto.X509()
     cert.set_version(3)
     cert.set_serial_number(serial)
@@ -129,10 +132,10 @@ def create_signed_certificate(csr, issuerKey, serial, (notBefore, notAfter), dig
     return cert
 
 
-def create_signing_certificate_authority(pkey, serial,\
-        (CN, O, OU, C, ST, L),
-        (notBefore, notAfter),
+def create_signing_certificate_authority(pkey, serial, xxx_todo_changeme4, xxx_todo_changeme5,
         digest=SSLConstants.SHA512):
+    (CN, O, OU, C, ST, L) = xxx_todo_changeme4
+    (notBefore, notAfter) = xxx_todo_changeme5
     ca = crypto.X509()
     ca.set_version(3)
     subj = ca.get_subject()

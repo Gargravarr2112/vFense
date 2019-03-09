@@ -3,7 +3,7 @@ import logging
 import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
 from  functools import wraps
-import ConfigParser
+import configparser
 import types
 
 from vFense import VFENSE_LOGGING_CONFIG, VFENSE_DB_CONFIG
@@ -15,7 +15,7 @@ logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
 
 pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config.read(VFENSE_DB_CONFIG)
 
 def db_connect(new_db_config=None):

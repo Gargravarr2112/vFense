@@ -63,8 +63,8 @@ def retrive_MAC_digits(mac):
         raise ValueError('Invalid MAC %s (not a string)' % mac)
         
     if _is_hexnumber(plain_mac):
-        hexpairs = zip(plain_mac[::2],
-                       plain_mac[1::2])
+        hexpairs = list(zip(plain_mac[::2],
+                       plain_mac[1::2]))
         return [''.join(digit) for digit in hexpairs]
     else:
         raise ValueError('Invalid MAC %s' % mac)

@@ -56,7 +56,7 @@ class UpdateApplicationsV1(BaseHandler):
                 )
 
                 results_data = results.apps_refresh()
-                print results_data
+                print(results_data)
                 results_apps_refresh = results.apps_refresh()
                 self.set_status(results_apps_refresh['http_status'])
                 self.write(dumps(results_apps_refresh))

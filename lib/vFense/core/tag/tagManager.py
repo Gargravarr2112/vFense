@@ -224,7 +224,7 @@ def tag_lister(customer_name='default', query=None, conn=None):
         )
 
     if tags:
-        for tag in xrange(len(tags)):
+        for tag in range(len(tags)):
             agents_in_tag = list(
                 r
                 .table(TagsPerAgentCollection)

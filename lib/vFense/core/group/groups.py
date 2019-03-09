@@ -353,7 +353,7 @@ def add_user_to_groups(
         }
     }
     """
-    status = add_user_to_groups.func_name + ' - '
+    status = add_user_to_groups.__name__ + ' - '
     groups_are_valid = validate_group_ids(group_ids, customer_name)
     user_exist = retrieve_object(username, UserCollections.Users)
     customer_exist = retrieve_object(customer_name, CustomerCollections.Customers)
@@ -483,7 +483,7 @@ def create_group(
         }
     """
 
-    status = create_group.func_name + ' - '
+    status = create_group.__name__ + ' - '
     generated_ids = []
     valid_group_name = (
         re.search('((?:[A-Za-z0-9_-](?!\s+")|\s(?!\s*")){1,36})', group_name)
@@ -605,7 +605,7 @@ def remove_groups_from_user(
             'http_status': 409
         }
     """
-    status = remove_groups_from_user.func_name + ' - '
+    status = remove_groups_from_user.__name__ + ' - '
     user_does_not_exist_in_group = False
     admin_user = False
     admin_group_id = None
@@ -622,10 +622,7 @@ def remove_groups_from_user(
     try:
         if not group_ids:
             group_ids = (
-                map(lambda x:
-                    x[GroupsPerUserKeys.GroupId],
-                    get_groups_for_user(username, GroupsPerUserKeys.GroupId)
-                )
+                [x[GroupsPerUserKeys.GroupId] for x in get_groups_for_user(username, GroupsPerUserKeys.GroupId)]
             )
 
         if group_ids:
@@ -734,7 +731,7 @@ def remove_group(group_id, user_name=None, uri=None, method=None):
             'http_status': 200
         }
     """
-    status = remove_group.func_name + ' - '
+    status = remove_group.__name__ + ' - '
     ids_deleted = []
     try:
         users_exist = get_users_in_group(group_id)
@@ -824,7 +821,7 @@ def remove_groups(group_ids, user_name=None, uri=None, method=None):
             'http_status': 200
         }
     """
-    status = remove_groups.func_name + ' - '
+    status = remove_groups.__name__ + ' - '
     ids_deleted = []
     try:
         users_exist = users_exist_in_group_ids(group_ids)

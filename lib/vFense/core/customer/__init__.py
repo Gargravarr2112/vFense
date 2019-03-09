@@ -109,7 +109,7 @@ class Customer(object):
         """
         invalid_fields = []
 
-        if isinstance(self.name, basestring):
+        if isinstance(self.name, str):
             valid_symbols = re.search(
                 '((?:[A-Za-z0-9_-](?!\s+")|\s(?!\s*")){1,36})', self.name
             )

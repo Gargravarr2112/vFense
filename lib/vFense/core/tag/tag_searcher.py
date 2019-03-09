@@ -57,7 +57,7 @@ class TagSearcher():
                 .run(conn)
                 )
             if data:
-                for tag in xrange(len(data)):
+                for tag in range(len(data)):
                     data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                         get_all_avail_stats_by_tagid(
                             data[tag][TagsKeys.TagId]
@@ -134,7 +134,7 @@ class TagSearcher():
                     .run(conn)
                 )
                 if data:
-                    for tag in xrange(len(data)):
+                    for tag in range(len(data)):
                         data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                             get_all_avail_stats_by_tagid(
                                 tag[TagsKeys.TagId]
@@ -204,7 +204,7 @@ class TagSearcher():
             )
 
             if data:
-                for tag in xrange(len(data)):
+                for tag in range(len(data)):
                     data[tag][CommonAppKeys.BASIC_RV_STATS] = (
                         get_all_avail_stats_by_tagid(
                             data[tag][TagsKeys.TagId]

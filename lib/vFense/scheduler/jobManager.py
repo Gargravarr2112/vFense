@@ -62,7 +62,7 @@ def start_scheduler(redis_db=10, conn=None):
 
     if list_of_customers:
         msg = 'Starting Job Scheduler for customers %s' % \
-            (', '.join(map(lambda x: x['name'], list_of_customers)))
+            (', '.join([x['name'] for x in list_of_customers]))
         logger.info(msg)
 
         try:
@@ -1218,7 +1218,7 @@ def schedule_once(sched, customer_name, username,
                 )
             )
             if job_extra:
-                for key, val in job_extra.items():
+                for key, val in list(job_extra.items()):
                     jobby_job[key] = val
 
             if jobby_job['operation'] == 'install':

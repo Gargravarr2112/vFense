@@ -117,7 +117,7 @@ class RvNotificationHandler():
                             .run(conn)
                     )
                     if users_list:
-                        users = map(lambda x: x['name'], user_list[0])
+                        users = [x['name'] for x in user_list[0]]
                         email_sender_list += (
                             r
                             .expr(users)

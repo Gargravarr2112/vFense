@@ -185,7 +185,7 @@ def time_it(fn):
         total_time_to_complete = end_time - start_time
         message = (
             ':%s: took %s seconds to run' %
-            (fn.func_name, total_time_to_complete.total_seconds())
+            (fn.__name__, total_time_to_complete.total_seconds())
         )
         logger.debug(message)
 

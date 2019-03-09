@@ -62,7 +62,7 @@ def get_all_stats_by_appid(username, customer_name, uri, method, app_id,
                 )
                 data.append(new_data)
 
-        statuses = map(lambda x: x['status'], data)
+        statuses = [x['status'] for x in data]
         difference = set(CommonAppKeys.ValidPackageStatuses).difference(statuses)
         if len(difference) > 0:
             for status in difference:
@@ -157,7 +157,7 @@ def get_all_agents_per_appid(username, customer_name, uri, method, app_id,
                 new_data[CurrentAppsPerAgentKeys.Status] = i['group']
                 data.append(new_data)
 
-        statuses = map(lambda x: x['status'], data)
+        statuses = [x['status'] for x in data]
         difference = set(CommonAppKeys.ValidPackageStatuses).difference(statuses)
         if len(difference) > 0:
             for status in difference:
@@ -233,7 +233,7 @@ def get_all_stats_by_agentid(username, customer_name,
                 )
                 data.append(new_data)
 
-        statuses = map(lambda x: x['status'], data)
+        statuses = [x['status'] for x in data]
         difference = set(CommonAppKeys.ValidPackageStatuses).difference(statuses)
         if len(difference) > 0:
             for status in difference:

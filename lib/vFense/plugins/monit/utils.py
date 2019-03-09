@@ -1,9 +1,9 @@
 import datetime
 import time
 
-import _db
+from . import _db
 
-from _db import Collection, Master
+from ._db import Collection, Master
 from vFense.db.client import r, db_create_close
 
 
@@ -13,10 +13,10 @@ AgentCollection = 'agents'
 
 class MonitorKeys():
 
-    Memory = u'memory'
-    FileSystem = u'file_system'
-    Cpu = u'cpu'
-    Timestamp = u'timestamp'
+    Memory = 'memory'
+    FileSystem = 'file_system'
+    Cpu = 'cpu'
+    Timestamp = 'timestamp'
 
 
 class Monitor():

@@ -481,7 +481,7 @@ class Notifier():
 
     def __populate_data(self, data):
         keys_in_collection = self.__get_all_keys()
-        for key, val in keys_in_collection.items():
+        for key, val in list(keys_in_collection.items()):
             if data.get(key, None):
                 keys_in_collection[key] = data[key]
 

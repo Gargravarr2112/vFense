@@ -13,12 +13,12 @@ as taken from http://docs.python.org/dev/library/ssl.html#certificates
 
 import signal, socket, optparse, time, os, sys, subprocess
 from select import select
-import websocket
+from . import websocket
 try:
     from urllib.parse import parse_qs, urlparse
 except:
     from cgi import parse_qs
-    from urlparse import urlparse
+    from urllib.parse import urlparse
 
 class WebSocketProxy(websocket.WebSocketServer):
     """
@@ -86,7 +86,7 @@ Traffic Legend:
         websocket.WebSocketServer.__init__(self, *args, **kwargs)
 
     def run_wrap_cmd(self):
-        print("Starting '%s'" % " ".join(self.wrap_cmd))
+        print(("Starting '%s'" % " ".join(self.wrap_cmd)))
         self.wrap_times.append(time.time())
         self.wrap_times.pop(0)
         self.cmd = subprocess.Popen(
@@ -116,7 +116,7 @@ Traffic Legend:
         if self.ssl_target:
             msg += " (using SSL)"
 
-        print(msg + "\n")
+        print((msg + "\n"))
 
         if self.wrap_cmd:
             self.run_wrap_cmd()
@@ -183,7 +183,7 @@ Traffic Legend:
                 connect=True, use_ssl=self.ssl_target, unix_socket=self.unix_target)
 
         if self.verbose and not self.daemon:
-            print(self.traffic_legend)
+            print((self.traffic_legend))
 
         # Start proxying
         try:
@@ -208,7 +208,7 @@ Traffic Legend:
         # Extract the token parameter from url
         args = parse_qs(urlparse(path)[4]) # 4 is the query from url
 
-        if not args.has_key('token') or not len(args['token']):
+        if 'token' not in args or not len(args['token']):
             raise self.EClose("Token not present")
 
         token = args['token'][0].rstrip('\n')
@@ -230,7 +230,7 @@ Traffic Legend:
 
         self.vmsg("Target config: %s" % repr(targets))
 
-        if targets.has_key(token):
+        if token in targets:
             return targets[token].split(':')
         else:
             raise self.EClose("Token '%s' not found" % token)

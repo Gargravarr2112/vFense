@@ -272,7 +272,7 @@ def update_agent_field(
         }
     """
     agent_data = {field: value}
-    status = update_agent_field.func_name + ' - '
+    status = update_agent_field.__name__ + ' - '
     status_code, count, errors, generated_ids = (
         update_agent_data(
             agent_id, agent_data
@@ -342,7 +342,7 @@ def update_agent_fields(
             'data': {'needs_reboot': 'no'}
         }
     """
-    status = update_agent_fields.func_name + ' - '
+    status = update_agent_fields.__name__ + ' - '
     status_code, count, errors, generated_ids = (
         update_agent_data(
             agent_id, agent_data
@@ -406,7 +406,7 @@ def update_agent_status(agent_id, username=None, uri=None, method=None):
             'data': {'needs_reboot': 'no'}
         }
     """
-    status = update_agent_status.func_name + ' - '
+    status = update_agent_status.__name__ + ' - '
     now = time()
     agent_data = {
         AgentKeys.LastAgentUpdate: DbTime.epoch_time_to_db_time(now),
@@ -497,7 +497,7 @@ def add_agent(
                     customer, username=username, uri=uri, method=method
                 )
 
-        for key, value in system_info.items():
+        for key, value in list(system_info.items()):
             agent_data[key] = value
 
         agent_data[AgentKeys.LastAgentUpdate] = (
@@ -579,7 +579,7 @@ def update_agent(
         if agent_orig_info:
             agent_data[AgentKeys.Hardware] = hardware
 
-            for key, value in system_info.items():
+            for key, value in list(system_info.items()):
                 agent_data[key] = value
 
             agent_data[AgentKeys.LastAgentUpdate] = (
@@ -684,7 +684,7 @@ def remove_all_agents_for_customer(
         >>> customer_name = 'tester'
         >>> remove_all_agents_for_customer(customer_name)
     """
-    status = remove_all_agents_for_customer.func_name + ' - '
+    status = remove_all_agents_for_customer.__name__ + ' - '
 
     status_code, count, error, generated_ids = (
         delete_all_agents_for_customer(customer_name)
@@ -741,7 +741,7 @@ def change_customer_for_all_agents_in_customer(
         >>> new_customer = 'tester'
         >>> change_customer_for_all_agents_in_customer(current_customer, new_customer)
     """
-    status = change_customer_for_agents.func_name + ' - '
+    status = change_customer_for_agents.__name__ + ' - '
 
     status_code, count, error, generated_ids = (
         move_all_agents_to_customer(current_customer, new_customer)
@@ -798,7 +798,7 @@ def change_customer_for_agents(
         >>> agent_ids = ['7f242ab8-a9d7-418f-9ce2-7bcba6c2d9dc']
         >>> change_customer_for_agents(agent_ids, new_customer)
     """
-    status = change_customer_for_agents.func_name + ' - '
+    status = change_customer_for_agents.__name__ + ' - '
 
     status_code, count, error, generated_ids = (
         move_agents_to_customer(agent_ids, new_customer)
@@ -855,7 +855,7 @@ def change_customer_for_agent(
         >>> agent_id = '7f242ab8-a9d7-418f-9ce2-7bcba6c2d9dc'
         >>> change_customer_for_agent(agent_id, new_customer)
     """
-    status = change_customer_for_agent.func_name + ' - '
+    status = change_customer_for_agent.__name__ + ' - '
 
     status_code, count, error, generated_ids = (
         move_agent_to_customer(agent_id, new_customer)

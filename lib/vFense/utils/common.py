@@ -112,7 +112,7 @@ def timestamp_verifier(tstamp):
                 datetime.fromtimestamp(tstamp)
             else:
                 tstamp = 0.0
-        elif isinstance(tstamp, unicode):
+        elif isinstance(tstamp, str):
             if len(tstamp) > 0:
                 tstamp = float(tstamp)
                 datetime.fromtimestamp(tstamp)
@@ -132,7 +132,7 @@ def timestamp_verifier(tstamp):
 def date_parser(unformatted_date, convert_to_timestamp=True):
     formatted_date = None
     if unformatted_date != "":
-        if type(unformatted_date) == unicode:
+        if type(unformatted_date) == str:
             unformatted_date.encode('utf-8')
 
         try:
@@ -185,7 +185,7 @@ def date_parser(unformatted_date, convert_to_timestamp=True):
 
 
 def date_time_parser(schedule):
-    if type(schedule) == unicode:
+    if type(schedule) == str:
         schedule.encode('utf-8')
 
     try:
@@ -247,9 +247,7 @@ def date_time_parser(schedule):
         am_pm = am_pm.upper()
 
     pformatted = (
-        map(lambda x: int(x),
-            re.split(r'\/|:|\s+', schedule)
-            )
+        [int(x) for x in re.split(r'\/|:|\s+', schedule)]
     )
 
     if len(pformatted) == 5 and am_pm:
@@ -304,7 +302,7 @@ def get_expire_from_cert(cert):
         .group(1, 2, 3, 4, 5, 6)
     )
 
-    t = map(lambda x: int(x), asn1_time)
+    t = [int(x) for x in asn1_time]
     return datetime(t[0], t[1], t[2], t[3], t[4], t[5])
 
 

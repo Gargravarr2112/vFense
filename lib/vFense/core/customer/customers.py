@@ -260,7 +260,7 @@ def add_user_to_customers(
     results = None
     user_exist = retrieve_object(username, UserCollections.Users)
     data_list = []
-    status = add_user_to_customers.func_name + ' - '
+    status = add_user_to_customers.__name__ + ' - '
     msg = ''
     status_code = 0
     generic_status_code = 0
@@ -385,7 +385,7 @@ def create_customer(
     """
     customer_exist = get_customer(customer.name)
 
-    status = create_customer.func_name + ' - '
+    status = create_customer.__name__ + ' - '
     msg = ''
     status_code = 0
     generic_status_code = 0
@@ -553,7 +553,7 @@ def edit_customer(customer, **kwargs):
     else:
         method = kwargs.pop(ApiResultKeys.HTTP_METHOD)
 
-    status = edit_customer.func_name + ' - '
+    status = edit_customer.__name__ + ' - '
     update_data = customer.to_dict_non_null()
 
     msg = ''
@@ -645,7 +645,7 @@ def remove_customers_from_user(
         'http_status': 409
     }
     """
-    status = remove_customers_from_user.func_name + ' - '
+    status = remove_customers_from_user.__name__ + ' - '
     try:
         status_code, count, errors, generated_ids = (
             delete_user_in_customers(username, customer_names)
@@ -728,7 +728,7 @@ def remove_customer(customer_name, user_name=None, uri=None, method=None):
 
         }
     """
-    status = remove_customer.func_name + ' - '
+    status = remove_customer.__name__ + ' - '
     status_code = 0
     generic_status_code = 0
     vfense_status_code = 0
@@ -755,10 +755,7 @@ def remove_customer(customer_name, user_name=None, uri=None, method=None):
                 )
                 if users:
                     users = (
-                        map(
-                            lambda user:
-                            user[CustomerPerUserKeys.UserName], users
-                        )
+                        [user[CustomerPerUserKeys.UserName] for user in users]
                     )
                     delete_users_in_customer(users, customer_name)
 
@@ -837,7 +834,7 @@ def remove_customers(customer_names, user_name=None, uri=None, method=None):
 
         }
     """
-    status = remove_customer.func_name + ' - '
+    status = remove_customer.__name__ + ' - '
     status_code = 0
     generic_status_code = 0
     vfense_status_code = 0
@@ -866,10 +863,7 @@ def remove_customers(customer_names, user_name=None, uri=None, method=None):
                     )
                     if users:
                         users = (
-                            map(
-                                lambda user:
-                                user[CustomerPerUserKeys.UserName], users
-                            )
+                            [user[CustomerPerUserKeys.UserName] for user in users]
                         )
                         delete_users_in_customer(users, customer_name)
 

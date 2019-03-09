@@ -21,7 +21,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             )
         )
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_b_edit_customer(self):
         props = {
@@ -29,7 +29,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
         }
         results = edit_customer('test', **props)
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_c_create_group1(self):
         results = (
@@ -38,7 +38,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             )
         )
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_d_create_group2(self):
         results = (
@@ -48,7 +48,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             )
         )
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
 
     def test_e_create_user1(self):
@@ -61,7 +61,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             'tester', '/test', 'TEST'
         ) 
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_f_create_user2(self):
         group_test_id = (
@@ -73,7 +73,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             'tester', '/test', 'TEST'
         ) 
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_g_create_user3(self):
         group_test_id_1 = (
@@ -89,7 +89,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
             'tester', '/test', 'TEST'
         ) 
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_h_edit_user(self):
         props = {
@@ -97,12 +97,12 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
         }
         results = edit_user_properties('test1', **props)
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_i_edit_password(self):
         results = change_password('test1', 'T35t#123', 'T35t#1234')
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_j_add_user_to_group(self):
         group_test_id = (
@@ -110,31 +110,31 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
         )
         results = add_user_to_groups('test2', 'test', [group_test_id])
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
     def test_k_remove_groups_from_user(self):
         group_test_id = (
             get_group_by_name('Tester 4 life Part 1', 'test').get(GroupKeys.GroupId)
         )
         results = remove_groups_from_user('test3', [group_test_id])
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 #"""
 
     def test_l_remove_customers_from_user(self):
         results = remove_customers_from_user('test3', ['test'])
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
 
     def test_m_remove_user(self):
         results = remove_user('test3')
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_n_remove_users(self):
         results = remove_users(['test1', 'test2'])
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_o_remove_groups1(self):
         group_test_id = (
@@ -142,7 +142,7 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
         )
         results = remove_group(group_test_id)
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_p_remove_groups2(self):
         group_test_id = (
@@ -150,12 +150,12 @@ class UsersGroupsAndCustomersTests(unittest.TestCase):
         )
         results = remove_group(group_test_id)
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
     def test_q_remove_customer1(self):
         results = remove_customer('test')
         http_status_code = results.get(ApiResultKeys.HTTP_STATUS_CODE)
-        self.failUnless(http_status_code == 200)
+        self.assertTrue(http_status_code == 200)
 
 
 #"""

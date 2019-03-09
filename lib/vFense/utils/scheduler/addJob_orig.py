@@ -37,5 +37,5 @@ class JobScheduler():
                         self.converted_timestamp, name=self.name,
                         jobstore="toppatch"
                         )
-        print self.sched.print_jobs()
+        print(self.sched.print_jobs())
 

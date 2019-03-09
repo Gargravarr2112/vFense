@@ -141,7 +141,7 @@ class IncomingApplications():
                     "inserted: {0}, updated: {1}, deleted: {2}")
                     .format(inserted, updated, deleted))
 
-        print log_msg
+        print(log_msg)
         logger.info(log_msg)
 
 

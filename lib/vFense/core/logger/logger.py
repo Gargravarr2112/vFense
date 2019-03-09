@@ -11,7 +11,7 @@ from datetime import datetime
 import logging
 import logging.config
 from vFense import VFENSE_LOGGING_CONFIG
-import ConfigParser
+import configparser
 from time import sleep
 
 class vFenseLogger():
@@ -81,8 +81,8 @@ class vFenseLogger():
         try:
             self.loglevel = self.level[loglevel]
         except Exception as e:
-            print 'incorrect level %s ' % (loglevel)
-            print 'acceptable levels are %s' % (",".join(self.level.values()))
+            print('incorrect level %s ' % (loglevel))
+            print('acceptable levels are %s' % (",".join(list(self.level.values()))))
         if logproto and loghost and logport:
             try:
                 self.logproto = self.rproto[logproto]
@@ -90,9 +90,9 @@ class vFenseLogger():
                 self.logport = str(logport)
                 self.loghost = loghost
             except Exception as e:
-                print 'incorrect protocol %s ' % (logproto)
-                print 'acceptable levels are %s' % (",".join(self.rproto.values()))
-        self.Config = ConfigParser.ConfigParser()
+                print('incorrect protocol %s ' % (logproto))
+                print('acceptable levels are %s' % (",".join(list(self.rproto.values()))))
+        self.Config = configparser.ConfigParser()
         self.logdir = LOGDIR
         self.loggers = (
             [
@@ -118,7 +118,7 @@ class vFenseLogger():
             self.syslog = 'syslog_'+loghost
             self.loggers.append(self.syslog)
             self.handlers.append(self.syslog)
-        self.logger_handler = zip(self.loggers, self.handlers)
+        self.logger_handler = list(zip(self.loggers, self.handlers))
         now = datetime.today()
         self.now = '%s_%s_%s_%s_%s_%s' % \
                 (now.year, now.month, now.day,
@@ -241,22 +241,22 @@ class vFenseLogger():
 
     def _start_listener(self):
         try:
-            print "starting listener"
+            print("starting listener")
             self.listener = logging.config.listen(self.LISTENER_PORT)
             self.listener.start()
-            print "listener started"
+            print("listener started")
         except Exception as e:
-            print e
+            print(e)
 
 
     def _shutdown_listener(self):
         try:
-            print "shutting down listener"
+            print("shutting down listener")
             logging.config.stopListening()
             #self.listener.join()
-            print "listener is down"
+            print("listener is down")
         except Exception as e:
-            print dir(e), e
+            print(dir(e), e)
 
 
     def _send_config(self, msg):
@@ -264,14 +264,14 @@ class vFenseLogger():
         sender = socket(AF_INET, SOCK_STREAM)
         passed = True
         message = None
-        print "Im about to connect to the listener"
+        print("Im about to connect to the listener")
         try:
-            print self.LISTENER_HOST, self.LISTENER_PORT
+            print(self.LISTENER_HOST, self.LISTENER_PORT)
             sender.connect((self.LISTENER_HOST, self.LISTENER_PORT))
-            print "I'm connected to the listener"
+            print("I'm connected to the listener")
             passed = True
         except Exception as e:
-            print e, "BOOM I CANT CONNECT"
+            print(e, "BOOM I CANT CONNECT")
             if self.count == 0:
                 self.count = self.count + 1
                 self._send_config(msg)
@@ -279,13 +279,13 @@ class vFenseLogger():
             message = e.message+' '+self.LISTENER_HOST+\
                     ' '+ str(self.LISTENER_PORT)
         if passed:
-            print "I'm sending the new config file over"
+            print("I'm sending the new config file over")
             try:
                 sender.send(struct.pack('>L', len(msg)))
                 sender.send(msg)
-                print "new config sent"
+                print("new config sent")
             except Exception as e:
-                print e
+                print(e)
             sender.shutdown(SHUT_RDWR)
             sender.close()
             passed = True

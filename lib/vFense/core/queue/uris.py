@@ -191,7 +191,7 @@ def get_result_uris(agent_id, user_name=None, uri=None, method=None):
         }
     """
     status_code = 0
-    status = get_result_uris.func_name + ' - '
+    status = get_result_uris.__name__ + ' - '
     result_uris = _get_result_uris_dict(agent_id)
 
     agent_exist = get_agent_info(agent_id, AgentKeys.AgentId)

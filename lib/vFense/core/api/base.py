@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from vFense.core.api._constants import ApiArguments
 

@@ -1,6 +1,6 @@
 import functools
-import urllib
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.parse
 import json
 
 from tornado.web import HTTPError

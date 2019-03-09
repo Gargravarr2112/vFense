@@ -102,7 +102,7 @@ def start_nvd_xml_download():
         )
         iter_year += 1
     if not os.path.exists(CVEDataDir.XML_DIR):
-        os.makedirs(CVEDataDir.XML_DIR, 0755)
+        os.makedirs(CVEDataDir.XML_DIR, 0o755)
 
     # If we have not yet downloaded the 2002-now CVE's,
     # please download them now

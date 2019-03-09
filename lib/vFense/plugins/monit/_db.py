@@ -115,7 +115,7 @@ def _save_data_point(agent=None, collection=None, data=None, conn=None):
     ):
         return None
 
-    timestamp = long(time.time())
+    timestamp = int(time.time())
 
     point = {}
     point[CollectionKeys.AgentId] = agent

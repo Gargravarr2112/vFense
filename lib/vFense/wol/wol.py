@@ -21,7 +21,7 @@ def wake_up_node(session, node_list=None):
             if node:
                 macs = get_list_of_mac_addresses(session, node_id=node.id)
                 for mac in macs:
-                    print node.ip_address, node.id, mac
+                    print(node.ip_address, node.id, mac)
                     send_magic(mac)
         return({
             'pass': True,

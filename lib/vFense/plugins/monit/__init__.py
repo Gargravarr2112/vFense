@@ -2,7 +2,7 @@ import datetime
 import time
 import json
 
-from _db import monit_initialization
+from ._db import monit_initialization
 from vFense.plugins.monit.api_handlers import UpdateMonitoringStatsV1, \
     GetMemoryStats, GetFileSystemStats, GetCpuStats, GetAllStats
 

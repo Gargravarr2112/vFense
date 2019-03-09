@@ -16,7 +16,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.options
 
-import vFense_module_loader
+from . import vFense_module_loader
 
 from redis import StrictRedis
 

@@ -12,7 +12,7 @@ CurrentConnections = 0
 StartPort = 10000
 EndPort = 11000
 
-PortRange = range(StartPort, EndPort)
+PortRange = list(range(StartPort, EndPort))
 
 db.ra_initialization()
 
