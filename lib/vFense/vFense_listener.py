@@ -15,7 +15,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.options
 
-from . import vFense_module_loader
+import vFense_module_loader
 
 from vFense.core.api.base import WebSocketHandler, AdminHandler
 from vFense.receiver.api.rv.results import InstallOsAppsResults, \
