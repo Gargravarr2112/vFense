@@ -1,7 +1,8 @@
 import os
+from vFense import VFENSE_VAR_PATH
 
 class WindowsDataDir():
-    PLUGIN_DIR = os.path.abspath(os.path.dirname(__file__))
+    PLUGIN_DIR = os.path.join(VFENSE_VAR_PATH, 'vuln', 'windows')
     XLS_DIR = os.path.join(PLUGIN_DIR, 'data/xls')
 
 class WindowsBulletinStrings():

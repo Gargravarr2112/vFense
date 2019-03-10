@@ -1,10 +1,11 @@
 import os
 
 from vFense.plugins.vuln._constants import DateValues
+from vFense import VFENSE_VAR_PATH
 
 
 class CVEDataDir():
-    PLUGIN_DIR = os.path.abspath(os.path.dirname(__file__))
+    PLUGIN_DIR = os.path.join(VFENSE_VAR_PATH, 'vuln', 'cve')
     XML_DIR = os.path.join(PLUGIN_DIR, 'data/xml')
     NVD_MODIFIED_FILE = os.path.join(XML_DIR, 'nvdcve-Modified.xml.gz')
     NVD_MODIFIED_FILE_UNCOMPRESSED = (
@@ -23,10 +24,10 @@ class CVEDataDir():
 
 
 class NVDFeeds():
-    ENTRY = '{http://nvd.nist.gov/feeds/cve/1.2}entry'
-    DESC = '{http://nvd.nist.gov/feeds/cve/1.2}desc'
-    REFS = '{http://nvd.nist.gov/feeds/cve/1.2}refs'
-    VULN_SOFT = '{http://nvd.nist.gov/feeds/cve/1.2}vuln_soft'
+    ENTRY = '{http://nvd.nist.gov/feeds/xml/cve/1.2}entry'
+    DESC = '{http://nvd.nist.gov/feeds/xml/cve/1.2}desc'
+    REFS = '{http://nvd.nist.gov/feeds/xml/cve/1.2}refs'
+    VULN_SOFT = '{http://nvd.nist.gov/feeds/xml/cve/1.2}vuln_soft'
 
 
 class CVEStrings():
