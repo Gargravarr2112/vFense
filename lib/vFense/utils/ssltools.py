@@ -17,162 +17,152 @@ logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('rvapi')
 
 def load_private_key(privkey=SSLConstants.PRIV_KEY):
-    pkey = LOAD_PKEY(SSLConstants.PEM, open(privkey, 'rb').read())
-    return pkey
+	pkey = LOAD_PKEY(SSLConstants.PEM, open(privkey, 'rb').read())
+	return pkey
 
 
 def load_cert(cert=SSLConstants.CERT_KEY):
-    signed_cert = LOAD_CERT(SSLConstants.PEM, open(cert, 'rb').read())
-    return signed_cert
+	signed_cert = LOAD_CERT(SSLConstants.PEM, open(cert, 'rb').read())
+	return signed_cert
 
 
 def dump_pkey(pkey):
-    pem_key = DUMP_PKEY(SSLConstants.PEM, pkey)
-    return pem_key
+	pem_key = DUMP_PKEY(SSLConstants.PEM, pkey)
+	return pem_key
 
 
 def dump_cert(cert):
-    pem_cert = DUMP_CERT(SSLConstants.PEM, cert)
-    return pem_cert
+	pem_cert = DUMP_CERT(SSLConstants.PEM, cert)
+	return pem_cert
 
 
 def load_cert_request(csr):
-    cert_request = LOAD_CERT_REQUEST(SSLConstants.PEM, csr)
-    return cert_request
+	cert_request = LOAD_CERT_REQUEST(SSLConstants.PEM, csr)
+	return cert_request
 
 
 def generate_private_key(type, bits):
-    pkey = crypto.PKey()
-    pkey.generate_key(type, bits)
-    return pkey
+	pkey = crypto.PKey()
+	pkey.generate_key(type, bits)
+	return pkey
 
 
 def save_key(location, key, key_type, name=socket.gethostname()):
-    extension = SSLConstants.EXTENSION[key_type]
-    name = name + extension
-    path_to_key = os.path.join(location, name)
-    status = False
-    if type(key) == crypto.PKeyType:
-        DUMP_KEY = DUMP_PKEY
-    elif type(key) == crypto.X509Type:
-        DUMP_KEY = DUMP_CERT
-    elif type(key) == crypto.X509ReqType:
-        DUMP_KEY = DUMP_CERT_REQUEST
-    try:
-        os.stat(location)
-    except OSError as e:
-        if e.errno == 2:
-            logger.error('%s - ssl directory %s does not exists' %\
-                    ('system_user', location)
-                    )
-        elif e.errno == 13:
-            logger.error('%s - Do not have permission to write to %s' %\
-                    ('system_user', location)
-                    )
-    try:
-        file_exists = os.stat(path_to_key)
-        if file_exists:
-            logger.warn('%s - File %s already exists' %\
-                    ('system_user', path_to_key))
-    except OSError as e:
-        if e.errno == 2:
-            open(path_to_key, 'w').write(\
-                    DUMP_KEY(SSLConstants.PEM, key)
-                    )
-            status = True
-            logger.error('%s - Writing ssl cert to %s ' %\
-                    ('system_user', location)
-                    )
-        elif e.errno == 13:
-            logger.error('%s - Do not have permission to write to %s' %\
-                    ('system_user', location)
-                    )
-    return(path_to_key, name, status)
+	extension = SSLConstants.EXTENSION[key_type]
+	name = name + extension
+	path_to_key = os.path.join(location, name)
+	status = False
+	if type(key) == crypto.PKeyType:
+		DUMP_KEY = DUMP_PKEY
+	elif type(key) == crypto.X509Type:
+		DUMP_KEY = DUMP_CERT
+	elif type(key) == crypto.X509ReqType:
+		DUMP_KEY = DUMP_CERT_REQUEST
+	try:
+		if not os.path.exists(location):
+			logger.warn('%s - ssl directory %s does not exist, creating' % ('system_user', location))
+			os.mkdir(location)
+	except OSError as e:
+		if e.errno == 13:
+			logger.error('%s - Do not have permission to write to %s' %\
+					('system_user', location)
+					)
+	try:
+		file_exists = os.path.exists(path_to_key)
+		if file_exists:
+			logger.warn('%s - File %s already exists, overwriting' % ('system_user', path_to_key))
+			open(path_to_key, 'w').write(DUMP_KEY(crypto.FILETYPE_PEM, key))
+			status = True
+			logger.error('%s - Writing ssl cert to %s ' %('system_user', location))
+	except OSError as e:
+		if e.errno == 13:
+			logger.error('%s - Do not have permission to write to %s' % ('system_user', location))
+	return(path_to_key, name, status)
 
 
-def create_cert_request(pkey, xxx_todo_changeme, digest="sha512"):
-    (CN, O, OU, C, ST, L) = xxx_todo_changeme
-    csr = crypto.X509Req()
-    csr.set_version(3)
-    subj = csr.get_subject()
-    subj.CN=CN
-    subj.O=O
-    subj.OU=OU
-    subj.C=C
-    subj.ST=ST
-    subj.L=L
-    csr.set_pubkey(pkey)
-    csr.sign(pkey, digest)
-    return csr
+def create_cert_request(pkey, csr_metadata, digest="sha512"):
+	(CN, O, OU, C, ST, L) = csr_metadata
+	csr = crypto.X509Req()
+	csr.set_version(3)
+	subj = csr.get_subject()
+	subj.CN=CN
+	subj.O=O
+	subj.OU=OU
+	subj.C=C
+	subj.ST=ST
+	subj.L=L
+	csr.set_pubkey(pkey)
+	csr.sign(pkey, digest)
+	return csr
 
 
-def create_certificate(cert, xxx_todo_changeme1, serial, xxx_todo_changeme2, digest="sha512"):
-    (issuerCert, issuerKey) = xxx_todo_changeme1
-    (notBefore, notAfter) = xxx_todo_changeme2
-    cert = crypto.X509()
-    cert.set_version(3)
-    cert.set_serial_number(serial)
-    cert.gmtime_adj_notBefore(notBefore)
-    cert.gmtime_adj_notAfter(notAfter)
-    cert.set_issuer(issuerCert.get_subject())
-    cert.sign(issuerKey, digest)
-    return cert
+def create_certificate(cert, issuer, serial, validity, digest="sha512"):
+	(issuerCert, issuerKey) = issuer
+	(notBefore, notAfter) = validity
+	cert = crypto.X509()
+	cert.set_version(3)
+	cert.set_serial_number(serial)
+	cert.gmtime_adj_notBefore(notBefore)
+	cert.gmtime_adj_notAfter(notAfter)
+	cert.set_issuer(issuerCert.get_subject())
+	cert.sign(issuerKey, digest)
+	return cert
 
 
-def create_signed_certificate(csr, issuerKey, serial, xxx_todo_changeme3, digest="sha512"):
-    (notBefore, notAfter) = xxx_todo_changeme3
-    cert = crypto.X509()
-    cert.set_version(3)
-    cert.set_serial_number(serial)
-    cert.gmtime_adj_notBefore(notBefore)
-    cert.gmtime_adj_notAfter(notAfter)
-    cert.set_subject(csr.get_subject())
-    cert.set_pubkey(csr.get_pubkey())
-    cert.sign(issuerKey, digest)
-    return cert
+def create_signed_certificate(csr, issuerKey, serial, validity, digest="sha512"):
+	(notBefore, notAfter) = validity
+	cert = crypto.X509()
+	cert.set_version(3)
+	cert.set_serial_number(serial)
+	cert.gmtime_adj_notBefore(notBefore)
+	cert.gmtime_adj_notAfter(notAfter)
+	cert.set_subject(csr.get_subject())
+	cert.set_pubkey(csr.get_pubkey())
+	cert.sign(issuerKey, digest)
+	return cert
 
 
-def create_signing_certificate_authority(pkey, serial, xxx_todo_changeme4, xxx_todo_changeme5,
-        digest=SSLConstants.SHA512):
-    (CN, O, OU, C, ST, L) = xxx_todo_changeme4
-    (notBefore, notAfter) = xxx_todo_changeme5
-    ca = crypto.X509()
-    ca.set_version(3)
-    subj = ca.get_subject()
-    subj.CN=CN
-    subj.O=O
-    subj.OU=OU
-    subj.C=C
-    subj.ST=ST
-    subj.L=L
-    ca.set_serial_number(serial)
-    ca.gmtime_adj_notBefore(notBefore)
-    ca.gmtime_adj_notAfter(notAfter)
-    ca.set_issuer(ca.get_subject())
-    ca.set_pubkey(pkey)
-    ca.sign(pkey, digest)
-    return ca
+def create_signing_certificate_authority(pkey, serial, csr_metadata, validity,
+		digest=SSLConstants.SHA512):
+	(CN, O, OU, C, ST, L) = csr_metadata
+	(notBefore, notAfter) = validity
+	ca = crypto.X509()
+	ca.set_version(3)
+	subj = ca.get_subject()
+	subj.CN=CN
+	subj.O=O
+	subj.OU=OU
+	subj.C=C
+	subj.ST=ST
+	subj.L=L
+	ca.set_serial_number(serial)
+	ca.gmtime_adj_notBefore(notBefore)
+	ca.gmtime_adj_notAfter(notAfter)
+	ca.set_issuer(ca.get_subject())
+	ca.set_pubkey(pkey)
+	ca.sign(pkey, digest)
+	return ca
 
 
 def verify_valid_format(data, ssl_type):
-    verified = True
-    error = None
-    if ssl_type == SSLConstants.TYPE_CSR:
-        try:
-            LOAD_CERT_REQUEST(SSLConstants.PEM, data)
-        except Exception as e:
-            error =  'INVALID CSR'
-            verified = False
-    if ssl_type == SSLConstants.TYPE_CERT:
-        try:
-            LOAD_CERT(SSLConstants.PEM, data)
-        except Exception as e:
-            error =  'INVALID CERT'
-            verified = False
-    if ssl_type == SSLConstants.TYPE_PKEY:
-        try:
-            LOAD_PKEY(SSLConstants.PEM, data)
-        except Exception as e:
-            error =  'INVALID PKEY'
-            verified = False
-    return(verified, error)
+	verified = True
+	error = None
+	if ssl_type == SSLConstants.TYPE_CSR:
+		try:
+			LOAD_CERT_REQUEST(SSLConstants.PEM, data)
+		except Exception as e:
+			error =  'INVALID CSR'
+			verified = False
+	if ssl_type == SSLConstants.TYPE_CERT:
+		try:
+			LOAD_CERT(SSLConstants.PEM, data)
+		except Exception as e:
+			error =  'INVALID CERT'
+			verified = False
+	if ssl_type == SSLConstants.TYPE_PKEY:
+		try:
+			LOAD_PKEY(SSLConstants.PEM, data)
+		except Exception as e:
+			error =  'INVALID PKEY'
+			verified = False
+	return(verified, error)
