@@ -171,7 +171,7 @@ def nginx_config_builder(
         }
     )
     new_config = rvlistener_config + rvweb_config + replace_config
-    CONFIG_FILE = open(NGINX_CONFIG_FILE, 'w', 0)
+    CONFIG_FILE = open(NGINX_CONFIG_FILE, 'w')
     CONFIG_FILE.write(new_config)
     CONFIG_FILE.close()
 
