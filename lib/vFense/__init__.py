@@ -35,6 +35,7 @@ RETHINK_SOURCE_CONF = os.path.join(VFENSE_CONF_PATH ,'rethinkdb_vFense.conf')
 RETHINK_PATH = '/usr/share/rethinkdb'
 RETHINK_USER = 'rethinkdb'
 RETHINK_INSTANCES_PATH = '/etc/rethinkdb/instances.d'
+RETHINK_INSTANCE_CONFIG = os.path.join(RETHINK_INSTANCES_PATH, 'rethinkdb_vFense.conf')
 RETHINK_DATA_PATH = '/var/lib/rethinkdb/vFense/data'
 RETHINK_CONF = '/etc/rethinkdb/instances.d/vFense.conf'
 RETHINK_WEB = '/usr/share/rethinkdb/web'
