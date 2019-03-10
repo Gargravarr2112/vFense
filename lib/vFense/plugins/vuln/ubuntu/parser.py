@@ -17,7 +17,7 @@ from vFense.plugins.vuln.ubuntu._constants import *
 from vFense.plugins.vuln.ubuntu._db import insert_bulletin_data
 
 import requests
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 logging.config.fileConfig(VFENSE_LOGGING_CONFIG)
 logger = logging.getLogger('cve')
