@@ -3,7 +3,7 @@
 NAME="vFense"
 DESC="vFense"
 USERNAME="vfense"
-DAEMON="/usr/local/bin/vFensed"
+DAEMON="/opt/vFense-Server/bin/vFensed"
 DEPENDENCIES_RUNNING="true"
 NGINX_RUNNING=`pidof nginx`
 REDIS_RUNNING=`pidof redis-server`
@@ -32,7 +32,7 @@ check_dependencies() {
 case "$1" in
   start)
     check_dependencies
-    if [ "$DEPENDENCIES_RUNNING" = "true" ]; then
+    if [ "$DEPENDENCIES_RUNNING" == "true" ]; then
         if start-stop-daemon --start --quiet --chuid $USERNAME:$USERNAME --exec $DAEMON $1
 	    then
 		    echo "$NAME."
