@@ -23,8 +23,8 @@ vfense_logger.create_config()
 
 import logging, logging.config
 
-from . import create_indexes as ci
-from . import nginx_config_creator as ncc
+import create_indexes as ci
+import nginx_config_creator as ncc
 from vFense import *
 from vFense.supported_platforms import *
 from vFense.utils.security import generate_pass, check_password
@@ -62,7 +62,7 @@ parser.add_argument(
 	help='Pass the IP Address of the patching Server'
 )
 parser.add_argument(
-	'--password', dest='admin_password', default=generate_pass(),
+	'--password', dest='admin_password', default=None,
 	help='Pass the password to use for the admin User. Default is a random generated password'
 )
 parser.add_argument(
@@ -190,15 +190,17 @@ def link_and_start_service():
 
 	except Exception as e:
 		if get_distro() in DEBIAN_DISTROS:
-			subprocess.Popen(
-				[
-					'adduser', '--disabled-password', '--gecos', '--system', 'vfense',
-				],
-			)
+			subprocess.Popen(['adduser', '--disabled-password', '--gecos', '--system', 'vfense',],)
 		elif get_distro() in REDHAT_DISTROS:
-			subprocess.Popen(
+			subprocess.Popen(['useradd', 'vfense',],)
+
+	if not os.path.exists(RETHINK_INSTANCE_CONFIG):
+		print("Setting up RethinkDB config")
+		subprocess.Popen(
 				[
-					'useradd', 'vfense',
+					'ln', '-s',
+					os.path.join(RETHINK_SOURCE_CONF),
+					RETHINK_INSTANCE_CONFIG
 				],
 			)
 
@@ -214,6 +216,7 @@ def initialise_db(conn):
 	ci.create_tables(conn)
 	ci.create_indexes(conn)
 	print("Database tables created and indexed successfully")
+	return True
 
 def populate_initial_data(conn):
 	print("Beginning database populate")
@@ -284,40 +287,46 @@ def populate_initial_data(conn):
 		print(("Done Updating Ubuntu Security Bulletin Ids (total time: {0} seconds)".format((ubuntu_end - ubuntu_start))))
 
 	print('Rethink Initialization and Table creation is now complete')
+	return True,''
 
 def clean_database(conn):
-	r.dbDrop(DB_NAME).run(conn)
+	if DB_NAME in r.db_list().run(conn):
+		print("vFense database already exists, deleting")
+		r.db_drop(DB_NAME).run(conn)
 
 if __name__ == '__main__':
+	print("Starting vFense initialisation")
 	if os.getuid() != 0:
 		print('MUST BE ROOT IN ORDER TO RUN')
 		sys.exit(1)
+
+	create_folder_structure()
+
+	link_and_start_service()
 
 	conn = db_connect()
 	if not conn:
 		print('Rethink is not running, start RethinkDB server before attempting to initialise vFense!')
 		sys.exit(1)
 	
-	#clean_database(conn)
-
-	create_folder_structure()
-
-	link_and_start_service()
+	clean_database(conn)
 
 	initialise_web_server()
 
-	db_initialized = initialize_db(conn)
+	db_initialised = initialise_db(conn)
 
-	populate_initial_data(conn)
+	if db_initialised:
+		populated, error_msg = populate_initial_data(conn)
 
-	if db_initialized:
-		print('vFense environment has been succesfully initialized\n')
-		subprocess.Popen(
-			[
-				'chown', '-R', 'vfense.vfense', VFENSE_BASE_PATH
-			],
-		)
+		if populated:
+			subprocess.Popen(['chown', '-R', 'vfense.vfense', VFENSE_BASE_PATH],).wait()
+			print('vFense environment has been succesfully initialized\n')
 
+		else:
+			if error_msg:
+				print(error_msg)
+			print('vFense Failed to populate initial data, please see messages above for further information')
 	else:
 		print('vFense Failed to initialize, please see messages above for further information')
 
+exit(0)
